@@ -13,7 +13,7 @@ class LoginView extends GetView<LoginController> {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(18.0),
+          padding: const EdgeInsets.all(24.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -26,7 +26,7 @@ class LoginView extends GetView<LoginController> {
                   color: AppColors.primary,
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 50),
               Align(
                 alignment: Alignment.topLeft,
                 child: Text(
@@ -46,7 +46,7 @@ class LoginView extends GetView<LoginController> {
                 textAlign: TextAlign.left,
                 style: TextStyle(color: Colors.grey),
               ),
-              SizedBox(height: 40),
+              SizedBox(height: 16),
 
               CustomTextfield(
                 textController: controller.emailC,
@@ -57,7 +57,7 @@ class LoginView extends GetView<LoginController> {
                 textController: controller.passwordC,
                 labelText: "Password",
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 40),
 
               SizedBox(
                 width: double.infinity,
@@ -76,6 +76,36 @@ class LoginView extends GetView<LoginController> {
                   ),
                   child: Text("Login", style: TextStyle(color: Colors.white)),
                 ),
+              ),
+
+              SizedBox(height: 16),
+
+              TextButton(
+                onPressed: () {},
+                child: Text(
+                  "Forgot your password?",
+                  style: TextStyle(color: AppColors.primary),
+                ),
+              ),
+
+              // SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Don’t have account? ",
+                    style: TextStyle(color: AppColors.primary),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      // Get.toNamed(Routes.REGISTER)
+                    },
+                    child: Text(
+                      "Register",
+                      style: TextStyle(color: AppColors.primary),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
