@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:sweettake_app/app/constants/app_colors.dart';
 
 import 'app/routes/app_pages.dart';
 
@@ -17,7 +19,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: "Application",
+      debugShowCheckedModeBanner: false,
+      title: 'SweetTake',
+      theme: ThemeData(
+        textTheme: GoogleFonts.interTextTheme(),
+        scaffoldBackgroundColor: AppColors.background,
+      ),
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
     );
