@@ -15,7 +15,7 @@ class RegisterController extends GetxController {
 
   final baseUrl = "http://10.0.2.2:8080/v1/api";
 
-  Future<void> login() async {
+  Future<void> register() async {
 
     final username = usernameC.text.trim();
     final email = emailC.text.trim();
@@ -29,16 +29,21 @@ class RegisterController extends GetxController {
         password: password,
       );
 
+      // print("===========DATA: ${data.toJson()}=======================");
+
       final response = await http.post(
         Uri.parse("$baseUrl/register"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(data.toJson()),
       );
 
-      if (response.statusCode == 200) {
+      // print("===========RESPONSE: ${response.statusCode}=======================");
+      // print("===========RESPONSE: ${response.body}=======================");
+
+      if (response.statusCode == 201) {
         Get.snackbar("SUCCES", "SUCCES TO REGISTER");
 
-        Get.offAllNamed(Routes.LOGIN);
+        Get.toNamed(Routes.LOGIN);
       }
     } catch (e) {
       Get.snackbar("Error", "something wrong");
