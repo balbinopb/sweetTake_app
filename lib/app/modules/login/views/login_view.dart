@@ -13,8 +13,8 @@ class LoginView extends GetView<LoginController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0,vertical: 60),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -57,6 +57,7 @@ class LoginView extends GetView<LoginController> {
               CustomTextfield(
                 textController: controller.passwordC,
                 labelText: "Password",
+                isObscure: true,
               ),
               SizedBox(height: 40),
 
