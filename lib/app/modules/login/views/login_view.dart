@@ -23,7 +23,7 @@ class LoginView extends GetView<LoginController> {
                 style: TextStyle(
                   fontSize: 32,
                   fontFamily: 'sansitaOne',
-                  color: Color(0xFF6E6DB5),
+                  color: AppColors.primary,
                 ),
               ),
               SizedBox(height: 20),
@@ -36,7 +36,7 @@ class LoginView extends GetView<LoginController> {
                     fontSize: 18,
                     fontFamily: 'sansitaOne',
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF6E6DB5),
+                    color: AppColors.primary,
                   ),
                 ),
               ),
@@ -47,21 +47,27 @@ class LoginView extends GetView<LoginController> {
                 style: TextStyle(color: Colors.grey),
               ),
               SizedBox(height: 40),
-          
-              CustomTextfield(labelText: "Email"),
+
+              CustomTextfield(
+                textController: controller.emailC,
+                labelText: "Email",
+              ),
               SizedBox(height: 16),
-              CustomTextfield(labelText: "Password"),
+              CustomTextfield(
+                textController: controller.passwordC,
+                labelText: "Password",
+              ),
               SizedBox(height: 16),
-          
+
               SizedBox(
                 width: double.infinity,
                 height: 48,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    controller.login();
+                  },
                   style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all(
-                      AppColors.primary,
-                    ),
+                    backgroundColor: WidgetStateProperty.all(AppColors.primary),
                     shape: WidgetStateProperty.all(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
