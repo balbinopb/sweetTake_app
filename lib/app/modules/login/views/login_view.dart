@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:sweettake_app/app/widgets/custom_textfield.dart';
 
 import '../../../constants/app_colors.dart';
+import '../../../routes/app_pages.dart';
 import '../controllers/login_controller.dart';
 
 class LoginView extends GetView<LoginController> {
@@ -98,7 +99,7 @@ class LoginView extends GetView<LoginController> {
                   ),
                   TextButton(
                     onPressed: () {
-                      // Get.toNamed(Routes.REGISTER)
+                      Get.toNamed(Routes.REGISTER);
                     },
                     child: Text(
                       "Register",
