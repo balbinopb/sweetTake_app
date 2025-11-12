@@ -16,13 +16,11 @@ class RegisterController extends GetxController {
   final baseUrl = "http://10.0.2.2:8080/v1/api";
 
   Future<void> register() async {
-
     final username = usernameC.text.trim();
     final email = emailC.text.trim();
     final password = passwordC.text.trim();
 
     try {
-
       final data = RegisterModel(
         username: username,
         email: email,
