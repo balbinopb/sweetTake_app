@@ -8,28 +8,28 @@ import '../../../routes/app_pages.dart';
 import '../controllers/onborading_controller.dart';
 
 class OnboradingView extends GetView<OnboradingController> {
-  OnboradingView({super.key});
+  const OnboradingView({super.key});
 
-  final List<Map<String, String>> onboardingData = [
-    {
-      "image": "assets/images/onboarding1.png",
-      "title": "Welcome to sweetTake",
-      "desc":
-          "Track your blood sugar easily and stay healthy every day. SweetTake helps you understand and manage your sugar intake for a better lifestyle.",
-    },
-    {
-      "image": "assets/images/onboarding2.png",
-      "title": "Monitor, Learn, and Improve",
-      "desc":
-          "Record your daily sugar intake, view progress graphs, and read helpful articles to maintain balanced sugar levels.",
-    },
-    {
-      "image": "assets/images/onboarding3.png",
-      "title": "Ready to Begin Your Healthy Journey?",
-      "desc":
-          "Stay connected, stay informed, and make every choice count. Let SweetTake guide you toward a healthier sugar balance!",
-    },
-  ];
+  // final List<Map<String, String>> onboardingData = [
+  //   {
+  //     "image": "assets/images/onboarding1.png",
+  //     "title": "Welcome to sweetTake",
+  //     "desc":
+  //         "Track your blood sugar easily and stay healthy every day. SweetTake helps you understand and manage your sugar intake for a better lifestyle.",
+  //   },
+  //   {
+  //     "image": "assets/images/onboarding2.png",
+  //     "title": "Monitor, Learn, and Improve",
+  //     "desc":
+  //         "Record your daily sugar intake, view progress graphs, and read helpful articles to maintain balanced sugar levels.",
+  //   },
+  //   {
+  //     "image": "assets/images/onboarding3.png",
+  //     "title": "Ready to Begin Your Healthy Journey?",
+  //     "desc":
+  //         "Stay connected, stay informed, and make every choice count. Let SweetTake guide you toward a healthier sugar balance!",
+  //   },
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +43,9 @@ class OnboradingView extends GetView<OnboradingController> {
                 child: PageView.builder(
                   controller: controller.pageController,
                   onPageChanged: controller.onPageChanged,
-                  itemCount: onboardingData.length,
+                  itemCount: controller.onboardingData.length,
                   itemBuilder: (context, index) {
-                    final item = onboardingData[index];
+                    final item = controller.onboardingData[index];
                     return Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 24,
