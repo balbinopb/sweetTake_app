@@ -31,7 +31,7 @@ class LoginController extends GetxController {
       if (response.statusCode == 200) {
         Get.snackbar("SUCCES", "SUCCES TO LOGIN");
 
-        Get.offAllNamed(Routes.HOME);
+        Get.offAllNamed(Routes.CONSUMPTION_FORM);
       }
     } catch (e) {
       // print("===============ERROR: ${e}========================");
