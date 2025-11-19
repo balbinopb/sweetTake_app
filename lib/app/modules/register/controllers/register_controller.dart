@@ -16,6 +16,7 @@ class RegisterController extends GetxController {
   final baseUrl = "http://10.0.2.2:8080/v1/api";
 
   Future<void> register() async {
+  Future<void> register() async {
     final username = usernameC.text.trim();
     final email = emailC.text.trim();
     final password = passwordC.text.trim();
@@ -44,11 +45,14 @@ class RegisterController extends GetxController {
 
     // ---------- API CALL ----------
     try {
+    try {
       final data = RegisterModel(
         username: username,
         email: email,
         password: password,
       );
+
+      // print("===========DATA: ${data.toJson()}=======================");
 
       final response = await http.post(
         Uri.parse("$baseUrl/register"),
@@ -61,6 +65,13 @@ class RegisterController extends GetxController {
         Get.snackbar("Success", "Successfully registered");
         Get.offAllNamed(Routes.LOGIN);
         return;
+      // print("===========RESPONSE: ${response.statusCode}=======================");
+      // print("===========RESPONSE: ${response.body}=======================");
+
+      if (response.statusCode == 201) {
+        Get.snackbar("SUCCES", "SUCCES TO REGISTER");
+
+        Get.toNamed(Routes.LOGIN);
       }
 
       // ---------- BACKEND ERRORS ----------
