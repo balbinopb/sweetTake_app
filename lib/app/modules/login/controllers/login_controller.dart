@@ -16,26 +16,59 @@ class LoginController extends GetxController {
   Future<void> login() async {
     final email = emailC.text.trim();
     final password = passwordC.text.trim();
+
+    // ---------- LOCAL VALIDATION ----------
+    if (email.isEmpty) {
+      Get.snackbar("Warning", "Email is required");
+      return;
+    }
+    if (!GetUtils.isEmail(email)) {
+      Get.snackbar("Warning", "Invalid email format");
+      return;
+    }
+    if (password.isEmpty) {
+      Get.snackbar("Warning", "Password is required");
+      return;
+    }
+
+    // ---------- API CALL ----------
     try {
       final loginData = LoginModel(email: email, password: password);
 
-      // print("===============Body: ${loginData.toJson()}========================");
       final response = await http.post(
         Uri.parse("$baseUrl/login"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(loginData.toJson()),
       );
-      // print("===============STATUS CODE: ${response.statusCode}========================");
-      // print("===============STATUS BODY: ${response.body}========================");
 
+      // ---------- SUCCESS ----------
       if (response.statusCode == 200) {
         Get.snackbar("SUCCES", "SUCCES TO LOGIN");
 
         Get.offAllNamed(Routes.CONSUMPTION_FORM);
       }
+
+      // ---------- BACKEND ERRORS ----------
+      final decoded = jsonDecode(response.body);
+
+      if (response.statusCode == 400) {
+        //{ "error": "invalid credentials" } or validation error
+        Get.snackbar("Login Failed", decoded["error"] ?? "Invalid request");
+        return;
+      }
+
+      if (response.statusCode == 401) {
+        // unauthorized / wrong email or password
+        Get.snackbar(
+          "Login Failed",
+          decoded["error"] ?? "Incorrect email or password",
+        );
+        return;
+      }
+
+      Get.snackbar("Error", "Unexpected error: ${response.body}");
     } catch (e) {
-      // print("===============ERROR: ${e}========================");
-      Get.snackbar("Error", "something wrong");
+      Get.snackbar("Error", "Something went wrong");
     }
   }
 }

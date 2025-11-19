@@ -20,6 +20,29 @@ class RegisterController extends GetxController {
     final email = emailC.text.trim();
     final password = passwordC.text.trim();
 
+    // ---------- VALIDATION ----------
+    if (username.isEmpty) {
+      Get.snackbar("Warning", "Username is required");
+      return;
+    }
+    if (email.isEmpty) {
+      Get.snackbar("Warning", "Email is required");
+      return;
+    }
+    if (!GetUtils.isEmail(email)) {
+      Get.snackbar("Warning", "Invalid email format");
+      return;
+    }
+    if (password.isEmpty) {
+      Get.snackbar("Warning", "Password is required");
+      return;
+    }
+    if (password.length < 6) {
+      Get.snackbar("Warning", "Password must be at least 6 characters");
+      return;
+    }
+
+    // ---------- API CALL ----------
     try {
       final data = RegisterModel(
         username: username,
@@ -35,6 +58,12 @@ class RegisterController extends GetxController {
         body: jsonEncode(data.toJson()),
       );
 
+      // ----------- SUCCESS 201 -----------
+      if (response.statusCode == 201) {
+        Get.snackbar("Success", "Successfully registered");
+        Get.offAllNamed(Routes.LOGIN);
+        return;
+      }
       // print("===========RESPONSE: ${response.statusCode}=======================");
       // print("===========RESPONSE: ${response.body}=======================");
 
@@ -43,8 +72,31 @@ class RegisterController extends GetxController {
 
         Get.toNamed(Routes.LOGIN);
       }
+
+      // ---------- BACKEND ERRORS ----------
+      final decoded = jsonDecode(response.body);
+
+      if (response.statusCode == 400) {
+        // backend returns { "errors": [] } or { "error": "" }
+        if (decoded["errors"] != null) {
+          String allErrors = (decoded["errors"] as List).join("\n");
+          Get.snackbar("Validation Error", allErrors);
+        } else {
+          Get.snackbar("Validation Error", decoded["error"]);
+        }
+        return;
+      }
+
+      if (response.statusCode == 409) {
+        // duplicate username/email
+        Get.snackbar("Error", decoded["error"]);
+        return;
+      }
+
+      // fallback unexpected
+      Get.snackbar("Error", "Unexpected error: ${response.body}");
     } catch (e) {
-      Get.snackbar("Error", "something wrong");
+      Get.snackbar("Error", "Something went wrong");
     }
   }
 }
