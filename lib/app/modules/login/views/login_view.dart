@@ -15,30 +15,54 @@ class LoginView extends GetView<LoginController> {
       resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight:
-                  MediaQuery.of(context).size.height -
-                  MediaQuery.of(context).padding.top -
-                  MediaQuery.of(context).padding.bottom,
-            ),
-            child: IntrinsicHeight(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 50),
-                  Text(
-                    'sweetTake',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontFamily: 'sansitaOne',
-                      color: AppColors.primary,
-                    ),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0,vertical: 60),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                'sweetTake',
+                style: TextStyle(
+                  fontSize: 32,
+                  fontFamily: 'sansitaOne',
+                  color: AppColors.primary,
+                ),
+              ),
+              SizedBox(height: 50),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  'Welcome back !',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontFamily: 'sansitaOne',
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.primary,
                   ),
-                  const SizedBox(height: 50),
+                ),
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Log in to continue tracking your balanced and healthy sugar levels',
+                textAlign: TextAlign.left,
+                style: TextStyle(color: Colors.grey),
+              ),
+              SizedBox(height: 16),
 
-                  // your content
+              CustomTextfield(
+                textController: controller.emailC,
+                labelText: "Email",
+              ),
+              SizedBox(height: 16),
+              CustomTextfield(
+                textController: controller.passwordC,
+                labelText: "Password",
+                isObscure: true,
+              ),
+              SizedBox(height: 40),
+
+                  // content
                   Align(
                     alignment: Alignment.topLeft,
                     child: Text(

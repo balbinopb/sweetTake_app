@@ -4,13 +4,20 @@ import 'package:sweettake_app/app/constants/app_colors.dart';
 class CustomTextfield extends StatelessWidget {
   final String labelText;
   final TextEditingController textController;
+  final bool isObscure;
 
-  const CustomTextfield({super.key, required this.labelText, required this.textController});
+  const CustomTextfield({
+    super.key,
+    required this.labelText,
+    required this.textController,
+    this.isObscure = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       controller: textController,
+      obscureText: isObscure,
       decoration: InputDecoration(
         labelText: labelText,
         labelStyle: TextStyle(color: AppColors.primary),
