@@ -74,7 +74,7 @@ class RegisterView extends GetView<RegisterController> {
                 height: 48,
                 child: ElevatedButton(
                   onPressed: () {
-                    controller.login();
+                    controller.register();
                   },
                   style: ButtonStyle(
                     backgroundColor: WidgetStateProperty.all(AppColors.primary),
