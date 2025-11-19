@@ -16,88 +16,89 @@ class RegisterController extends GetxController {
   final baseUrl = "http://10.0.2.2:8080/v1/api";
 
   Future<void> register() async {
-  Future<void> register() async {
-    final username = usernameC.text.trim();
-    final email = emailC.text.trim();
-    final password = passwordC.text.trim();
+    Future<void> register() async {
+      final username = usernameC.text.trim();
+      final email = emailC.text.trim();
+      final password = passwordC.text.trim();
 
-    // ---------- VALIDATION ----------
-    if (username.isEmpty) {
-      Get.snackbar("Warning", "Username is required");
-      return;
-    }
-    if (email.isEmpty) {
-      Get.snackbar("Warning", "Email is required");
-      return;
-    }
-    if (!GetUtils.isEmail(email)) {
-      Get.snackbar("Warning", "Invalid email format");
-      return;
-    }
-    if (password.isEmpty) {
-      Get.snackbar("Warning", "Password is required");
-      return;
-    }
-    if (password.length < 6) {
-      Get.snackbar("Warning", "Password must be at least 6 characters");
-      return;
-    }
-
-    // ---------- API CALL ----------
-    try {
-    try {
-      final data = RegisterModel(
-        username: username,
-        email: email,
-        password: password,
-      );
-
-      // print("===========DATA: ${data.toJson()}=======================");
-
-      final response = await http.post(
-        Uri.parse("$baseUrl/register"),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode(data.toJson()),
-      );
-
-      // ----------- SUCCESS 201 -----------
-      if (response.statusCode == 201) {
-        Get.snackbar("Success", "Successfully registered");
-        Get.offAllNamed(Routes.LOGIN);
+      // ---------- VALIDATION ----------
+      if (username.isEmpty) {
+        Get.snackbar("Warning", "Username is required");
         return;
-      // print("===========RESPONSE: ${response.statusCode}=======================");
-      // print("===========RESPONSE: ${response.body}=======================");
-
-      if (response.statusCode == 201) {
-        Get.snackbar("SUCCES", "SUCCES TO REGISTER");
-
-        Get.toNamed(Routes.LOGIN);
+      }
+      if (email.isEmpty) {
+        Get.snackbar("Warning", "Email is required");
+        return;
+      }
+      if (!GetUtils.isEmail(email)) {
+        Get.snackbar("Warning", "Invalid email format");
+        return;
+      }
+      if (password.isEmpty) {
+        Get.snackbar("Warning", "Password is required");
+        return;
+      }
+      if (password.length < 6) {
+        Get.snackbar("Warning", "Password must be at least 6 characters");
+        return;
       }
 
-      // ---------- BACKEND ERRORS ----------
-      final decoded = jsonDecode(response.body);
+      // ---------- API CALL ----------
+      try {
+        final data = RegisterModel(
+          username: username,
+          email: email,
+          password: password,
+        );
 
-      if (response.statusCode == 400) {
-        // backend returns { "errors": [] } or { "error": "" }
-        if (decoded["errors"] != null) {
-          String allErrors = (decoded["errors"] as List).join("\n");
-          Get.snackbar("Validation Error", allErrors);
-        } else {
-          Get.snackbar("Validation Error", decoded["error"]);
+        // print("===========DATA: ${data.toJson()}=======================");
+
+        final response = await http.post(
+          Uri.parse("$baseUrl/register"),
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode(data.toJson()),
+        );
+
+        // ----------- SUCCESS 201 -----------
+        if (response.statusCode == 201) {
+          Get.snackbar("Success", "Successfully registered");
+          Get.offAllNamed(Routes.LOGIN);
+          return;
         }
-        return;
-      }
+        // print("===========RESPONSE: ${response.statusCode}=======================");
+        // print("===========RESPONSE: ${response.body}=======================");
 
-      if (response.statusCode == 409) {
-        // duplicate username/email
-        Get.snackbar("Error", decoded["error"]);
-        return;
-      }
+        if (response.statusCode == 201) {
+          Get.snackbar("SUCCES", "SUCCES TO REGISTER");
 
-      // fallback unexpected
-      Get.snackbar("Error", "Unexpected error: ${response.body}");
-    } catch (e) {
-      Get.snackbar("Error", "Something went wrong");
+          Get.toNamed(Routes.LOGIN);
+        }
+
+        // ---------- BACKEND ERRORS ----------
+        final decoded = jsonDecode(response.body);
+
+        if (response.statusCode == 400) {
+          // backend returns { "errors": [] } or { "error": "" }
+          if (decoded["errors"] != null) {
+            String allErrors = (decoded["errors"] as List).join("\n");
+            Get.snackbar("Validation Error", allErrors);
+          } else {
+            Get.snackbar("Validation Error", decoded["error"]);
+          }
+          return;
+        }
+
+        if (response.statusCode == 409) {
+          // duplicate username/email
+          Get.snackbar("Error", decoded["error"]);
+          return;
+        }
+
+        // fallback unexpected
+        Get.snackbar("Error", "Unexpected error: ${response.body}");
+      } catch (e) {
+        Get.snackbar("Error", "Something went wrong");
+      }
     }
   }
 }
