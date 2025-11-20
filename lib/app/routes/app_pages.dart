@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:sweettake_app/app/modules/register/views/register_view2.dart';
 
 import '../modules/consumption_form/bindings/consumption_form_binding.dart';
 import '../modules/consumption_form/views/consumption_form_view.dart';
@@ -34,6 +35,11 @@ class AppPages {
     GetPage(
       name: _Paths.REGISTER,
       page: () => const RegisterView(),
+      binding: RegisterBinding(),
+    ),
+    GetPage(
+      name: _Paths.REGISTER2,
+      page: () =>  RegisterView2(),
       binding: RegisterBinding(),
     ),
     GetPage(

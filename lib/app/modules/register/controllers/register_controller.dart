@@ -11,7 +11,28 @@ class RegisterController extends GetxController {
   final TextEditingController usernameC = TextEditingController();
   final TextEditingController emailC = TextEditingController();
   final TextEditingController passwordC = TextEditingController();
+  final TextEditingController dobController = TextEditingController();
+  final TextEditingController genderController = TextEditingController();
+  final TextEditingController weightController = TextEditingController();
+  final TextEditingController numberController = TextEditingController();
   final isObscure = false.obs;
+
+  // PAGE 2 — Dropdown values (reactive)
+  RxString preference = ''.obs;
+  RxString healthGoal = ''.obs;
+
+  // List options (if you want to store here)
+  final preferences = [
+    "Low Sugar Diet",
+    "Diabetic-Friendly Diet",
+    "Balanced Diet",
+  ];
+
+  final healthGoals = [
+    "Reduce Daily Sugar Intake",
+    "Maintain Stable Blood Sugar",
+    "Weight Loss",
+  ];
 
   final baseUrl = "http://10.0.2.2:8080/v1/api";
 
