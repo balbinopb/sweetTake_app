@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sweettake_app/app/widgets/custom_textfield.dart';
-
 import '../../../constants/app_colors.dart';
 import '../../../routes/app_pages.dart';
 import '../controllers/login_controller.dart';
@@ -17,8 +16,10 @@ class LoginView extends GetView<LoginController> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 60),
           child: Column(
+            mainAxisSize: MainAxisSize.min, // important for scrollable Column
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              // App Title
               Text(
                 'sweetTake',
                 style: TextStyle(
@@ -27,13 +28,13 @@ class LoginView extends GetView<LoginController> {
                   color: AppColors.primary,
                 ),
               ),
-
               const SizedBox(height: 50),
 
+              // Welcome Text
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Welcome back !',
+                  'Welcome back!',
                   style: TextStyle(
                     fontSize: 18,
                     fontFamily: 'sansitaOne',
@@ -42,31 +43,31 @@ class LoginView extends GetView<LoginController> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 8),
-
-              Text(
-                'Log in to continue tracking your balanced and healthy sugar levels',
-                textAlign: TextAlign.left,
-                style: TextStyle(color: Colors.grey),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  'Log in to continue tracking your balanced and healthy sugar levels',
+                  style: TextStyle(color: Colors.grey),
+                ),
               ),
-
               const SizedBox(height: 16),
 
+              // Email & Password Fields
               CustomTextfield(
                 textController: controller.emailC,
                 labelText: "Email",
               ),
               const SizedBox(height: 16),
-
               CustomTextfield(
                 textController: controller.passwordC,
                 isObscure: true,
                 labelText: "Password",
+                // isObscure: true,
               ),
-
               const SizedBox(height: 40),
 
+              // Login Button
               SizedBox(
                 width: double.infinity,
                 height: 48,
@@ -84,22 +85,26 @@ class LoginView extends GetView<LoginController> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 16),
 
-              TextButton(
-                onPressed: () {},
-                child: Text(
-                  "Forgot your password?",
-                  style: TextStyle(color: AppColors.primary),
+              // Forgot Password
+              Align(
+                alignment: Alignment.center,
+                child: TextButton(
+                  onPressed: () {},
+                  child: Text(
+                    "Forgot your password?",
+                    style: TextStyle(color: AppColors.primary),
+                  ),
                 ),
               ),
 
+              // Register Link
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Don’t have account? ",
+                    "Don’t have an account? ",
                     style: TextStyle(color: AppColors.primary),
                   ),
                   TextButton(
@@ -111,6 +116,8 @@ class LoginView extends GetView<LoginController> {
                   ),
                 ],
               ),
+
+              const SizedBox(height: 30),
             ],
           ),
         ),
