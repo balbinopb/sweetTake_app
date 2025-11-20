@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:sweettake_app/app/modules/register/views/register_view2.dart';
 import 'package:sweettake_app/app/modules/graph/bindings/graph_binding.dart';
 import 'package:sweettake_app/app/modules/graph/views/graph_view.dart';
 
@@ -36,6 +37,11 @@ class AppPages {
     GetPage(
       name: _Paths.REGISTER,
       page: () => const RegisterView(),
+      binding: RegisterBinding(),
+    ),
+    GetPage(
+      name: _Paths.REGISTER2,
+      page: () =>  RegisterView2(),
       binding: RegisterBinding(),
     ),
     GetPage(
