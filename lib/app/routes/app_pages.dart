@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 import 'package:sweettake_app/app/modules/graph/bindings/graph_binding.dart';
 import 'package:sweettake_app/app/modules/graph/views/graph_view.dart';
 
+import '../modules/consumption_form/bindings/consumption_form_binding.dart';
+import '../modules/consumption_form/views/consumption_form_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/login/bindings/login_binding.dart';
@@ -18,7 +20,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.GRAPH;
+  static const INITIAL = Routes.LOGIN;
 
   static final routes = [
     GetPage(
@@ -46,6 +48,12 @@ class AppPages {
       name: _Paths.GRAPH,
       page: () => const GraphView(),
       binding: GraphBinding(),
+    ),
+    
+    GetPage(
+      name: _Paths.CONSUMPTION_FORM,
+      page: () => const ConsumptionFormView(),
+      binding: ConsumptionFormBinding(),
     ),
   ];
 }
