@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
+import 'package:sweettake_app/app/modules/graph/bindings/graph_binding.dart';
+import 'package:sweettake_app/app/modules/graph/views/graph_view.dart';
 
-import '../modules/blood/bindings/blood_binding.dart';
-import '../modules/blood/views/blood_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/login/bindings/login_binding.dart';
@@ -10,10 +10,6 @@ import '../modules/onborading/bindings/onborading_binding.dart';
 import '../modules/onborading/views/onborading_view.dart';
 import '../modules/register/bindings/register_binding.dart';
 import '../modules/register/views/register_view.dart';
-import '../modules/test/bindings/test_binding.dart';
-import '../modules/test/bindings/test_binding.dart';
-import '../modules/test/views/test_view.dart';
-import '../modules/test/views/test_view.dart';
 
 // ignore_for_file: constant_identifier_names
 
@@ -22,7 +18,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.ONBORADING;
+  static const INITIAL = Routes.GRAPH;
 
   static final routes = [
     GetPage(
@@ -45,22 +41,11 @@ class AppPages {
       page: () => const HomeView(),
       binding: HomeBinding(),
     ),
+
     GetPage(
-      name: _Paths.TEST,
-      page: () => const TestView(),
-      binding: TestBinding(),
-      children: [
-        GetPage(
-          name: _Paths.TEST,
-          page: () => const TestView(),
-          binding: TestBinding(),
-        ),
-      ],
-    ),
-    GetPage(
-      name: _Paths.BLOOD,
-      page: () => const BloodView(),
-      binding: BloodBinding(),
+      name: _Paths.GRAPH,
+      page: () => const GraphView(),
+      binding: GraphBinding(),
     ),
   ];
 }
