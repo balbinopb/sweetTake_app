@@ -65,6 +65,7 @@ class RegisterView extends GetView<RegisterController> {
               CustomTextfield(
                 textController: controller.emailC,
                 labelText: "Email",
+                keyboardType: TextInputType.emailAddress,
               ),
 
               SizedBox(height: 16),
