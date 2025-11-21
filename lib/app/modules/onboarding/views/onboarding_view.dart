@@ -5,10 +5,10 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../constants/app_colors.dart';
 import '../../../routes/app_pages.dart';
-import '../controllers/onborading_controller.dart';
+import '../controllers/onboarding_controller.dart';
 
-class OnboradingView extends GetView<OnboradingController> {
-  const OnboradingView({super.key});
+class OnboardingView extends GetView<OnboardingController> {
+  const OnboardingView({super.key});
 
   // final List<Map<String, String>> onboardingData = [
   //   {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class OnboradingController extends GetxController {
+class OnboardingController extends GetxController {
   var currentPage = 0.obs;
   PageController pageController = PageController();
 
