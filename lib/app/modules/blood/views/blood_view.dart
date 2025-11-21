@@ -9,10 +9,6 @@ class BloodView extends GetView<BloodController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('BloodView'),
-        centerTitle: true,
-      ),
       body: const Center(
         child: Text(
           'BloodView is working',
