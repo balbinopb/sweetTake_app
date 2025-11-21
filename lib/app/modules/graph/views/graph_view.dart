@@ -15,16 +15,6 @@ class GraphView extends GetView<GraphController> {
 
     return Scaffold(
       backgroundColor: backgroundColor,
-      appBar: AppBar(
-        backgroundColor: backgroundColor,
-        elevation: 0,
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black87),
-          onPressed: () => Get.back(),
-        ),
-        title: const SizedBox(), // title kosong, judul di body
-      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 23),
@@ -322,10 +312,11 @@ class _SummaryRow extends StatelessWidget {
 }
 
 /// Icon di bottom nav
+// ignore: unused_element
 class _BottomIcon extends StatelessWidget {
   final IconData icon;
   final bool active;
-  const _BottomIcon({required this.icon, this.active = false});
+  const _BottomIcon({required this.icon, required this.active});
 
   @override
   Widget build(BuildContext context) {
