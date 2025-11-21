@@ -18,10 +18,16 @@ class RegisterController extends GetxController {
   final isObscure = false.obs;
 
   // PAGE 2 — Dropdown values (reactive)
+  RxString gender = ''.obs;
   RxString preference = ''.obs;
   RxString healthGoal = ''.obs;
 
-  // List options (if you want to store here)
+  // List options
+  final genders=[
+    "Male",
+    "Female",
+  ];
+
   final preferences = [
     "Low Sugar Diet",
     "Diabetic-Friendly Diet",

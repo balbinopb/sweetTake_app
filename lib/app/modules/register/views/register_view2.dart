@@ -5,20 +5,7 @@ import 'package:sweettake_app/app/widgets/custom_textfield.dart';
 import '../controllers/register_controller.dart';
 
 class RegisterView2 extends GetView<RegisterController> {
-  RegisterView2({super.key});
-
-  //list items for dropdowns
-  final List<String> preferences = [
-    "Low Sugar Diet",
-    "Diabetic-Friendly Diet",
-    "Balanced Diet",
-  ];
-
-  final List<String> healthGoals = [
-    "Reduce Daily Sugar Intake",
-    "Maintain Stable Blood Sugar",
-    "Weight Loss",
-  ];
+  const RegisterView2({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -60,27 +47,58 @@ class RegisterView2 extends GetView<RegisterController> {
               ),
               SizedBox(height: 16),
 
-
               CustomTextfield(
                 textController: controller.dobController,
                 labelText: "Date of birth",
               ),
               SizedBox(height: 16),
 
-              CustomTextfield(
-                textController: controller.genderController,
-                labelText: "Gender",
+              // drop down for gender
+              Obx(
+                () => DropdownButtonFormField<String>(
+                  dropdownColor: AppColors.background2,
+                  initialValue: controller.gender.value.isEmpty
+                      ? null
+                      : controller.gender.value,
+                  decoration: InputDecoration(
+                    labelText: "Gender",
+                    labelStyle: TextStyle(color: AppColors.primary),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: AppColors.primary,
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: AppColors.primary,
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  items: controller.genders
+                      .map(
+                        (item) =>
+                            DropdownMenuItem(value: item, child: Text(item)),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    controller.gender.value = value!;
+                  },
+                ),
               ),
               SizedBox(height: 16),
 
               CustomTextfield(
                 textController: controller.weightController,
                 labelText: "Weight",
-                keyboardType:TextInputType.number,
-
+                keyboardType: TextInputType.number,
               ),
 
               SizedBox(height: 16),
+
               // Preference dropdown
               Obx(
                 () => DropdownButtonFormField<String>(
@@ -88,11 +106,25 @@ class RegisterView2 extends GetView<RegisterController> {
                   initialValue: controller.preference.value.isEmpty
                       ? null
                       : controller.preference.value,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: "My Preference",
-                    border: OutlineInputBorder(),
+                    labelStyle: TextStyle(color: AppColors.primary),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: AppColors.primary,
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: AppColors.primary,
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
-                  items: preferences
+                  items: controller.preferences
                       .map(
                         (item) =>
                             DropdownMenuItem(value: item, child: Text(item)),
@@ -115,11 +147,23 @@ class RegisterView2 extends GetView<RegisterController> {
                       : controller.healthGoal.value,
                   decoration: InputDecoration(
                     labelText: "My Preference",
-                    border: OutlineInputBorder(),
-                    // filled: true,
-                    // fillColor: AppColors.background2,
+                    labelStyle: TextStyle(color: AppColors.primary),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: AppColors.primary,
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: AppColors.primary,
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
-                  items: healthGoals
+                  items: controller.healthGoals
                       .map(
                         (item) =>
                             DropdownMenuItem(value: item, child: Text(item)),
