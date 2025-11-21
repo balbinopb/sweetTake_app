@@ -5,12 +5,14 @@ class CustomTextfield extends StatelessWidget {
   final String labelText;
   final TextEditingController textController;
   final bool isObscure;
+  final TextInputType keyboardType;
 
   const CustomTextfield({
     super.key,
     required this.labelText,
     required this.textController,
     this.isObscure = false,
+    this.keyboardType = TextInputType.text,
   });
 
   @override
@@ -18,6 +20,7 @@ class CustomTextfield extends StatelessWidget {
     return TextField(
       controller: textController,
       obscureText: isObscure,
+      keyboardType: keyboardType,
       decoration: InputDecoration(
         labelText: labelText,
         labelStyle: TextStyle(color: AppColors.primary),
