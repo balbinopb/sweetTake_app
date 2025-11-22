@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconify_flutter_plus/iconify_flutter_plus.dart';
 import 'package:sweettake_app/app/constants/app_colors.dart';
+import 'package:sweettake_app/app/modules/consumption_form/views/consumption_form_view.dart';
 
 import '../controllers/bottom_nav_bar_controller.dart';
 
@@ -36,7 +37,19 @@ class BottomNavBarView extends GetView<BottomNavBarController> {
               bool isSelected = controller.selectedIndex.value == index;
 
               return GestureDetector(
-                onTap: () => controller.selectedIndex.value = index,
+                onTap: () {
+                  if (index == 2) {
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (_) => const ConsumptionFormView(),
+                    );
+                  } else {
+                    controller.selectedIndex.value = index > 2
+                        ? index - 1
+                        : index;
+                  }
+                },
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
