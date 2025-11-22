@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../modules/blood_sugar/bindings/blood_sugar_binding.dart';
+import '../modules/blood_sugar/views/blood_sugar_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/login/bindings/login_binding.dart';
@@ -18,7 +20,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.ONBORADING;
+  static const INITIAL = Routes.BLOOD_SUGAR;
 
   static final routes = [
     GetPage(
@@ -45,6 +47,11 @@ class AppPages {
       name: _Paths.TEST,
       page: () => const TestView(),
       binding: TestBinding(),
+    ),
+    GetPage(
+      name: _Paths.BLOOD_SUGAR,
+      page: () => const BloodSugarView(),
+      binding: BloodSugarBinding(),
     ),
   ];
 }
