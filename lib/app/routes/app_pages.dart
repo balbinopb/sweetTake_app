@@ -1,26 +1,34 @@
 import 'package:get/get.dart';
 
+import '../modules/blood_sugar/bindings/blood_sugar_binding.dart';
+import '../modules/blood_sugar/views/blood_sugar_view.dart';
+
 import '../modules/bloodhistory/bindings/bloodhistory_binding.dart';
 import '../modules/bloodhistory/views/bloodhistory_view.dart';
 import '../modules/history/bindings/history_binding.dart';
 import '../modules/history/views/history_view.dart';
 import '../modules/bottom_nav_bar/bindings/bottom_nav_bar_binding.dart';
 import '../modules/bottom_nav_bar/views/bottom_nav_bar_view.dart';
+
 import '../modules/consumption_form/bindings/consumption_form_binding.dart';
 import '../modules/consumption_form/views/consumption_form_view.dart';
+
 import '../modules/graph/bindings/graph_binding.dart';
 import '../modules/graph/views/graph_view.dart';
+
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
+
 import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
+
 import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
+
 import '../modules/register/bindings/register_binding.dart';
 import '../modules/register/views/register_view.dart';
 import '../modules/register/views/register_view2.dart';
 
-// ignore_for_file: constant_identifier_names
 
 part 'app_routes.dart';
 
@@ -28,6 +36,7 @@ class AppPages {
   AppPages._();
 
   static const INITIAL = Routes.ONBOARDING;
+
 
   static final routes = [
     GetPage(
@@ -71,6 +80,9 @@ class AppPages {
       binding: BottomNavBarBinding(),
     ),
     GetPage(
+      name: _Paths.BLOOD_SUGAR,
+      page: () => const BloodSugarView(),
+      binding: BloodSugarBinding(),
       name: _Paths.HISTORY,
       page: () => const HistoryView(),
       binding: HistoryBinding(),

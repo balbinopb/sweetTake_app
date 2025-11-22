@@ -11,6 +11,7 @@ abstract class Routes {
   static const REGISTER2 = _Paths.REGISTER2;
   static const HOME = _Paths.HOME;
   static const TEST = _Paths.TEST;
+  static const BLOOD_SUGAR = _Paths.BLOOD_SUGAR;
   static const HISTORY = _Paths.HISTORY;
   static const BLOODHISTORY = _Paths.BLOODHISTORY;
   static const GRAPH = _Paths.GRAPH;
@@ -20,12 +21,13 @@ abstract class Routes {
 
 abstract class _Paths {
   _Paths._();
-  static const ONBOARDING = '/onborading';
+  static const ONBOARDING = '/onboarding';
   static const LOGIN = '/login';
   static const REGISTER = '/register';
   static const REGISTER2 = '/register2';
   static const HOME = '/home';
   static const TEST = '/test';
+  static const BLOOD_SUGAR = '/blood-sugar';
   static const HISTORY = '/history';
   static const BLOODHISTORY = '/bloodhistory';
   static const GRAPH = '/graph';
