@@ -15,7 +15,11 @@ class BottomNavBarController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    screens = [HomeView(), BloodView(), GraphView()];
+    screens = [
+      HomeView(), 
+      GraphView(),
+      BloodView(),
+      ];
   }
 
   final icons = [
