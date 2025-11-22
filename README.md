@@ -49,6 +49,6 @@ Telkom University — 2025
 
 ### Frontend
 ```bash
-cd frontend
+cd sweetTake_app
 flutter pub get
 flutter run
