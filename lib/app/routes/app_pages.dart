@@ -1,5 +1,9 @@
 import 'package:get/get.dart';
 
+import '../modules/bloodhistory/bindings/bloodhistory_binding.dart';
+import '../modules/bloodhistory/views/bloodhistory_view.dart';
+import '../modules/history/bindings/history_binding.dart';
+import '../modules/history/views/history_view.dart';
 import '../modules/bottom_nav_bar/bindings/bottom_nav_bar_binding.dart';
 import '../modules/bottom_nav_bar/views/bottom_nav_bar_view.dart';
 import '../modules/consumption_form/bindings/consumption_form_binding.dart';
@@ -65,6 +69,16 @@ class AppPages {
       name: _Paths.BOTTOM_NAV_BAR,
       page: () => const BottomNavBarView(),
       binding: BottomNavBarBinding(),
+    ),
+    GetPage(
+      name: _Paths.HISTORY,
+      page: () => const HistoryView(),
+      binding: HistoryBinding(),
+    ),
+    GetPage(
+      name: _Paths.BLOODHISTORY,
+      page: () => const BloodhistoryView(),
+      binding: BloodhistoryBinding(),
     ),
   ];
 }
