@@ -57,8 +57,15 @@ class RegisterView extends GetView<RegisterController> {
               SizedBox(height: 16),
 
               CustomTextfield(
+                textController: controller.numberController,
+                labelText: "Phone number",
+                keyboardType:TextInputType.number,
+              ),
+              SizedBox(height: 16),
+              CustomTextfield(
                 textController: controller.emailC,
                 labelText: "Email",
+                keyboardType: TextInputType.emailAddress,
               ),
 
               SizedBox(height: 16),
@@ -69,6 +76,7 @@ class RegisterView extends GetView<RegisterController> {
                 isObscure: true,
               ),
 
+
               SizedBox(height: 40),
 
               SizedBox(
@@ -76,7 +84,7 @@ class RegisterView extends GetView<RegisterController> {
                 height: 48,
                 child: ElevatedButton(
                   onPressed: () {
-                    controller.register();
+                    Get.toNamed(Routes.REGISTER2);
                   },
                   style: ButtonStyle(
                     backgroundColor: WidgetStateProperty.all(AppColors.primary),
@@ -86,7 +94,7 @@ class RegisterView extends GetView<RegisterController> {
                       ),
                     ),
                   ),
-                  child: Text("Login", style: TextStyle(color: Colors.white)),
+                  child: Text("Next", style: TextStyle(color: Colors.white)),
                 ),
               ),
 
