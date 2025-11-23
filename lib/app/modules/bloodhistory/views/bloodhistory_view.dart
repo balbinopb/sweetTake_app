@@ -8,7 +8,7 @@ class BloodhistoryView extends GetView<BloodhistoryController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0x4C462A), // dark brown background
+      backgroundColor: const Color(0x004c462a), // dark brown background
       body: SafeArea(
         child: Column(
           children: [

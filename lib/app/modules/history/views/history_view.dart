@@ -30,7 +30,6 @@ class HistoryView extends GetView<HistoryController> {
           ],
         ),
       ),
-      bottomNavigationBar: const _BottomNavBar(),
     );
   }
 }
@@ -295,52 +294,3 @@ class _TotalRow extends StatelessWidget {
   }
 }
 
-/// BOTTOM NAVIGATION BAR
-class _BottomNavBar extends StatelessWidget {
-  const _BottomNavBar();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 72,
-      decoration: const BoxDecoration(
-        color: Color(0xFFFFF5E7),
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24),
-        ),
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 6,
-            offset: Offset(0, -2),
-            color: Colors.black12,
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: const [
-          _NavIcon(icon: Icons.home_filled),
-          _NavIcon(icon: Icons.show_chart_rounded),
-          _NavIcon(icon: Icons.restaurant_rounded),
-          _NavIcon(icon: Icons.water_drop_rounded),
-          _NavIcon(icon: Icons.add_box_rounded),
-        ],
-      ),
-    );
-  }
-}
-
-class _NavIcon extends StatelessWidget {
-  final IconData icon;
-
-  const _NavIcon({required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: () {},
-      icon: Icon(icon, color: Colors.brown),
-    );
-  }
-}

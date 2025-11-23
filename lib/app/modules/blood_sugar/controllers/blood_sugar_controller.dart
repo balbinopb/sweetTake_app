@@ -15,6 +15,8 @@ class BloodSugarController extends GetxController {
     super.onClose();
   }
 
+  
+
   Future<void> pickDate(BuildContext context) async {
     final picked = await showDatePicker(
       context: context,
@@ -50,14 +52,13 @@ class BloodSugarController extends GetxController {
       return;
     }
 
-    final data = {
-      'date': selectedDate.value,
-      'time': selectedTime.value,
-      'bloodSugar': value,
-      'context': selectedContext.value,
-    };
+    // final data = {
+    //   'date': selectedDate.value,
+    //   'time': selectedTime.value,
+    //   'bloodSugar': value,
+    //   'context': selectedContext.value,
+    // };
 
-    // TODO: send `data` to your backend / storage.
     Get.snackbar('Saved', 'Blood sugar measurement recorded');
   }
 }

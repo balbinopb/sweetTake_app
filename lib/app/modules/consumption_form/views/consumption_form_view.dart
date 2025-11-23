@@ -8,6 +8,7 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      backgroundColor: Colors.white,
       insetPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 24),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       child: SingleChildScrollView(

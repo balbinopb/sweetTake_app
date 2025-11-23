@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:get/get.dart';
 
 import '../modules/blood_sugar/bindings/blood_sugar_binding.dart';
@@ -35,7 +37,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.ONBOARDING;
+  static const INITIAL = Routes.LOGIN;
 
 
   static final routes = [
@@ -83,7 +85,9 @@ class AppPages {
       name: _Paths.BLOOD_SUGAR,
       page: () => const BloodSugarView(),
       binding: BloodSugarBinding(),
-      name: _Paths.HISTORY,
+    ),
+    GetPage(
+            name: _Paths.HISTORY,
       page: () => const HistoryView(),
       binding: HistoryBinding(),
     ),
