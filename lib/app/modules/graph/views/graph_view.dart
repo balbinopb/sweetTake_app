@@ -45,223 +45,260 @@ class GraphView extends GetView<GraphController> {
               ),
               const SizedBox(height: 24),
 
-              // Weekly / Monthly toggle
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Weekly (active)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 28,
-                      vertical: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      color: pillBrown,
-                      borderRadius: BorderRadius.circular(999),
-                      boxShadow: const [
-                        BoxShadow(
-                          blurRadius: 8,
-                          offset: Offset(0, 4),
-                          color: Colors.black26,
+              // Weekly / Monthly toggle (reactive)
+              Obx(() {
+                final isWeekly =
+                    controller.period.value == GraphPeriod.weekly;
+                final isMonthly =
+                    controller.period.value == GraphPeriod.monthly;
+
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Weekly
+                    GestureDetector(
+                      onTap: () => controller.setPeriod(GraphPeriod.weekly),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 28,
+                          vertical: 10,
                         ),
-                      ],
-                    ),
-                    child: const Text(
-                      'Weekly',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
+                        decoration: BoxDecoration(
+                          color: isWeekly ? pillBrown : Colors.white,
+                          borderRadius: BorderRadius.circular(999),
+                          border: isWeekly
+                              ? null
+                              : Border.all(color: pillBorder, width: 2),
+                          boxShadow: const [
+                            BoxShadow(
+                              blurRadius: 8,
+                              offset: Offset(0, 4),
+                              color: Colors.black26,
+                            ),
+                          ],
+                        ),
+                        child: Text(
+                          'Weekly',
+                          style: TextStyle(
+                            color: isWeekly ? Colors.white : Colors.black87,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
 
-                  const SizedBox(width: 16),
+                    const SizedBox(width: 16),
 
-                  // Monthly (inactive)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 28,
-                      vertical: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(999),
-                      border: Border.all(color: pillBorder, width: 2),
-                      boxShadow: const [
-                        BoxShadow(
-                          blurRadius: 6,
-                          offset: Offset(0, 3),
-                          color: Colors.black12,
+                    // Monthly
+                    GestureDetector(
+                      onTap: () => controller.setPeriod(GraphPeriod.monthly),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 28,
+                          vertical: 10,
                         ),
-                      ],
-                    ),
-                    child: const Text(
-                      'Monthly',
-                      style: TextStyle(
-                        color: Colors.black87,
-                        fontWeight: FontWeight.w600,
+                        decoration: BoxDecoration(
+                          color: isMonthly ? pillBrown : Colors.white,
+                          borderRadius: BorderRadius.circular(999),
+                          border: isMonthly
+                              ? null
+                              : Border.all(color: pillBorder, width: 2),
+                          boxShadow: const [
+                            BoxShadow(
+                              blurRadius: 6,
+                              offset: Offset(0, 3),
+                              color: Colors.black12,
+                            ),
+                          ],
+                        ),
+                        child: Text(
+                          'Monthly',
+                          style: TextStyle(
+                            color: isMonthly ? Colors.white : Colors.black87,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                );
+              }),
 
               const SizedBox(height: 24),
 
-              // Card chart
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 18,
-                  vertical: 16,
-                ),
-                decoration: BoxDecoration(
-                  color: cardBrown,
-                  borderRadius: BorderRadius.circular(26),
-                  boxShadow: const [
-                    BoxShadow(
-                      blurRadius: 14,
-                      offset: Offset(0, 8),
-                      color: Colors.black26,
-                    ),
-                  ],
-                ),
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    // === CHART + LABELS ===
-                    Column(
-                      children: [
-                        SizedBox(
-                          height: 170,
+              // Card chart (reactive)
+              Obx(() {
+                final labels = controller.currentLabels;
+                final values = controller.currentSugar;
+
+                return Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 16,
+                  ),
+                  decoration: BoxDecoration(
+                    color: cardBrown,
+                    borderRadius: BorderRadius.circular(26),
+                    boxShadow: const [
+                      BoxShadow(
+                        blurRadius: 14,
+                        offset: Offset(0, 8),
+                        color: Colors.black26,
+                      ),
+                    ],
+                  ),
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      // === CHART + LABELS ===
+                      Column(
+                        children: [
+                          SizedBox(
+                            height: 170,
+                            width: double.infinity,
+                            child: CustomPaint(
+                              painter: _SugarChartPainter(values: values),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: labels
+                                .map((text) => _ChartLabel(text))
+                                .toList(),
+                          ),
+
+                          // memberi ruang untuk recommendation card
+                          const SizedBox(height: 100),
+                        ],
+                      ),
+
+                      // === RECOMMENDATION CARD (floating, reactive text) ===
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        child: Container(
                           width: double.infinity,
-                          child: CustomPaint(painter: _SugarChartPainter()),
-                        ),
-                        const SizedBox(height: 8),
-                        const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            _ChartLabel('Sun'),
-                            _ChartLabel('Mon'),
-                            _ChartLabel('Tue'),
-                            _ChartLabel('Wed'),
-                            _ChartLabel('Thu'),
-                            _ChartLabel('Fri'),
-                            _ChartLabel('Sat'),
-                          ],
-                        ),
-
-                        // memberi ruang untuk recommendation card
-                        const SizedBox(height: 100),
-                      ],
-                    ),
-
-                    // === RECOMMENDATION CARD (floating) ===
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 14,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.circular(26),
-                          boxShadow: const [
-                            BoxShadow(
-                              blurRadius: 14,
-                              offset: Offset(0, 8),
-                              color: Colors.black38,
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Icon(
-                              Icons.warning_amber_rounded,
-                              color: Color(0xFFF7EEC8),
-                              size: 26,
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: const [
-                                  Text(
-                                    'Recommendation',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      decoration: TextDecoration.underline,
-                                      decorationColor: Colors.yellow,
-                                      color: Color(0xFFF7EEC8),
-                                    ),
-                                  ),
-                                  SizedBox(height: 4),
-                                  Text(
-                                    'Avoid sugary drinks in the evening to reduce spikes.',
-                                    style: TextStyle(
-                                      color: Color(0xFFF7EEC8),
-                                      fontSize: 13,
-                                      height: 1.3,
-                                    ),
-                                  ),
-                                ],
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 14,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(26),
+                            boxShadow: const [
+                              BoxShadow(
+                                blurRadius: 14,
+                                offset: Offset(0, 8),
+                                color: Colors.black38,
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Icon(
+                                Icons.warning_amber_rounded,
+                                color: Color(0xFFF7EEC8),
+                                size: 26,
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      'Recommendation',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        decoration: TextDecoration.underline,
+                                        decorationColor: Colors.yellow,
+                                        color: Color(0xFFF7EEC8),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Obx(() {
+                                      return Text(
+                                        controller.recommendation.value,
+                                        style: const TextStyle(
+                                          color: Color(0xFFF7EEC8),
+                                          fontSize: 13,
+                                          height: 1.3,
+                                        ),
+                                      );
+                                    }),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
+                    ],
+                  ),
+                );
+              }),
 
               const SizedBox(height: 18),
 
               const SizedBox(height: 32),
 
-              // Summary card (putih)
-              Container(
-                width: double.infinity,
-                margin: const EdgeInsets.symmetric(horizontal: 8),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 18,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(26),
-                  boxShadow: const [
-                    BoxShadow(
-                      blurRadius: 10,
-                      offset: Offset(0, 6),
-                      color: cardBrown,
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text(
-                      'Summary',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        decoration: TextDecoration.underline,
-                        fontSize: 16,
+              // Summary card (putih, reactive)
+              Obx(() {
+                return Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.symmetric(horizontal: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 18,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(26),
+                    boxShadow: const [
+                      BoxShadow(
+                        blurRadius: 10,
+                        offset: Offset(0, 6),
+                        color: cardBrown,
                       ),
-                    ),
-                    SizedBox(height: 10),
-                    _SummaryRow(label: 'Total', value: '168g'),
-                    _SummaryRow(label: 'Average', value: '24g/day'),
-                    _SummaryRow(label: 'Highest', value: '38g'),
-                    _SummaryRow(label: 'Trend', value: 'UP +12%'),
-                  ],
-                ),
-              ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Summary',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          decoration: TextDecoration.underline,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      _SummaryRow(
+                        label: 'Total',
+                        value: '${controller.total.value.toStringAsFixed(0)}g',
+                      ),
+                      _SummaryRow(
+                        label: 'Average',
+                        value:
+                            '${controller.averagePerDay.value.toStringAsFixed(0)}g/day',
+                      ),
+                      _SummaryRow(
+                        label: 'Highest',
+                        value:
+                            '${controller.highest.value.toStringAsFixed(0)}g',
+                      ),
+                      _SummaryRow(
+                        label: 'Trend',
+                        value: controller.trendText.value,
+                      ),
+                    ],
+                  ),
+                );
+              }),
 
               const SizedBox(height: 32),
             ],
@@ -269,7 +306,7 @@ class GraphView extends GetView<GraphController> {
         ),
       ),
 
-      // Bottom navigation (custom)
+      // Bottom navigation (custom) — kalau mau ditambah nanti
     );
   }
 }
@@ -337,8 +374,12 @@ class _BottomIcon extends StatelessWidget {
   }
 }
 
-/// Painter sederhana untuk chart (garis grid + 1 garis tren)
+/// Painter untuk chart: pakai data dari controller
 class _SugarChartPainter extends CustomPainter {
+  final List<double> values;
+
+  _SugarChartPainter({required this.values});
+
   @override
   void paint(Canvas canvas, Size size) {
     final gridPaint = Paint()
@@ -363,27 +404,45 @@ class _SugarChartPainter extends CustomPainter {
     }
 
     // axes
+    final topAxisY = stepY * 0.5;
+    final bottomAxisY = size.height - stepY * 0.3;
+
     canvas.drawLine(
-      Offset(0, stepY * 0.5),
-      Offset(0, size.height - stepY * 0.3),
+      Offset(0, topAxisY),
+      Offset(0, bottomAxisY),
       axisPaint,
     );
     canvas.drawLine(
-      Offset(0, size.height - stepY * 0.3),
-      Offset(size.width, size.height - stepY * 0.3),
+      Offset(0, bottomAxisY),
+      Offset(size.width, bottomAxisY),
       axisPaint,
     );
 
-    // simple hard-coded trend line (dummy)
-    final points = <Offset>[
-      Offset(size.width * 0.05, size.height * 0.6),
-      Offset(size.width * 0.18, size.height * 0.25),
-      Offset(size.width * 0.32, size.height * 0.35),
-      Offset(size.width * 0.46, size.height * 0.65),
-      Offset(size.width * 0.60, size.height * 0.45),
-      Offset(size.width * 0.76, size.height * 0.40),
-      Offset(size.width * 0.92, size.height * 0.48),
-    ];
+    if (values.length < 2) return;
+
+    // hitung min & max untuk scale
+    double minVal = values.first;
+    double maxVal = values.first;
+    for (final v in values) {
+      if (v < minVal) minVal = v;
+      if (v > maxVal) maxVal = v;
+    }
+    final range = (maxVal - minVal) == 0 ? 1 : (maxVal - minVal);
+
+    final usableHeight = bottomAxisY - topAxisY;
+
+    // generate points dari data
+    final points = <Offset>[];
+    final n = values.length;
+    for (int i = 0; i < n; i++) {
+      final tX = n == 1 ? 0.5 : i / (n - 1); // 0..1
+      final x = size.width * (0.05 + 0.90 * tX); // beri margin kiri/kanan
+
+      final normalized = (values[i] - minVal) / range; // 0..1
+      final y = bottomAxisY - normalized * usableHeight;
+
+      points.add(Offset(x, y));
+    }
 
     final path = Path()..moveTo(points.first.dx, points.first.dy);
     for (int i = 1; i < points.length; i++) {
@@ -393,5 +452,12 @@ class _SugarChartPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _SugarChartPainter oldDelegate) {
+    // repaint kalau data berubah
+    if (oldDelegate.values.length != values.length) return true;
+    for (int i = 0; i < values.length; i++) {
+      if (oldDelegate.values[i] != values[i]) return true;
+    }
+    return false;
+  }
 }
