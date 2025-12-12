@@ -8,23 +8,26 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFFFF),
+      backgroundColor: const Color(0xFFFFF7D6),
       appBar: AppBar(
-        backgroundColor: const Color(0xFFFFFFFF),
+        backgroundColor: const Color(0xFFFFF7D6),
         elevation: 0,
         centerTitle: true,
         title: const Text(
           "Sugar Consumption",
           style: TextStyle(
-            color: Color(0xFF4A3F24),
-            fontWeight: FontWeight.bold,
+            fontSize: 20,
+            fontWeight: FontWeight.w500,
+            fontFamily: 'SansitaOne',
+            letterSpacing: 0.5,
+            color: Color(0xFF4C462A),
           ),
         ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 18),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _buildTitle(),
             const SizedBox(height: 25),
@@ -125,6 +128,7 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
   Widget _buildLabel(String text) {
     return Text(
       text,
+      textAlign: TextAlign.center,
       style: const TextStyle(
         color: Color(0xFF4A3F24),
         fontWeight: FontWeight.w600,

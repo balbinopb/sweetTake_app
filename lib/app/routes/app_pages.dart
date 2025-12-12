@@ -1,7 +1,5 @@
 import 'package:get/get.dart';
 
-import '../modules/bloodhistory/bindings/bloodhistory_binding.dart';
-import '../modules/bloodhistory/views/bloodhistory_view.dart';
 import '../modules/history/bindings/history_binding.dart';
 import '../modules/history/views/history_view.dart';
 import '../modules/bottom_nav_bar/bindings/bottom_nav_bar_binding.dart';
@@ -27,7 +25,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.ONBOARDING;
+  static const INITIAL = Routes.BOTTOM_NAV_BAR;
 
   static final routes = [
     GetPage(
@@ -74,11 +72,6 @@ class AppPages {
       name: _Paths.HISTORY,
       page: () => const HistoryView(),
       binding: HistoryBinding(),
-    ),
-    GetPage(
-      name: _Paths.BLOODHISTORY,
-      page: () => const BloodhistoryView(),
-      binding: BloodhistoryBinding(),
     ),
   ];
 }
