@@ -1,3 +1,136 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../controllers/graph_controller.dart';
+import '../models/chart_points.dart';
+import '../widgets/daily_intake_line_chart.dart';
+import '../widgets/weekly_line_chart.dart';
+import '../widgets/monthly_line_chart.dart';
+
+class GraphView extends GetView<GraphController> {
+  const GraphView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Consumption Charts')),
+      body: Obx(() {
+        if (controller.loading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (controller.error.value != null) {
+          return Center(child: Text('Error: ${controller.error.value}'));
+        }
+
+        final dailyPoints = parseDaily(controller.dailyJson);
+        final weeklyPoints = parseWeekly(controller.weeklyJson);
+        final monthlyPoints = parseMonthly(controller.monthlyJson);
+
+        Widget chart;
+        switch (controller.granularity.value) {
+          case ChartGranularity.daily:
+            chart = DailyIntakeLineChart(points: dailyPoints);
+            break;
+
+          case ChartGranularity.weekly:
+            chart = Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CupertinoSlidingSegmentedControl<WeeklySeries>(
+                  groupValue: controller.weeklySeries.value,
+                  thumbColor: CupertinoColors.systemBlue,
+                  children: const {
+                    WeeklySeries.totalSugar: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text('Total (g/week)'),
+                    ),
+                    WeeklySeries.avgPerDay: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text('Avg (g/day)'),
+                    ),
+                  },
+                  onValueChanged: (val) {
+                    if (val != null) controller.weeklySeries.value = val;
+                  },
+                ),
+                const SizedBox(height: 12),
+                WeeklyLineChart(
+                  points: weeklyPoints,
+                  series: controller.weeklySeries.value,
+                ),
+              ],
+            );
+            break;
+
+          case ChartGranularity.monthly:
+            chart = Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CupertinoSlidingSegmentedControl<MonthlySeries>(
+                  groupValue: controller.monthlySeries.value,
+                  thumbColor: CupertinoColors.systemGreen,
+                  children: const {
+                    MonthlySeries.totalSugar: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text('Total (g/month)'),
+                    ),
+                    MonthlySeries.avgPerDay: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text('Avg (g/day)'),
+                    ),
+                  },
+                  onValueChanged: (val) {
+                    if (val != null) controller.monthlySeries.value = val;
+                  },
+                ),
+                const SizedBox(height: 12),
+                MonthlyLineChart(
+                  points: monthlyPoints,
+                  series: controller.monthlySeries.value,
+                ),
+              ],
+            );
+            break;
+        }
+
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              CupertinoSlidingSegmentedControl<ChartGranularity>(
+                groupValue: controller.granularity.value,
+                thumbColor: CupertinoColors.systemOrange,
+                children: const {
+                  ChartGranularity.daily: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text('Daily'),
+                  ),
+                  ChartGranularity.weekly: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text('Weekly'),
+                  ),
+                  ChartGranularity.monthly: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text('Monthly'),
+                  ),
+                },
+                onValueChanged: (val) {
+                  if (val != null) controller.granularity.value = val;
+                },
+              ),
+              const SizedBox(height: 16),
+              Expanded(child: SingleChildScrollView(child: chart)),
+            ],
+          ),
+        );
+      }),
+    );
+  }
+}
+
+
+
 // import 'package:flutter/material.dart';
 // import 'package:get/get.dart';
 
