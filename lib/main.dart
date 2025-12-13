@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sweettake_app/app/constants/app_colors.dart';
+import 'package:sweettake_app/app/modules/login/controllers/auth_controller.dart';
 
 import 'app/routes/app_pages.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await GetStorage.init();
+
+  Get.put(AuthController(), permanent: true);
   runApp(const MyApp());
 }
 

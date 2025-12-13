@@ -201,7 +201,7 @@ String _formatTime(TimeOfDay time) {
                   controller: controller.bloodSugarController,
                   decoration: const InputDecoration(
                     border: InputBorder.none,
-                    hintText: 'e.g., 117',
+                    hintText: '117',
                     isCollapsed: true,
                   ),
                   keyboardType: TextInputType.number,
