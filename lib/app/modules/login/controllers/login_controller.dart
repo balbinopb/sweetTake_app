@@ -35,7 +35,7 @@ class LoginController extends GetxController {
       );
 
       final decoded = jsonDecode(response.body);
-      print("LOGIN RESPONSE = $decoded");
+      // print("LOGIN RESPONSE = $decoded");
 
       if (response.statusCode == 200) {
         final token = decoded["token"]; 
@@ -48,7 +48,7 @@ class LoginController extends GetxController {
         final authC = Get.find<AuthController>();
         authC.setToken(token);
 
-        print("TOKEN SAVED = ${authC.token.value}");
+        // print("TOKEN SAVED = ${authC.token.value}");
 
         Get.offAllNamed(Routes.BOTTOM_NAV_BAR);
         return;

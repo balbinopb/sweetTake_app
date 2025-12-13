@@ -65,7 +65,7 @@ class ConsumptionFormController extends GetxController {
   }
 
   Future<void> submitConsumption() async {
-    print("===========inisialized============");
+    // print("===========inisialized============");
     final sugar = double.tryParse(sugarC.text.trim());
     if (typeC.text.trim().isEmpty || sugar == null || sugar <= 0) {
       Get.snackbar("Error", "Invalid input");
@@ -83,10 +83,10 @@ class ConsumptionFormController extends GetxController {
         selectedTime.minute,
       );
 
-      print("AuthController registered: ${Get.isRegistered<AuthController>()}");
+      // print("AuthController registered: ${Get.isRegistered<AuthController>()}");
       final authC = Get.find<AuthController>();
 
-      print("=========TOKEN = ${authC.token.value}============");
+      // print("=========TOKEN = ${authC.token.value}============");
 
 
       final response = await http.post(
@@ -101,19 +101,19 @@ class ConsumptionFormController extends GetxController {
             amount: amount.value.toDouble(),
             sugarData: sugar,
             context: selectedContext.value,
-            dateTime: consumedAt.toIso8601String(),
+            dateTime: consumedAt.toUtc().toIso8601String(),
           ).toJson(),
         ),
       );
 
       if (response.statusCode == 201) {
-        Get.snackbar("Success", "Consumption saved");
         Get.back();
+        Get.snackbar("Success", "Consumption saved");
       } else if (response.statusCode == 401) {
         authC.logout();
         Get.offAllNamed(Routes.LOGIN);
       } else {
-        print("=====${response.body}==============");
+        // print("=====${response.body}==============");
         Get.snackbar("Error", "Failed to save");
       }
     } finally {

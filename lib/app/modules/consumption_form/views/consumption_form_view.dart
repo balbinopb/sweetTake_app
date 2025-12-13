@@ -58,7 +58,7 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
                   onPressed: controller.isLoading.value
                       ? null
                       : () async {
-                          print("===========inisialized 1============");
+                          // print("===========inisialized 1============");
 
                           await controller.submitConsumption();
                         },
