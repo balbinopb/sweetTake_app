@@ -1,1 +1,1 @@
-enum ChartGranularity { daily, weekly, monthly }
+// enum ChartGranularity { daily, weekly, monthly }
