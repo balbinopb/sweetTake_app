@@ -37,7 +37,7 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
 
             const SizedBox(height: 20),
             _buildLabel("Food Type"),
-            _buildTextField(controller.typeC, "e.g., Milk Tea"),
+            _buildTextField(controller.typeC, "Milk Tea"),
             const SizedBox(height: 20),
 
             _buildLabel("Amount"),
@@ -45,7 +45,7 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
             const SizedBox(height: 20),
 
             _buildLabel("Sugar (g)"),
-            _buildTextField(controller.sugarC, "e.g., 42"),
+            _buildTextField(controller.sugarC, "42"),
             const SizedBox(height: 20),
 
             _buildLabel("Context"),
@@ -58,9 +58,11 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
                   onPressed: controller.isLoading.value
                       ? null
                       : () async {
+                          print("===========inisialized 1============");
+
                           await controller.submitConsumption();
-                          if (!controller.isLoading.value) Get.back();
                         },
+
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF4A3F24),
                     padding: const EdgeInsets.symmetric(
@@ -140,68 +142,67 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
     ),
   );
 
-Widget _buildDatePicker(BuildContext context) => GestureDetector(
-  onTap: () async {
-    final picked = await showDatePicker(
-      context: context,
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
-      initialDate: controller.selectedDate,
-    );
-    if (picked != null) controller.updateDate(picked);
-  },
-  child: Container(
-    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-    decoration: _inputBoxDecoration(),
-    child: Row(
-      children: [
-        const Icon(Icons.calendar_today, color: Color(0xFF4A3F24)),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Obx(
-            () => Text(
-              controller.dateString.value,
-              style: const TextStyle(fontSize: 14),
-              overflow: TextOverflow.ellipsis,
+  Widget _buildDatePicker(BuildContext context) => GestureDetector(
+    onTap: () async {
+      final picked = await showDatePicker(
+        context: context,
+        firstDate: DateTime(2020),
+        lastDate: DateTime(2030),
+        initialDate: controller.selectedDate,
+      );
+      if (picked != null) controller.updateDate(picked);
+    },
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+      decoration: _inputBoxDecoration(),
+      child: Row(
+        children: [
+          const Icon(Icons.calendar_today, color: Color(0xFF4A3F24)),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Obx(
+              () => Text(
+                controller.dateString.value,
+                style: const TextStyle(fontSize: 14),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ),
-        ),
-        const Icon(Icons.keyboard_arrow_down, color: Color(0xFF4A3F24)),
-      ],
+          const Icon(Icons.keyboard_arrow_down, color: Color(0xFF4A3F24)),
+        ],
+      ),
     ),
-  ),
-);
+  );
 
-Widget _buildTimePicker(BuildContext context) => GestureDetector(
-  onTap: () async {
-    final picked = await showTimePicker(
-      context: context,
-      initialTime: controller.selectedTime,
-    );
-    if (picked != null) controller.updateTime(picked);
-  },
-  child: Container(
-    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-    decoration: _inputBoxDecoration(),
-    child: Row(
-      children: [
-        const Icon(Icons.access_time, color: Color(0xFF4A3F24)),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Obx(
-            () => Text(
-              controller.timeString.value,
-              style: const TextStyle(fontSize: 14),
-              overflow: TextOverflow.ellipsis,
+  Widget _buildTimePicker(BuildContext context) => GestureDetector(
+    onTap: () async {
+      final picked = await showTimePicker(
+        context: context,
+        initialTime: controller.selectedTime,
+      );
+      if (picked != null) controller.updateTime(picked);
+    },
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+      decoration: _inputBoxDecoration(),
+      child: Row(
+        children: [
+          const Icon(Icons.access_time, color: Color(0xFF4A3F24)),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Obx(
+              () => Text(
+                controller.timeString.value,
+                style: const TextStyle(fontSize: 14),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ),
-        ),
-        const Icon(Icons.keyboard_arrow_down, color: Color(0xFF4A3F24)),
-      ],
+          const Icon(Icons.keyboard_arrow_down, color: Color(0xFF4A3F24)),
+        ],
+      ),
     ),
-  ),
-);
-
+  );
 
   Widget _buildAmountControl() => Obx(
     () => Container(
