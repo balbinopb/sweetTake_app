@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sweettake_app/app/constants/app_colors.dart';
-import 'package:sweettake_app/app/widgets/custom_textfield.dart';
 import '../controllers/register_controller.dart';
 
 class RegisterView2 extends GetView<RegisterController> {
@@ -44,57 +43,6 @@ class RegisterView2 extends GetView<RegisterController> {
                 'Start your journey toward balanced and healthy sugar levels',
                 textAlign: TextAlign.left,
                 style: TextStyle(color: Colors.grey),
-              ),
-              SizedBox(height: 16),
-
-              CustomTextfield(
-                textController: controller.dobController,
-                labelText: "Date of birth",
-              ),
-              SizedBox(height: 16),
-
-              // drop down for gender
-              Obx(
-                () => DropdownButtonFormField<String>(
-                  dropdownColor: AppColors.background2,
-                  initialValue: controller.gender.value.isEmpty
-                      ? null
-                      : controller.gender.value,
-                  decoration: InputDecoration(
-                    labelText: "Gender",
-                    labelStyle: TextStyle(color: AppColors.primary),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: AppColors.primary,
-                        width: 1,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: AppColors.primary,
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  items: controller.genders
-                      .map(
-                        (item) =>
-                            DropdownMenuItem(value: item, child: Text(item)),
-                      )
-                      .toList(),
-                  onChanged: (value) {
-                    controller.gender.value = value!;
-                  },
-                ),
-              ),
-              SizedBox(height: 16),
-
-              CustomTextfield(
-                textController: controller.weightController,
-                labelText: "Weight",
-                keyboardType: TextInputType.number,
               ),
 
               SizedBox(height: 16),
@@ -146,7 +94,7 @@ class RegisterView2 extends GetView<RegisterController> {
                       ? null
                       : controller.healthGoal.value,
                   decoration: InputDecoration(
-                    labelText: "My Preference",
+                    labelText: "My Health Goal",
                     labelStyle: TextStyle(color: AppColors.primary),
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
@@ -181,7 +129,7 @@ class RegisterView2 extends GetView<RegisterController> {
                 height: 48,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Get.toNamed(Routes.);
+                    controller.register();
                   },
                   style: ButtonStyle(
                     backgroundColor: WidgetStateProperty.all(AppColors.primary),

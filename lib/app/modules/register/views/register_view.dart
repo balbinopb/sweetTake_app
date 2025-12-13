@@ -50,8 +50,8 @@ class RegisterView extends GetView<RegisterController> {
               SizedBox(height: 16),
 
               CustomTextfield(
-                textController: controller.usernameC,
-                labelText: "Username",
+                textController: controller.fullnameC,
+                labelText: "Full name",
               ),
 
               SizedBox(height: 16),
@@ -59,7 +59,7 @@ class RegisterView extends GetView<RegisterController> {
               CustomTextfield(
                 textController: controller.numberController,
                 labelText: "Phone number",
-                keyboardType:TextInputType.number,
+                keyboardType: TextInputType.number,
               ),
               SizedBox(height: 16),
               CustomTextfield(
@@ -76,6 +76,82 @@ class RegisterView extends GetView<RegisterController> {
                 isObscure: true,
               ),
 
+              SizedBox(height: 16),
+
+              TextField(
+                controller: controller.dobController,
+                readOnly: true,
+                onTap: () {
+                  controller.selectDate(context);
+                },
+                decoration: InputDecoration(
+                  labelText: "Date of birth",
+                  labelStyle: TextStyle(color: AppColors.primary),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: AppColors.primary, width: 1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: AppColors.primary, width: 2),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 16),
+
+              // drop down for gender
+              Obx(
+                () => DropdownButtonFormField<String>(
+                  dropdownColor: AppColors.background2,
+                  initialValue: controller.gender.value.isEmpty
+                      ? null
+                      : controller.gender.value,
+                  decoration: InputDecoration(
+                    labelText: "Gender",
+                    labelStyle: TextStyle(color: AppColors.primary),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: AppColors.primary,
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: AppColors.primary,
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  items: controller.genders
+                      .map(
+                        (item) =>
+                            DropdownMenuItem(value: item, child: Text(item)),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    controller.gender.value = value!;
+                  },
+                ),
+              ),
+
+              SizedBox(height: 16),
+
+              CustomTextfield(
+                textController: controller.weightController,
+                labelText: "Weight",
+                keyboardType: TextInputType.number,
+              ),
+
+              SizedBox(height: 16),
+
+              CustomTextfield(
+                textController: controller.heightController,
+                labelText: "Height",
+                keyboardType: TextInputType.number,
+              ),
 
               SizedBox(height: 40),
 
@@ -98,7 +174,7 @@ class RegisterView extends GetView<RegisterController> {
                 ),
               ),
 
-              SizedBox(height: 13,),
+              SizedBox(height: 13),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
