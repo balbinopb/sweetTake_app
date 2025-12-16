@@ -8,6 +8,8 @@ import 'package:sweettake_app/app/modules/login/controllers/auth_controller.dart
 
 import 'app/routes/app_pages.dart';
 
+
+// test
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
