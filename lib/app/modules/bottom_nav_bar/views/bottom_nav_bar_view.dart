@@ -35,7 +35,8 @@ class BottomNavBarView extends GetView<BottomNavBarController> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: List.generate(controller.icons.length, (index) {
-              bool isSelected = controller.selectedIndex.value == index;
+
+              bool isSelected = (index < 2 || index > 3) && controller.selectedIndex.value == (index > 3 ? index - 2 : index);
 
               return GestureDetector(
                 onTap: () {
@@ -52,9 +53,9 @@ class BottomNavBarView extends GetView<BottomNavBarController> {
                       builder: (_) => const BloodSugarView(),
                     );
                   } else {
-                    // convert icon index → screen index
-                    int screenIndex = index > 3 ? index - 2 : index;
-                    controller.selectedIndex.value = screenIndex;
+                    controller.selectedIndex.value = index > 3
+                        ? index - 2
+                        : index;
                   }
                 },
                 child: Column(
