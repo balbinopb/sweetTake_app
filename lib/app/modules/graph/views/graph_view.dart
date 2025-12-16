@@ -10,8 +10,9 @@ class GraphView extends GetView<GraphController> {
   Widget build(BuildContext context) {
     const backgroundColor = Color(0xFFF7EEC8); // krem
     const cardBrown = Color(0xFF4C462A); // coklat tua
-    const pillBrown = Color(0xFF4C462A);
-    const pillBorder = Color(0xFF4C462A);
+
+    // fixed width for Y labels so we can mirror padding on the right side
+    const double yLabelWidth = 30;
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -22,6 +23,7 @@ class GraphView extends GetView<GraphController> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 4),
+
               // Title
               const Text(
                 'Sugar Trends',
@@ -35,123 +37,114 @@ class GraphView extends GetView<GraphController> {
               ),
               const SizedBox(height: 24),
 
-              // Weekly / Monthly toggle
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Weekly (active)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 28,
-                      vertical: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      color: pillBrown,
-                      borderRadius: BorderRadius.circular(999),
-                      boxShadow: const [
-                        BoxShadow(
-                          blurRadius: 8,
-                          offset: Offset(0, 4),
-                          color: Colors.black26,
-                        ),
-                      ],
-                    ),
-                    child: const Text(
-                      'Weekly',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
+              // ==========================
+              // Weekly / Monthly segmented control
+              // ==========================
+              Obx(() {
+                return Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFFDF8),
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(color: const Color(0xFF4C462A)),
+                  ),
+                  padding: const EdgeInsets.all(4),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _buildSegmentButton(
+                        label: 'Weekly',
+                        isActive: controller.selectedRange.value == 'Weekly',
+                        onTap: () => controller.updateRange('Weekly'),
                       ),
+                      _buildSegmentButton(
+                        label: 'Monthly',
+                        isActive: controller.selectedRange.value == 'Monthly',
+                        onTap: () => controller.updateRange('Monthly'),
+                      ),
+                    ],
+                  ),
+                );
+              }),
+
+              const SizedBox(height: 18),
+
+              // ==========================
+              // Chart Section (reacts to Weekly/Monthly)
+              // ==========================
+              Obx(() {
+                final isWeekly = controller.selectedRange.value == 'Weekly';
+
+                return Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF4C462A),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: const Color(0xFF000000),
+                      width: 1,
                     ),
                   ),
-
-                  const SizedBox(width: 16),
-
-                  // Monthly (inactive)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 28,
-                      vertical: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(999),
-                      border: Border.all(color: pillBorder, width: 2),
-                      boxShadow: const [
-                        BoxShadow(
-                          blurRadius: 6,
-                          offset: Offset(0, 3),
-                          color: Colors.black12,
-                        ),
-                      ],
-                    ),
-                    child: const Text(
-                      'Monthly',
-                      style: TextStyle(
-                        color: Colors.black87,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 24),
-
-              // Card chart
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 18,
-                  vertical: 16,
-                ),
-                decoration: BoxDecoration(
-                  color: cardBrown,
-                  borderRadius: BorderRadius.circular(26),
-                  boxShadow: const [
-                    BoxShadow(
-                      blurRadius: 14,
-                      offset: Offset(0, 8),
-                      color: Colors.black26,
-                    ),
-                  ],
-                ),
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    // === CHART + LABELS ===
-                    Column(
-                      children: [
-                        SizedBox(
-                          height: 170,
-                          width: double.infinity,
-                          child: CustomPaint(painter: _SugarChartPainter()),
-                        ),
-                        const SizedBox(height: 8),
-                        const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 180,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            _ChartLabel('Sun'),
-                            _ChartLabel('Mon'),
-                            _ChartLabel('Tue'),
-                            _ChartLabel('Wed'),
-                            _ChartLabel('Thu'),
-                            _ChartLabel('Fri'),
-                            _ChartLabel('Sat'),
+                            // Y-axis labels
+                            SizedBox(
+                              width: yLabelWidth,
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text('40', style: _yLabelStyle()),
+                                  Text('30', style: _yLabelStyle()),
+                                  Text('20', style: _yLabelStyle()),
+                                  Text('10', style: _yLabelStyle()),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+
+                            // Chart area: right padding mirrors label width
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  right: yLabelWidth,
+                                ),
+                                child: CustomPaint(
+                                  painter: ChartLinePainter(isWeekly: isWeekly),
+                                  size: Size.infinite,
+                                ),
+                              ),
+                            ),
                           ],
                         ),
+                      ),
+                      const SizedBox(height: 16),
 
-                        // memberi ruang untuk recommendation card
-                        const SizedBox(height: 100),
-                      ],
-                    ),
+                      // X-axis labels (days)
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _ChartLabel('Sun'),
+                          _ChartLabel('Mon'),
+                          _ChartLabel('Tue'),
+                          _ChartLabel('Wed'),
+                          _ChartLabel('Thu'),
+                          _ChartLabel('Fri'),
+                          _ChartLabel('Sat'),
+                        ],
+                      ),
 
-                    // === RECOMMENDATION CARD (floating) ===
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: Container(
+                      const SizedBox(height: 24),
+
+                      // Floating recommendation card
+                      Container(
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 16,
@@ -159,7 +152,7 @@ class GraphView extends GetView<GraphController> {
                         ),
                         decoration: BoxDecoration(
                           color: Colors.black,
-                          borderRadius: BorderRadius.circular(26),
+                          borderRadius: BorderRadius.circular(20),
                           boxShadow: const [
                             BoxShadow(
                               blurRadius: 14,
@@ -170,17 +163,17 @@ class GraphView extends GetView<GraphController> {
                         ),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Icon(
+                          children: const [
+                            Icon(
                               Icons.warning_amber_rounded,
                               color: Color(0xFFF7EEC8),
                               size: 26,
                             ),
-                            const SizedBox(width: 12),
+                            SizedBox(width: 12),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: const [
+                                children: [
                                   Text(
                                     'Recommendation',
                                     style: TextStyle(
@@ -205,12 +198,10 @@ class GraphView extends GetView<GraphController> {
                           ],
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 18),
+                    ],
+                  ),
+                );
+              }),
 
               const SizedBox(height: 32),
 
@@ -258,8 +249,41 @@ class GraphView extends GetView<GraphController> {
           ),
         ),
       ),
+    );
+  }
 
-      // Bottom navigation (custom)
+  // ==========================
+  // Helpers
+  // ==========================
+
+  TextStyle _yLabelStyle() {
+    return const TextStyle(color: Color(0xFFE8DFC5), fontSize: 11);
+  }
+
+  Widget _buildSegmentButton({
+    required String label,
+    required bool isActive,
+    required VoidCallback onTap,
+  }) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: isActive ? const Color(0xFF4C462A) : Colors.transparent,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            label,
+            style: TextStyle(
+              color: isActive ? Colors.white : const Color(0xFF4C462A),
+              fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -311,7 +335,7 @@ class _SummaryRow extends StatelessWidget {
   }
 }
 
-/// Icon di bottom nav
+/// Icon di bottom nav (if needed)
 // ignore: unused_element
 class _BottomIcon extends StatelessWidget {
   final IconData icon;
@@ -328,8 +352,12 @@ class _BottomIcon extends StatelessWidget {
   }
 }
 
-/// Painter sederhana untuk chart (garis grid + 1 garis tren)
-class _SugarChartPainter extends CustomPainter {
+/// Painter untuk chart – beda bentuk saat Weekly vs Monthly
+class ChartLinePainter extends CustomPainter {
+  final bool isWeekly;
+
+  ChartLinePainter({required this.isWeekly});
+
   @override
   void paint(Canvas canvas, Size size) {
     final gridPaint = Paint()
@@ -345,7 +373,7 @@ class _SugarChartPainter extends CustomPainter {
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke;
 
-    // draw horizontal grid lines
+    // Horizontal grid lines
     const gridCount = 4;
     final stepY = size.height / (gridCount + 1);
     for (int i = 1; i <= gridCount + 1; i++) {
@@ -353,7 +381,7 @@ class _SugarChartPainter extends CustomPainter {
       canvas.drawLine(Offset(0, y), Offset(size.width, y), gridPaint);
     }
 
-    // axes
+    // Axes
     canvas.drawLine(
       Offset(0, stepY * 0.5),
       Offset(0, size.height - stepY * 0.3),
@@ -365,16 +393,26 @@ class _SugarChartPainter extends CustomPainter {
       axisPaint,
     );
 
-    // simple hard-coded trend line (dummy)
-    final points = <Offset>[
-      Offset(size.width * 0.05, size.height * 0.6),
-      Offset(size.width * 0.18, size.height * 0.25),
-      Offset(size.width * 0.32, size.height * 0.35),
-      Offset(size.width * 0.46, size.height * 0.65),
-      Offset(size.width * 0.60, size.height * 0.45),
-      Offset(size.width * 0.76, size.height * 0.40),
-      Offset(size.width * 0.92, size.height * 0.48),
-    ];
+    // Data points – change shape if Monthly
+    final points = isWeekly
+        ? <Offset>[
+            Offset(size.width * 0.05, size.height * 0.6),
+            Offset(size.width * 0.18, size.height * 0.25),
+            Offset(size.width * 0.32, size.height * 0.35),
+            Offset(size.width * 0.46, size.height * 0.65),
+            Offset(size.width * 0.60, size.height * 0.45),
+            Offset(size.width * 0.76, size.height * 0.40),
+            Offset(size.width * 0.92, size.height * 0.48),
+          ]
+        : <Offset>[
+            Offset(size.width * 0.05, size.height * 0.50),
+            Offset(size.width * 0.20, size.height * 0.55),
+            Offset(size.width * 0.35, size.height * 0.30),
+            Offset(size.width * 0.50, size.height * 0.40),
+            Offset(size.width * 0.65, size.height * 0.70),
+            Offset(size.width * 0.80, size.height * 0.45),
+            Offset(size.width * 0.95, size.height * 0.60),
+          ];
 
     final path = Path()..moveTo(points.first.dx, points.first.dy);
     for (int i = 1; i < points.length; i++) {
@@ -384,5 +422,7 @@ class _SugarChartPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant ChartLinePainter oldDelegate) {
+    return oldDelegate.isWeekly != isWeekly;
+  }
 }
