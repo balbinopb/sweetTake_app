@@ -17,6 +17,7 @@ class RegisterController extends GetxController {
   final TextEditingController heightController = TextEditingController();
   final TextEditingController numberController = TextEditingController();
   final isObscure = false.obs;
+  final isLoading = false.obs;
 
   // PAGE 2 — Dropdown values (reactive)
   RxString gender = ''.obs;
@@ -60,7 +61,9 @@ class RegisterController extends GetxController {
     final email = emailC.text.trim();
     final password = passwordC.text.trim();
     final phoneNumber = numberController.text.trim();
-    final dob = DateTime.parse(dobController.text.trim()).toUtc().toIso8601String();
+    final dob = DateTime.parse(
+      dobController.text.trim(),
+    ).toUtc().toIso8601String();
     final genderValue = gender.value;
     final weight = weightController.text.trim();
     final height = heightController.text.trim();
@@ -134,7 +137,7 @@ class RegisterController extends GetxController {
 
     // ---------- API CALL ----------
     try {
-
+      isLoading.value = true;
       // final payload = data.toJson();
       // print("===== PAYLOAD SENT =====");
       // print(payload);
@@ -182,6 +185,8 @@ class RegisterController extends GetxController {
       Get.snackbar("Error", "Unexpected error occurred");
     } catch (e) {
       Get.snackbar("Error", "Failed to connect to server");
+    } finally {
+      isLoading.value = false;
     }
   }
 }

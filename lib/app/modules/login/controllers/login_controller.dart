@@ -11,6 +11,7 @@ class LoginController extends GetxController {
   final TextEditingController emailC = TextEditingController();
   final TextEditingController passwordC = TextEditingController();
   final isObscure = false.obs;
+  final isLoading = false.obs;
 
   final baseUrl = "http://10.0.2.2:8080/v1/api";
 
@@ -28,6 +29,8 @@ class LoginController extends GetxController {
     }
 
     try {
+      isLoading.value = true;
+
       final response = await http.post(
         Uri.parse("$baseUrl/login"),
         headers: {"Content-Type": "application/json"},
@@ -37,8 +40,10 @@ class LoginController extends GetxController {
       final decoded = jsonDecode(response.body);
       // print("LOGIN RESPONSE = $decoded");
 
+      await Future.delayed(const Duration(seconds: 2));
+
       if (response.statusCode == 200) {
-        final token = decoded["token"]; 
+        final token = decoded["token"];
 
         if (token == null || token.toString().isEmpty) {
           Get.snackbar("Error", "JWT not found");
@@ -57,6 +62,8 @@ class LoginController extends GetxController {
       Get.snackbar("Login Failed", decoded["error"] ?? "Invalid credentials");
     } catch (e) {
       Get.snackbar("Error", "Server error");
+    } finally {
+      isLoading.value = false;
     }
   }
 
