@@ -9,10 +9,10 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: Colors.white,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 24),
+      insetPadding: EdgeInsets.symmetric(horizontal: 18, vertical: 24),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 18),
+        padding: EdgeInsets.symmetric(horizontal: 22, vertical: 18),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -20,62 +20,150 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
               alignment: Alignment.centerRight,
               child: IconButton(
                 onPressed: () => Get.back(),
-                icon: const Icon(Icons.close, color: Color(0xFF4A3F24)),
+                icon: Icon(Icons.close, color: Color(0xFF4A3F24)),
               ),
             ),
 
-            _buildTitle(),
-            const SizedBox(height: 25),
+            Column(
+              children: [
+                Text(
+                  "LOAD YOUR SWEETS INTAKE!",
+                  style: TextStyle(
+                    fontSize: 18,
+                    letterSpacing: 0.8,
+                    color: Color(0xFF4A3F24),
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 4),
+                Text(
+                  "Sugar Consumption",
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Color(0xFF4A3F24),
+                    fontStyle: FontStyle.italic,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+            SizedBox(height: 25),
 
             Row(
               children: [
                 Expanded(child: _buildDatePicker(context)),
-                const SizedBox(width: 14),
+                SizedBox(width: 14),
                 Expanded(child: _buildTimePicker(context)),
               ],
             ),
 
-            const SizedBox(height: 20),
-            _buildLabel("Food Type"),
+            SizedBox(height: 20),
+
+            // food type
+            Text(
+              "Food Type",
+              style: TextStyle(
+                color: Color(0xFF4A3F24),
+                fontWeight: FontWeight.w600,
+                fontSize: 15,
+              ),
+            ),
             _buildTextField(controller.typeC, "Milk Tea"),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
 
-            _buildLabel("Amount"),
-            _buildAmountControl(),
-            const SizedBox(height: 20),
+            // amount
+            Text(
+              "Amount",
+              style: TextStyle(
+                color: Color(0xFF4A3F24),
+                fontWeight: FontWeight.w600,
+                fontSize: 15,
+              ),
+            ),
+            Obx(
+              () => Container(
+                height: 50,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                  color: Color(0xFF4A3F24),
+                ),
+                child: Row(
+                  children: [
+                    IconButton(
+                      onPressed: controller.decrementAmount,
+                      icon: Icon(Icons.remove, color: Colors.white),
+                    ),
+                    Expanded(
+                      child: Container(
+                        color: Colors.white,
+                        alignment: Alignment.center,
+                        child: Text(
+                          controller.amount.value.toString(),
+                          style: TextStyle(
+                            color: Color(0xFF4A3F24),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: controller.incrementAmount,
+                      icon: Icon(Icons.add, color: Colors.white),
+                    ),
+                  ],
+                ),
+              ),
+            ),
 
-            _buildLabel("Sugar (g)"),
+            SizedBox(height: 20),
+
+            // sugar input
+            Text(
+              "Sugar (g)",
+              style: TextStyle(
+                color: Color(0xFF4A3F24),
+                fontWeight: FontWeight.w600,
+                fontSize: 15,
+              ),
+            ),
             _buildTextField(controller.sugarC, "42"),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
 
-            _buildLabel("Context"),
+            // choose context
+            Text(
+              "Context",
+              style: TextStyle(
+                color: Color(0xFF4A3F24),
+                fontWeight: FontWeight.w600,
+                fontSize: 15,
+              ),
+            ),
             _buildContextDropdown(),
-            const SizedBox(height: 35),
 
+            SizedBox(height: 35),
+
+            // submit button
             Obx(
               () => Center(
                 child: ElevatedButton(
-                  onPressed: controller.isLoading.value
-                      ? null
-                      : () async {
-                          // print("===========inisialized 1============");
-
-                          await controller.submitConsumption();
-                        },
+                  onPressed: () async {
+                    controller.isLoading.value
+                        ? null
+                        : await controller.submitConsumption();
+                  },
 
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF4A3F24),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 14,
-                      horizontal: 40,
-                    ),
+                    backgroundColor: Color(0xFF4A3F24),
+                    padding: EdgeInsets.symmetric(vertical: 14, horizontal: 40),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(40),
                     ),
                   ),
                   child: controller.isLoading.value
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text(
+                      ? CircularProgressIndicator(color: Colors.white)
+                      : Text(
                           "Submit",
                           style: TextStyle(fontSize: 16, color: Colors.white),
                         ),
@@ -88,56 +176,19 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
     );
   }
 
-  //------ SAME WIDGET COMPONENTS BELOW ------
-  Widget _buildTitle() => const Column(
-    children: [
-      Text(
-        "LOAD YOUR SWEETS INTAKE!",
-        style: TextStyle(
-          fontSize: 18,
-          letterSpacing: 0.8,
-          color: Color(0xFF4A3F24),
-          fontWeight: FontWeight.bold,
-        ),
-        textAlign: TextAlign.center,
-      ),
-      SizedBox(height: 4),
-      Text(
-        "Sugar Consumption",
-        style: TextStyle(
-          fontSize: 15,
-          color: Color(0xFF4A3F24),
-          fontStyle: FontStyle.italic,
-        ),
-        textAlign: TextAlign.center,
-      ),
-    ],
-  );
-
-  Widget _buildLabel(String text) => Text(
-    text,
-    style: const TextStyle(
-      color: Color(0xFF4A3F24),
-      fontWeight: FontWeight.w600,
-      fontSize: 15,
-    ),
-  );
-
-  BoxDecoration _inputBoxDecoration() => BoxDecoration(
-    color: const Color(0xFFFDF4C8),
-    borderRadius: BorderRadius.circular(12),
-    border: Border.all(color: Color(0xFFA08C6A)),
-  );
-
   Widget _buildTextField(TextEditingController c, String hint) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 12),
-    decoration: _inputBoxDecoration(),
+    padding: EdgeInsets.symmetric(horizontal: 12),
+    decoration: BoxDecoration(
+      color: Color(0xFFFDF4C8),
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: Color(0xFFA08C6A)),
+    ),
     child: TextField(
       controller: c,
       decoration: InputDecoration(
         border: InputBorder.none,
         hintText: hint,
-        suffixIcon: const Icon(Icons.edit, color: Color(0xFF4A3F24)),
+        suffixIcon: Icon(Icons.edit, color: Color(0xFF4A3F24)),
       ),
     ),
   );
@@ -153,22 +204,26 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
       if (picked != null) controller.updateDate(picked);
     },
     child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-      decoration: _inputBoxDecoration(),
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+      decoration: BoxDecoration(
+        color: Color(0xFFFDF4C8),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Color(0xFFA08C6A)),
+      ),
       child: Row(
         children: [
-          const Icon(Icons.calendar_today, color: Color(0xFF4A3F24)),
-          const SizedBox(width: 10),
+          Icon(Icons.calendar_today, color: Color(0xFF4A3F24)),
+          SizedBox(width: 10),
           Expanded(
             child: Obx(
               () => Text(
                 controller.dateString.value,
-                style: const TextStyle(fontSize: 14),
+                style: TextStyle(fontSize: 14),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
           ),
-          const Icon(Icons.keyboard_arrow_down, color: Color(0xFF4A3F24)),
+          Icon(Icons.keyboard_arrow_down, color: Color(0xFF4A3F24)),
         ],
       ),
     ),
@@ -183,73 +238,47 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
       if (picked != null) controller.updateTime(picked);
     },
     child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-      decoration: _inputBoxDecoration(),
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+      decoration: BoxDecoration(
+        color: Color(0xFFFDF4C8),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Color(0xFFA08C6A)),
+      ),
       child: Row(
         children: [
-          const Icon(Icons.access_time, color: Color(0xFF4A3F24)),
-          const SizedBox(width: 10),
+          Icon(Icons.access_time, color: Color(0xFF4A3F24)),
+          SizedBox(width: 10),
           Expanded(
             child: Obx(
               () => Text(
                 controller.timeString.value,
-                style: const TextStyle(fontSize: 14),
+                style: TextStyle(fontSize: 14),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
           ),
-          const Icon(Icons.keyboard_arrow_down, color: Color(0xFF4A3F24)),
+          Icon(Icons.keyboard_arrow_down, color: Color(0xFF4A3F24)),
         ],
       ),
     ),
   );
 
-  Widget _buildAmountControl() => Obx(
-    () => Container(
-      height: 50,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
-        color: const Color(0xFF4A3F24),
-      ),
-      child: Row(
-        children: [
-          IconButton(
-            onPressed: controller.decrementAmount,
-            icon: const Icon(Icons.remove, color: Colors.white),
-          ),
-          Expanded(
-            child: Container(
-              color: Colors.white,
-              alignment: Alignment.center,
-              child: Text(
-                controller.amount.value.toString(),
-                style: const TextStyle(
-                  color: Color(0xFF4A3F24),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-            ),
-          ),
-          IconButton(
-            onPressed: controller.incrementAmount,
-            icon: const Icon(Icons.add, color: Colors.white),
-          ),
-        ],
-      ),
-    ),
-  );
+  // Widget _buildAmountControl() => ;
 
   Widget _buildContextDropdown() => Obx(
     () => Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: _inputBoxDecoration(),
+      padding: EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: Color(0xFFFDF4C8),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Color(0xFFA08C6A)),
+      ),
       child: DropdownButton<String>(
         value: controller.contextList.contains(controller.selectedContext.value)
             ? controller.selectedContext.value
             : controller.contextList.first,
         isExpanded: true,
-        underline: const SizedBox(),
+        underline: SizedBox(),
         items: controller.contextList
             .map((e) => DropdownMenuItem(value: e, child: Text(e)))
             .toList(),

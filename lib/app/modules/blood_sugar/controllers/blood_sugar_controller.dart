@@ -1,64 +1,131 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:sweettake_app/app/data/models/blood_sugar_model.dart';
+import 'package:sweettake_app/app/routes/app_pages.dart';
+
+import '../../login/controllers/auth_controller.dart';
 
 class BloodSugarController extends GetxController {
-  final selectedDate = DateTime.now().obs;
-  final selectedTime = TimeOfDay.now().obs;
+  final bloodSugarC = TextEditingController();
+  // final typeC = TextEditingController();
 
-  final bloodSugarController = TextEditingController();
-  final contextList = ['Fasting', 'Post-meal', 'Before Sleep', 'After Exercise'];
+  final contextList = [
+    'Fasting',
+    'Post-meal',
+    'Before Sleep',
+    'After Exercise',
+  ];
+
   final selectedContext = 'Post-meal'.obs;
+
+  final isLoading = false.obs;
+
+  DateTime selectedDate = DateTime.now();
+  TimeOfDay selectedTime = TimeOfDay.now();
+
+  final dateString = "".obs;
+  final timeString = "".obs;
+
+  final baseUrl = "http://10.0.2.2:8080/v1/api/auth";
 
   @override
   void onClose() {
-    bloodSugarController.dispose();
+    bloodSugarC.dispose();
     super.onClose();
   }
 
-  
+  void updateDate(DateTime d) {
+    selectedDate = d;
+    _updateDate();
+  }
 
-  Future<void> pickDate(BuildContext context) async {
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: selectedDate.value,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-    );
-    if (picked != null) {
-      selectedDate.value = picked;
+  void updateTime(TimeOfDay t) {
+    selectedTime = t;
+    _updateTime();
+  }
+
+  void _updateDate() {
+    dateString.value =
+        "${selectedDate.day.toString().padLeft(2, '0')}-"
+        "${selectedDate.month.toString().padLeft(2, '0')}-"
+        "${selectedDate.year}";
+  }
+
+  void _updateTime() {
+    timeString.value =
+        "${selectedTime.hour.toString().padLeft(2, '0')}:"
+        "${selectedTime.minute.toString().padLeft(2, '0')}";
+  }
+
+  void _handleResponse(http.Response response, AuthController authC) {
+    switch (response.statusCode) {
+      case 201:
+        Get.back();
+        _showSuccess("Blood sugar saved successfully");
+        break;
+
+      case 401:
+        authC.logout();
+        Get.offAllNamed(Routes.LOGIN);
+        break;
+
+      default:
+        _showError("Failed to save blood sugar data");
     }
   }
 
-  Future<void> pickTime(BuildContext context) async {
-    final picked = await showTimePicker(
-      context: context,
-      initialTime: selectedTime.value,
-    );
-    if (picked != null) {
-      selectedTime.value = picked;
-    }
+  void _showError(String message) {
+    Get.snackbar("Error", message, snackPosition: SnackPosition.BOTTOM);
   }
 
-  void submit() {
-    final text = bloodSugarController.text.trim();
-    if (text.isEmpty) {
-      Get.snackbar('Error', 'Please enter your blood sugar value');
+  void _showSuccess(String message) {
+    Get.snackbar("Success", message, snackPosition: SnackPosition.BOTTOM);
+  }
+
+  Future<void> submitBloodSugarForm() async {
+    final sugar = double.tryParse(bloodSugarC.text.trim());
+
+    if (sugar == null || sugar <= 0) {
+      _showError("Please enter a valid blood sugar value");
       return;
     }
 
-    final value = int.tryParse(text);
-    if (value == null) {
-      Get.snackbar('Error', 'Blood sugar must be a number');
-      return;
+    isLoading.value = true;
+
+    try {
+      final authC = Get.find<AuthController>();
+
+      final consumedAt = DateTime(
+        selectedDate.year,
+        selectedDate.month,
+        selectedDate.day,
+        selectedTime.hour,
+        selectedTime.minute,
+      );
+
+      final body = BloodSugarModel(
+        bloodSugarData: sugar,
+        context: selectedContext.value,
+        dateTime: consumedAt.toUtc().toIso8601String(),
+      ).toJson();
+
+      final response = await http.post(
+        Uri.parse("$baseUrl/bloodsugar"),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer ${authC.token.value}",
+        },
+        body: jsonEncode(body),
+      );
+
+      _handleResponse(response, authC);
+    } catch (e) {
+      _showError("Something went wrong. Please try again.");
+    } finally {
+      isLoading.value = false;
     }
-
-    // final data = {
-    //   'date': selectedDate.value,
-    //   'time': selectedTime.value,
-    //   'bloodSugar': value,
-    //   'context': selectedContext.value,
-    // };
-
-    Get.snackbar('Saved', 'Blood sugar measurement recorded');
   }
 }
