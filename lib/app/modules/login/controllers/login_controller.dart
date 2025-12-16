@@ -4,12 +4,14 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:sweettake_app/app/data/models/login_model.dart';
+import 'package:sweettake_app/app/modules/login/controllers/auth_controller.dart';
 import 'package:sweettake_app/app/routes/app_pages.dart';
 
 class LoginController extends GetxController {
   final TextEditingController emailC = TextEditingController();
   final TextEditingController passwordC = TextEditingController();
   final isObscure = false.obs;
+  final isLoading = false.obs;
 
   final baseUrl = "http://10.0.2.2:8080/v1/api";
 
@@ -17,13 +19,8 @@ class LoginController extends GetxController {
     final email = emailC.text.trim();
     final password = passwordC.text.trim();
 
-    // ---------- LOCAL VALIDATION ----------
-    if (email.isEmpty) {
-      Get.snackbar("Warning", "Email is required");
-      return;
-    }
-    if (!GetUtils.isEmail(email)) {
-      Get.snackbar("Warning", "Invalid email format");
+    if (email.isEmpty || !GetUtils.isEmail(email)) {
+      Get.snackbar("Warning", "Valid email is required");
       return;
     }
     if (password.isEmpty) {
@@ -31,44 +28,49 @@ class LoginController extends GetxController {
       return;
     }
 
-    // ---------- API CALL ----------
     try {
-      final loginData = LoginModel(email: email, password: password);
+      isLoading.value = true;
 
       final response = await http.post(
         Uri.parse("$baseUrl/login"),
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode(loginData.toJson()),
+        body: jsonEncode(LoginModel(email: email, password: password).toJson()),
       );
 
-      // ---------- SUCCESS ----------
-      if (response.statusCode == 200) {
-        Get.snackbar("SUCCES", "SUCCES TO LOGIN");
-
-        Get.offAllNamed(Routes.CONSUMPTION_FORM);
-      }
-
-      // ---------- BACKEND ERRORS ----------
       final decoded = jsonDecode(response.body);
+      // print("LOGIN RESPONSE = $decoded");
 
-      if (response.statusCode == 400) {
-        //{ "error": "invalid credentials" } or validation error
-        Get.snackbar("Login Failed", decoded["error"] ?? "Invalid request");
+      await Future.delayed(const Duration(seconds: 2));
+
+      if (response.statusCode == 200) {
+        final token = decoded["token"];
+
+        if (token == null || token.toString().isEmpty) {
+          Get.snackbar("Error", "JWT not found");
+          return;
+        }
+
+        final authC = Get.find<AuthController>();
+        authC.setToken(token);
+
+        // print("TOKEN SAVED = ${authC.token.value}");
+
+        Get.offAllNamed(Routes.BOTTOM_NAV_BAR);
         return;
       }
 
-      if (response.statusCode == 401) {
-        // unauthorized / wrong email or password
-        Get.snackbar(
-          "Login Failed",
-          decoded["error"] ?? "Incorrect email or password",
-        );
-        return;
-      }
-
-      Get.snackbar("Error", "Unexpected error: ${response.body}");
+      Get.snackbar("Login Failed", decoded["error"] ?? "Invalid credentials");
     } catch (e) {
-      Get.snackbar("Error", "Something went wrong");
+      Get.snackbar("Error", "Server error");
+    } finally {
+      isLoading.value = false;
     }
+  }
+
+  @override
+  void onClose() {
+    emailC.dispose();
+    passwordC.dispose();
+    super.onClose();
   }
 }

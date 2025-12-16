@@ -3,114 +3,119 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:sweettake_app/app/data/models/consumption_model.dart';
+import 'package:sweettake_app/app/modules/login/controllers/auth_controller.dart';
 import 'package:sweettake_app/app/routes/app_pages.dart';
 
 class ConsumptionFormController extends GetxController {
-  // Input fields
-  final TextEditingController typeC = TextEditingController();
-  final TextEditingController sugarC = TextEditingController();
+  final typeC = TextEditingController();
+  final sugarC = TextEditingController();
 
-  // Context dropdown (reactive)
-  final Rx<String> selectedContext = "Snack".obs;
-  final List<String> contextList = ["Snack", "Breakfast", "Lunch", "Dinner"];
+  final selectedContext = "Snack".obs;
+  final contextList = ["Snack", "Breakfast", "Lunch", "Dinner"];
 
-  // Loading state
+  final amount = 1.obs;
   final isLoading = false.obs;
 
-  // Amount for counter (reactive int)
-  final RxInt amount = 1.obs;
-  void incrementAmount() => amount.value++;
-  void decrementAmount() {
-    if (amount.value > 1) amount.value--;
-  }
-
-  // Date & Time fields + reactive formatted strings
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay.now();
-  final RxString dateString = "".obs;
-  final RxString timeString = "".obs;
 
-  // Base URL (adjust if using real device)
-  final baseUrl = "http://10.0.2.2:8080/v1/api";
+  final dateString = "".obs;
+  final timeString = "".obs;
+
+  final baseUrl = "http://10.0.2.2:8080/v1/api/auth";
 
   @override
   void onInit() {
     super.onInit();
-    _updateDateString();
-    _updateTimeString();
+    _updateDate();
+    _updateTime();
   }
 
-  void updateDate(DateTime newDate) {
-    selectedDate = newDate;
-    _updateDateString();
+  void incrementAmount() {
+    amount.value++;
   }
 
-  void updateTime(TimeOfDay newTime) {
-    selectedTime = newTime;
-    _updateTimeString();
+  void decrementAmount() {
+    if (amount.value > 1) {
+      amount.value--;
+    }
   }
 
-  void _updateDateString() {
+  void updateDate(DateTime d) {
+    selectedDate = d;
+    _updateDate();
+  }
+
+  void updateTime(TimeOfDay t) {
+    selectedTime = t;
+    _updateTime();
+  }
+
+  void _updateDate() {
     dateString.value =
-        "${selectedDate.day.toString().padLeft(2, '0')}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.year}";
+        "${selectedDate.day.toString().padLeft(2, '0')}-"
+        "${selectedDate.month.toString().padLeft(2, '0')}-"
+        "${selectedDate.year}";
   }
 
-  void _updateTimeString() {
-    final h = selectedTime.hour.toString().padLeft(2, '0');
-    final m = selectedTime.minute.toString().padLeft(2, '0');
-    timeString.value = "$h:$m";
+  void _updateTime() {
+    timeString.value =
+        "${selectedTime.hour.toString().padLeft(2, '0')}:"
+        "${selectedTime.minute.toString().padLeft(2, '0')}";
   }
 
-  // Submit consumption
   Future<void> submitConsumption() async {
-    final type = typeC.text.trim();
-    final sugar = double.tryParse(sugarC.text.trim()) ?? 0.0;
-    final amt = amount.value.toDouble();
-    final context = contextList.contains(selectedContext.value)
-        ? selectedContext.value
-        : contextList.first;
-
-    // Validations
-    if (type.length > 255) {
-      Get.snackbar("Error", "Type text is too long (max 255 characters)");
-      return;
-    }
-
-    if (sugar <= 0) {
-      Get.snackbar("Error", "Sugar (grams) must be greater than 0");
-      return;
-    }
-
-    if (amt <= 0) {
-      Get.snackbar("Error", "Amount must be greater than 0");
+    // print("===========inisialized============");
+    final sugar = double.tryParse(sugarC.text.trim());
+    if (typeC.text.trim().isEmpty || sugar == null || sugar <= 0) {
+      Get.snackbar("Error", "Invalid input");
       return;
     }
 
     try {
-      isLoading.value = true;
 
-      final consumption = ConsumptionModel(
-        userId: 1, // replace with actual user ID
-        type: type,
-        amount: amt,
-        sugarGrams: sugar,
-        context: context,
+      isLoading.value = true;
+      
+      final consumedAt = DateTime(
+        selectedDate.year,
+        selectedDate.month,
+        selectedDate.day,
+        selectedTime.hour,
+        selectedTime.minute,
       );
+
+      // print("AuthController registered: ${Get.isRegistered<AuthController>()}");
+      final authC = Get.find<AuthController>();
+
+      // print("=========TOKEN = ${authC.token.value}============");
 
       final response = await http.post(
         Uri.parse("$baseUrl/consumption"),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode(consumption.toJson()),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer ${authC.token.value}",
+        },
+        body: jsonEncode(
+          ConsumptionModel(
+            type: typeC.text.trim(),
+            amount: amount.value.toDouble(),
+            sugarData: sugar,
+            context: selectedContext.value,
+            dateTime: consumedAt.toUtc().toIso8601String(),
+          ).toJson(),
+        ),
       );
 
-      if (response.statusCode == 200) {
-        Get.snackbar("Success", "Sugar consumption recorded!");
-        Get.offAllNamed(Routes.HOME);
+      if (response.statusCode == 201) {
+        Get.back();
+        Get.snackbar("Success", "Consumption saved");
+      } else if (response.statusCode == 401) {
+        authC.logout();
+        Get.offAllNamed(Routes.LOGIN);
       } else {
-        Get.snackbar("Error", "Failed to record consumption.");
+        // print("=====${response.body}==============");
+        Get.snackbar("Error", "Failed to save");
       }
-    } catch (e) {
-      Get.snackbar("Error", "Something went wrong.");
     } finally {
       isLoading.value = false;
     }
