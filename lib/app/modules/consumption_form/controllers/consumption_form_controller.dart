@@ -72,9 +72,10 @@ class ConsumptionFormController extends GetxController {
       return;
     }
 
-    isLoading.value = true;
-
     try {
+
+      isLoading.value = true;
+      
       final consumedAt = DateTime(
         selectedDate.year,
         selectedDate.month,
@@ -87,7 +88,6 @@ class ConsumptionFormController extends GetxController {
       final authC = Get.find<AuthController>();
 
       // print("=========TOKEN = ${authC.token.value}============");
-
 
       final response = await http.post(
         Uri.parse("$baseUrl/consumption"),

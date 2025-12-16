@@ -6,39 +6,25 @@ import '../controllers/blood_sugar_controller.dart';
 class BloodSugarView extends GetView<BloodSugarController> {
   const BloodSugarView({super.key});
 
-  String _formatDate(DateTime date) {
-  return "${date.day.toString().padLeft(2, '0')}/"
-         "${date.month.toString().padLeft(2, '0')}/"
-         "${date.year}";
-}
-
-String _formatTime(TimeOfDay time) {
-  final hour = time.hour.toString().padLeft(2, '0');
-  final minute = time.minute.toString().padLeft(2, '0');
-  return "$hour:$minute";
-}
-
-
   @override
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: Colors.white,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      insetPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-
             Align(
               alignment: Alignment.centerRight,
               child: IconButton(
                 onPressed: () => Get.back(),
-                icon: const Icon(Icons.close, color: Color(0xFF4A3F24)),
+                icon: Icon(Icons.close, color: Color(0xFF4A3F24)),
               ),
             ),
-            const Text(
+            Text(
               'LOAD YOUR SWEETS INTAKE!',
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -47,8 +33,8 @@ String _formatTime(TimeOfDay time) {
                 color: Color(0xFF4C462A),
               ),
             ),
-            const SizedBox(height: 4),
-            const Text(
+            SizedBox(height: 4),
+            Text(
               'Blood Sugar Measurement',
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -57,25 +43,25 @@ String _formatTime(TimeOfDay time) {
                 color: Color(0xFF4C462A),
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
 
             // DATE + TIME
             Row(
               children: [
                 Expanded(child: _buildDatePicker(context)),
-                const SizedBox(width: 10),
+                SizedBox(width: 10),
                 Expanded(child: _buildTimePicker(context)),
               ],
             ),
-            const SizedBox(height: 14),
+            SizedBox(height: 14),
 
             // BLOOD SUGAR FIELD
             _buildBloodSugarField(),
-            const SizedBox(height: 14),
+            SizedBox(height: 14),
 
             // CONTEXT DROPDOWN
             _buildContextDropdown(),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
 
             SizedBox(
               width: double.infinity,
@@ -87,8 +73,8 @@ String _formatTime(TimeOfDay time) {
                     borderRadius: BorderRadius.circular(24),
                   ),
                 ),
-                onPressed: controller.submit,
-                child: const Text(
+                onPressed: controller.submitBloodSugarForm,
+                child: Text(
                   'Submit',
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
@@ -97,118 +83,116 @@ String _formatTime(TimeOfDay time) {
                   ),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
     );
   }
 
-  // 🔹 DATE PICKER
-  Widget _buildDatePicker(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('Date', style: TextStyle(fontSize: 11, color: Color(0xFF4C462A))),
-        const SizedBox(height: 4),
-        InkWell(
-          borderRadius: BorderRadius.circular(12),
-          onTap: () => controller.pickDate(context),
-          child: Container(
-            height: 48,
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFDF5DD),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFF4C462A)),
-            ),
+  Widget _buildDatePicker(BuildContext context) => GestureDetector(
+    onTap: () async {
+      final picked = await showDatePicker(
+        context: context,
+        firstDate: DateTime(2020),
+        lastDate: DateTime(2030),
+        initialDate: controller.selectedDate,
+      );
+      if (picked != null) controller.updateDate(picked);
+    },
+    child: Container(
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+      decoration: BoxDecoration(
+        color: Color(0xFFFDF4C8),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Color(0xFFA08C6A)),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.calendar_today, color: Color(0xFF4A3F24)),
+          SizedBox(width: 10),
+          Expanded(
             child: Obx(
-              () => Row(
-                children: [
-                  const Icon(Icons.calendar_today, size: 18, color: Color(0xFF4C462A)),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      _formatDate(controller.selectedDate.value),
-                      style: const TextStyle(fontSize: 14, color: Color(0xFF4C462A)),
-                    ),
-                  ),
-                ],
+              () => Text(
+                controller.dateString.value,
+                style: TextStyle(fontSize: 14),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ),
-        ),
-      ],
-    );
-  }
+          Icon(Icons.keyboard_arrow_down, color: Color(0xFF4A3F24)),
+        ],
+      ),
+    ),
+  );
 
-  // 🔹 TIME PICKER
-  Widget _buildTimePicker(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('Time', style: TextStyle(fontSize: 11, color: Color(0xFF4C462A))),
-        const SizedBox(height: 4),
-        InkWell(
-          borderRadius: BorderRadius.circular(12),
-          onTap: () => controller.pickTime(context),
-          child: Container(
-            height: 48,
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFDF5DD),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFF4C462A)),
-            ),
+  Widget _buildTimePicker(BuildContext context) => GestureDetector(
+    onTap: () async {
+      final picked = await showTimePicker(
+        context: context,
+        initialTime: controller.selectedTime,
+      );
+      if (picked != null) controller.updateTime(picked);
+    },
+    child: Container(
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+      decoration: BoxDecoration(
+        color: Color(0xFFFDF4C8),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Color(0xFFA08C6A)),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.access_time, color: Color(0xFF4A3F24)),
+          SizedBox(width: 10),
+          Expanded(
             child: Obx(
-              () => Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      _formatTime(controller.selectedTime.value),
-                      style: const TextStyle(fontSize: 14, color: Color(0xFF4C462A)),
-                    ),
-                  ),
-                  const Icon(Icons.access_time, size: 18, color: Color(0xFF4C462A)),
-                ],
+              () => Text(
+                controller.timeString.value,
+                style: TextStyle(fontSize: 14),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ),
-        ),
-      ],
-    );
-  }
+          Icon(Icons.keyboard_arrow_down, color: Color(0xFF4A3F24)),
+        ],
+      ),
+    ),
+  );
 
   // 🔹 BLOOD SUGAR FIELD
   Widget _buildBloodSugarField() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Blood Sugar (mg/dL)', style: TextStyle(fontSize: 11, color: Color(0xFF4C462A))),
-        const SizedBox(height: 4),
+        Text(
+          'Blood Sugar (mg/dL)',
+          style: TextStyle(fontSize: 11, color: Color(0xFF4C462A)),
+        ),
+        SizedBox(height: 4),
         Container(
           height: 48,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
+          padding: EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
-            color: const Color(0xFFFDF5DD),
+            color: Color(0xFFFDF5DD),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFF4C462A)),
+            border: Border.all(color: Color(0xFF4C462A)),
           ),
           child: Row(
             children: [
               Expanded(
                 child: TextField(
-                  controller: controller.bloodSugarController,
-                  decoration: const InputDecoration(
+                  controller: controller.bloodSugarC,
+                  decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: '117',
                     isCollapsed: true,
                   ),
                   keyboardType: TextInputType.number,
-                  style: const TextStyle(fontSize: 14, color: Color(0xFF4C462A)),
+                  style: TextStyle(fontSize: 14, color: Color(0xFF4C462A)),
                 ),
               ),
-              const Icon(Icons.edit, size: 18, color: Color(0xFF4C462A)),
+              Icon(Icons.edit, size: 18, color: Color(0xFF4C462A)),
             ],
           ),
         ),
@@ -221,28 +205,34 @@ String _formatTime(TimeOfDay time) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Context', style: TextStyle(fontSize: 11, color: Color(0xFF4C462A))),
-        const SizedBox(height: 4),
+        Text(
+          'Context',
+          style: TextStyle(fontSize: 11, color: Color(0xFF4C462A)),
+        ),
+        SizedBox(height: 4),
         Obx(
           () => DropdownButtonFormField<String>(
             initialValue: controller.selectedContext.value,
             decoration: InputDecoration(
               filled: true,
-              fillColor: const Color(0xFFFDF5DD),
+              fillColor: Color(0xFFFDF5DD),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: Color(0xFF4C462A)),
+                borderSide: BorderSide(color: Color(0xFF4C462A)),
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 10,
+              ),
             ),
-            icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF4C462A)),
+            icon: Icon(Icons.arrow_drop_down, color: Color(0xFF4C462A)),
             items: controller.contextList
                 .map(
                   (c) => DropdownMenuItem(
                     value: c,
                     child: Text(
                       c,
-                      style: const TextStyle(fontSize: 14, color: Color(0xFF4C462A)),
+                      style: TextStyle(fontSize: 14, color: Color(0xFF4C462A)),
                     ),
                   ),
                 )
