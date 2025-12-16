@@ -8,52 +8,48 @@ class BloodhistoryView extends GetView<BloodhistoryController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0x004c462a), // dark brown background
+      backgroundColor: Color(0x004c462a),
       body: SafeArea(
         child: Column(
           children: [
-            const _Header(),
-            const SizedBox(height: 16),
+            _Header(),
+            SizedBox(height: 16),
             Expanded(
               child: Container(
-                decoration: const BoxDecoration(
-                  color: Color(0xFFFFF5E7), // light paper color
+                decoration: BoxDecoration(
+                  color: Color(0xFFFFF5E7),
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(32),
                     topRight: Radius.circular(32),
                   ),
                 ),
-                child: const _ContentCard(),
+                child: _ContentCard(),
               ),
             ),
           ],
         ),
       ),
-      bottomNavigationBar: const _BottomNavBar(),
+      bottomNavigationBar: _BottomNavBar(),
     );
   }
 }
 
-/// HEADER (back button + title + date selector)
 class _Header extends StatelessWidget {
   const _Header();
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           IconButton(
             onPressed: () => Get.back(), // use GetX navigation
-            icon: const Icon(
-              Icons.arrow_back_ios_new_rounded,
-              color: Colors.white,
-            ),
+            icon: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
           ),
-          const SizedBox(height: 8),
-          const Center(
+          SizedBox(height: 8),
+          Center(
             child: Text(
               'Consumption History',
               style: TextStyle(
@@ -63,17 +59,17 @@ class _Header extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Center(
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+              padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
               decoration: BoxDecoration(
-                color: const Color(0xFFFBE9CF),
+                color: Color(0xFFFBE9CF),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
-                children: const [
+                children: [
                   Icon(
                     Icons.calendar_today_rounded,
                     size: 18,
@@ -107,13 +103,13 @@ class _ContentCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(height: 12),
+        SizedBox(height: 12),
 
         // Tabs – styled like the blood sugar page
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18.0),
+          padding: EdgeInsets.symmetric(horizontal: 18.0),
           child: Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: Color(0xFFFBE0B2),
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(24),
@@ -125,18 +121,15 @@ class _ContentCard extends StatelessWidget {
                 // Left tab (highlighted)
                 Expanded(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 10,
-                      horizontal: 8,
-                    ),
-                    decoration: const BoxDecoration(
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                    decoration: BoxDecoration(
                       color: Color(0xFFFCCB7E),
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(24),
                       ),
                     ),
                     alignment: Alignment.center,
-                    child: const Text(
+                    child: Text(
                       'Sugar Consumption',
                       style: TextStyle(
                         color: Colors.brown,
@@ -150,12 +143,9 @@ class _ContentCard extends StatelessWidget {
                 // Right tab (unselected)
                 Expanded(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 10,
-                      horizontal: 8,
-                    ),
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 8),
                     alignment: Alignment.center,
-                    child: const Text(
+                    child: Text(
                       'Blood Sugar',
                       style: TextStyle(
                         color: Colors.brown,
@@ -171,17 +161,14 @@ class _ContentCard extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 12),
-        const Divider(height: 1, thickness: 0.7, color: Color(0xFFE0C69B)),
+        SizedBox(height: 12),
+        Divider(height: 1, thickness: 0.7, color: Color(0xFFE0C69B)),
 
         // Content list
         Expanded(
           child: ListView(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 18.0,
-              vertical: 8.0,
-            ),
-            children: const [
+            padding: EdgeInsets.symmetric(horizontal: 18.0, vertical: 8.0),
+            children: [
               _BloodItem(time: '14:35', label: 'Post-Meal', value: '118 mg/dL'),
               SizedBox(height: 12),
               Divider(thickness: 0.7, color: Color(0xFFE0C69B)),
@@ -201,32 +188,24 @@ class _BloodItem extends StatelessWidget {
   final String label;
   final String value;
 
-  const _BloodItem({
-    required this.time,
-    required this.label,
-    required this.value,
-  });
+  const _BloodItem({required this.time, required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
+      padding: EdgeInsets.symmetric(vertical: 10),
       child: Row(
         children: [
           // Blood-drop icon
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: const Color(0xFF4E3A26),
+              color: Color(0xFF4E3A26),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(
-              Icons.bloodtype_rounded,
-              size: 20,
-              color: Colors.white,
-            ),
+            child: Icon(Icons.bloodtype_rounded, size: 20, color: Colors.white),
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10),
 
           // Time + label
           Expanded(
@@ -235,15 +214,15 @@ class _BloodItem extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.access_time_rounded,
                       size: 14,
                       color: Colors.brown,
                     ),
-                    const SizedBox(width: 4),
+                    SizedBox(width: 4),
                     Text(
                       time,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.brown,
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
@@ -251,10 +230,10 @@ class _BloodItem extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4),
                 Text(
                   label,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.brown,
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
@@ -270,14 +249,14 @@ class _BloodItem extends StatelessWidget {
             children: [
               Text(
                 value,
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.brown,
                   fontWeight: FontWeight.w700,
                   fontSize: 14,
                 ),
               ),
-              const SizedBox(height: 4),
-              const Icon(Icons.edit, size: 16, color: Colors.brown),
+              SizedBox(height: 4),
+              Icon(Icons.edit, size: 16, color: Colors.brown),
             ],
           ),
         ],
@@ -296,16 +275,16 @@ class _TotalRow extends StatelessWidget {
     return Center(
       child: RichText(
         text: TextSpan(
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.brown,
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
           children: [
-            const TextSpan(text: 'Total:   '),
+            TextSpan(text: 'Total:   '),
             TextSpan(
               text: totalText,
-              style: const TextStyle(fontWeight: FontWeight.w700),
+              style: TextStyle(fontWeight: FontWeight.w700),
             ),
           ],
         ),
@@ -322,7 +301,7 @@ class _BottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 72,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: Color(0xFFFFF5E7),
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(24),
@@ -338,7 +317,7 @@ class _BottomNavBar extends StatelessWidget {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: const [
+        children: [
           _NavIcon(icon: Icons.home_filled),
           _NavIcon(icon: Icons.show_chart_rounded),
           _NavIcon(icon: Icons.restaurant_rounded),
