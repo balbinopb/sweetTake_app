@@ -124,24 +124,28 @@ class RegisterView2 extends GetView<RegisterController> {
               ),
               SizedBox(height: 40),
 
-              SizedBox(
-                width: double.infinity,
-                height: 48,
-                child: ElevatedButton(
-                  onPressed: () {
-                    controller.register();
-                  },
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all(AppColors.primary),
-                    shape: WidgetStateProperty.all(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+              Obx(
+                () => SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      controller.isLoading.value ? null : controller.register();
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(
+                        AppColors.primary,
+                      ),
+                      shape: WidgetStateProperty.all(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                       ),
                     ),
-                  ),
-                  child: Text(
-                    "Register",
-                    style: TextStyle(color: Colors.white),
+                    child: Text(
+                      controller.isLoading.value ? "Registering..." : "Register",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ),
               ),
