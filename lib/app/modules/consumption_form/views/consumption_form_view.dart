@@ -161,12 +161,10 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
                       borderRadius: BorderRadius.circular(40),
                     ),
                   ),
-                  child: controller.isLoading.value
-                      ? CircularProgressIndicator(color: Colors.white)
-                      : Text(
-                          "Submit",
-                          style: TextStyle(fontSize: 16, color: Colors.white),
-                        ),
+                  child: Text(
+                    controller.isLoading.value ? "Submitting..." : "Submit",
+                    style: TextStyle(fontSize: 16, color: Colors.white),
+                  ),
                 ),
               ),
             ),
@@ -262,8 +260,6 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
       ),
     ),
   );
-
-  // Widget _buildAmountControl() => ;
 
   Widget _buildContextDropdown() => Obx(
     () => Container(

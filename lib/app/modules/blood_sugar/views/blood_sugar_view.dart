@@ -75,7 +75,7 @@ class BloodSugarView extends GetView<BloodSugarController> {
                 ),
                 onPressed: controller.submitBloodSugarForm,
                 child: Text(
-                  'Submit',
+                  controller.isLoading.value ? "Submitting..." : 'Submit',
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 16,
