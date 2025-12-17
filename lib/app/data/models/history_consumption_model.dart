@@ -1,13 +1,13 @@
 
 
-class HistoryModel {
+class HistoryConsumptionModel {
   final String type;
   final double amount;
   final double sugarData;
   final String context;
   final DateTime dateTime;
 
-  HistoryModel({
+  HistoryConsumptionModel({
     required this.type,
     required this.amount,
     required this.sugarData,
@@ -17,8 +17,8 @@ class HistoryModel {
 
 
 
-  factory HistoryModel.fromJson(Map<String, dynamic> json) {
-    return HistoryModel(
+  factory HistoryConsumptionModel.fromJson(Map<String, dynamic> json) {
+    return HistoryConsumptionModel(
       dateTime: DateTime.parse(json['date_time']),
       type: json['type'] ?? '',
       amount: (json['amount'] as num).toDouble(),

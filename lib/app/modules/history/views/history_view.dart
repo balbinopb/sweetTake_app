@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sweettake_app/app/data/models/history_bloodsugar_model.dart';
 
-import '../../../data/models/history_model.dart';
+import '../../../data/models/history_consumption_model.dart';
 import '../controllers/history_controller.dart';
 
 class HistoryView extends GetView<HistoryController> {
@@ -14,7 +15,6 @@ class HistoryView extends GetView<HistoryController> {
       body: SafeArea(
         child: Column(
           children: [
-
             // =========header====================
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -41,7 +41,6 @@ class HistoryView extends GetView<HistoryController> {
                       ),
                     ),
                   ),
-
 
                   SizedBox(height: 16),
 
@@ -199,7 +198,7 @@ class HistoryView extends GetView<HistoryController> {
                       Expanded(
                         child: controller.selectedTab.value == 0
                             ? _SugarList(items: controller.sugarItems)
-                            : _BloodSugarList(), // <- switch here
+                            : _BloodSugarList(items: controller.bloodItems),
                       ),
                     ],
                   );
@@ -215,7 +214,7 @@ class HistoryView extends GetView<HistoryController> {
 
 /// Sugar Consumption list
 class _SugarList extends StatelessWidget {
-  final List<HistoryModel> items;
+  final List<HistoryConsumptionModel> items;
 
   const _SugarList({required this.items});
 
@@ -229,7 +228,7 @@ class _SugarList extends StatelessWidget {
     final double total = items.fold(0, (sum, item) => sum + item.sugarData);
 
     if (items.isEmpty) {
-      return const Center(
+      return Center(
         child: Text(
           'No sugar consumption data',
           style: TextStyle(color: Colors.grey),
@@ -238,7 +237,7 @@ class _SugarList extends StatelessWidget {
     }
 
     return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
       children: [
         ...items.map(
           (item) => _SugarItem(
@@ -247,27 +246,10 @@ class _SugarList extends StatelessWidget {
             amount: '${item.sugarData.toStringAsFixed(1)}g',
           ),
         ),
-        const SizedBox(height: 12),
-        const Divider(thickness: 0.7, color: Color(0xFFE0C69B)),
-        const SizedBox(height: 8),
-        _TotalRow(totalText: '${total.toStringAsFixed(1)}g'),
-      ],
-    );
-  }
-}
-
-/// Blood Sugar list
-class _BloodSugarList extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      padding: EdgeInsets.symmetric(horizontal: 18.0, vertical: 8.0),
-      children: [
-        _BloodItem(time: '14:35', label: 'Post-Meal', value: '118 mg/dL'),
         SizedBox(height: 12),
         Divider(thickness: 0.7, color: Color(0xFFE0C69B)),
         SizedBox(height: 8),
-        _TotalRow(totalText: '118 mg/dL'),
+        _TotalRow(totalText: '${total.toStringAsFixed(1)}g'),
       ],
     );
   }
@@ -355,7 +337,54 @@ class _SugarItem extends StatelessWidget {
   }
 }
 
-/// Blood Item (for Blood Sugar tab)
+
+
+// history for blood sugar
+/// Blood Sugar list
+class _BloodSugarList extends StatelessWidget {
+  final List<HistoryBloodsugarModel> items;
+
+  const _BloodSugarList({required this.items});
+
+  String _formatTime(DateTime dateTime) {
+    return '${dateTime.hour.toString().padLeft(2, '0')}:'
+        '${dateTime.minute.toString().padLeft(2, '0')}';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    final double total = items.fold(0.0, (sum, item) => sum + item.bloodSugarData);
+
+    if (items.isEmpty) {
+      return Center(
+        child: Text(
+          'No sugar blood sugar data',
+          style: TextStyle(color: Colors.grey),
+        ),
+      );
+    }
+
+    return ListView(
+      padding: EdgeInsets.symmetric(horizontal: 18.0, vertical: 8.0),
+      children: [
+        ...items.map(
+          (e) => _BloodItem(
+            time: _formatTime(e.dateTime),
+            label: e.context,
+            value: e.bloodSugarData.toString(),
+          ),
+        ),
+        SizedBox(height: 12),
+        Divider(thickness: 0.7, color: Color(0xFFE0C69B)),
+        SizedBox(height: 8),
+        _TotalRow(totalText: "$total mg/dL"),
+      ],
+    );
+  }
+}
+
+/// Blood Item
 class _BloodItem extends StatelessWidget {
   final String time;
   final String label;
@@ -425,7 +454,7 @@ class _BloodItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                value,
+                "$value mg/dL",
                 style: TextStyle(
                   color: Colors.brown,
                   fontWeight: FontWeight.w700,

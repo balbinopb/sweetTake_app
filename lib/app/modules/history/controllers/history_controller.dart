@@ -1,9 +1,8 @@
 import 'dart:convert';
-
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-
-import '../../../data/models/history_model.dart';
+import 'package:sweettake_app/app/data/models/history_bloodsugar_model.dart';
+import '../../../data/models/history_consumption_model.dart';
 import '../../login/controllers/auth_controller.dart';
 
 class HistoryController extends GetxController {
@@ -15,24 +14,36 @@ class HistoryController extends GetxController {
 
   final _authC = Get.find<AuthController>();
 
-  final sugarItems = <HistoryModel>[].obs;
-  final bloodItems = <HistoryModel>[].obs;
+  final sugarItems = <HistoryConsumptionModel>[].obs;
+  final bloodItems = <HistoryBloodsugarModel>[].obs;
 
   @override
   void onInit() {
     super.onInit();
     _updateDateText();
     loadConsumptions();
+    loadBloodSugar(); 
   }
 
-  void selectTab(int index) => selectedTab.value = index;
+  // Tab selection
+  void selectTab(int index) {
+    selectedTab.value = index;
 
+    // Load blood sugar only if tab 1 selected and data not loaded
+    if (index == 1 && bloodItems.isEmpty) {
+      loadBloodSugar();
+    }
+  }
+
+  // Change date
   void setDate(DateTime newDate) {
     selectedDate.value = newDate;
     _updateDateText();
     loadConsumptions();
+    loadBloodSugar();
   }
 
+  // Format date for UI
   void _updateDateText() {
     final d = selectedDate.value;
     dateText.value =
@@ -41,7 +52,8 @@ class HistoryController extends GetxController {
         '${(d.year % 100).toString().padLeft(2, '0')}';
   }
 
-  Future<List<HistoryModel>> fetchConsumptions() async {
+  // ================= Sugar Consumption =================
+  Future<List<HistoryConsumptionModel>> fetchConsumptions() async {
     final response = await http.get(
       Uri.parse("$baseUrl/consumptions"),
       headers: {
@@ -52,49 +64,65 @@ class HistoryController extends GetxController {
 
     final body = jsonDecode(response.body);
     final List list = body['data'];
-    return list.map((e) => HistoryModel.fromJson(e)).toList();
+    return list.map((e) => HistoryConsumptionModel.fromJson(e)).toList();
   }
 
-  Future<void> loadConsumptions() async {
-    final all = await fetchConsumptions();
-
-    // print('ALL DATA COUNT: ${all.length}');
-    // for (final e in all) {
-    //   print(
-    //     'RAW -> type: ${e.type}, '
-    //     'amount: ${e.amount}, '
-    //     'sugarData: ${e.sugarData}, '
-    //     'date: ${e.dateTime}',
-    //   );
-    // }
-
-    sugarItems.value = filterConsumptions(
-      all: all,
-      selectedDate: selectedDate.value,
-    );
-
-    bloodItems.value = filterConsumptions(
-      all: all,
-      selectedDate: selectedDate.value,
-    );
-
-    // print('SUGAR ITEMS COUNT: ${sugarItems.length}');
-    // print('BLOOD ITEMS COUNT: ${bloodItems.length}');
-  }
-
-  List<HistoryModel> filterConsumptions({
-    required List<HistoryModel> all,
+  List<HistoryConsumptionModel> filterConsumptions({
+    required List<HistoryConsumptionModel> all,
     required DateTime selectedDate,
   }) {
     return all.where((c) {
       final localTime = c.dateTime.toLocal();
-
-      final sameDate =
-          localTime.year == selectedDate.year &&
-          localTime.month == selectedDate.month &&
-          localTime.day == selectedDate.day;
-
-      return sameDate;
+      return localTime.year == selectedDate.year &&
+             localTime.month == selectedDate.month &&
+             localTime.day == selectedDate.day;
     }).toList();
+  }
+
+  Future<void> loadConsumptions() async {
+    final all = await fetchConsumptions();
+    sugarItems.value = filterConsumptions(
+      all: all,
+      selectedDate: selectedDate.value,
+    );
+  }
+
+  // ================= Blood Sugar =================
+  Future<List<HistoryBloodsugarModel>> fetchBloodSugar() async {
+    final response = await http.get(
+      Uri.parse("$baseUrl/bloodsugars"),
+      headers: {'Authorization': 'Bearer ${_authC.token.value}'},
+    );
+
+    final Map<String, dynamic> body = jsonDecode(response.body);
+    final List list = body['data'];
+    return list.map((e) => HistoryBloodsugarModel.fromJson(e)).toList();
+  }
+
+  List<HistoryBloodsugarModel> filterBloodSugar({
+    required List<HistoryBloodsugarModel> all,
+    required DateTime selectedDate,
+  }) {
+    return all.where((c) {
+      final localTime = c.dateTime.toLocal();
+      return localTime.year == selectedDate.year &&
+             localTime.month == selectedDate.month &&
+             localTime.day == selectedDate.day;
+    }).toList();
+  }
+
+  Future<void> loadBloodSugar() async {
+    final all = await fetchBloodSugar();
+
+    // for (var i = 0; i < all.length; i++) {
+    //   print("=================${all[i].bloodSugarData}=============");
+    //   print("=================${all[i].context}=============");
+    //   print("=================${all[i].dateTime}=============\n\n");
+    // }
+
+    bloodItems.value = filterBloodSugar(
+      all: all,
+      selectedDate: selectedDate.value,
+    );
   }
 }
