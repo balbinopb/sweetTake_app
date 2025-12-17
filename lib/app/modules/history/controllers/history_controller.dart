@@ -1,48 +1,100 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+
+import '../../../data/models/history_model.dart';
+import '../../login/controllers/auth_controller.dart';
 
 class HistoryController extends GetxController {
-  /// 0 = Sugar Consumption, 1 = Blood Sugar
+  final baseUrl = "http://10.0.2.2:8080/v1/api/auth";
+
   final selectedTab = 0.obs;
-
-  void selectTab(int index) {
-    selectedTab.value = index;
-  }
-
-  // ==========================
-  // DATE STATE (for header)
-  // ==========================
-  /// Tanggal yang dipilih
   final selectedDate = DateTime.now().obs;
-
-  /// Teks yang ditampilkan di header (misal: 17-11-20)
   final dateText = ''.obs;
+
+  final _authC = Get.find<AuthController>();
+
+  final sugarItems = <HistoryModel>[].obs;
+  final bloodItems = <HistoryModel>[].obs;
 
   @override
   void onInit() {
     super.onInit();
     _updateDateText();
+    loadConsumptions();
   }
+
+  void selectTab(int index) => selectedTab.value = index;
 
   void setDate(DateTime newDate) {
     selectedDate.value = newDate;
     _updateDateText();
-
+    loadConsumptions();
   }
 
   void _updateDateText() {
     final d = selectedDate.value;
-    final day = d.day.toString().padLeft(2, '0');
-    final month = d.month.toString().padLeft(2, '0');
-    final year2 = (d.year % 100).toString().padLeft(2, '0'); // 2-digit year
-    dateText.value = '$day-$month-$year2'; // contoh: 17-11-20
+    dateText.value =
+        '${d.day.toString().padLeft(2, '0')}-'
+        '${d.month.toString().padLeft(2, '0')}-'
+        '${(d.year % 100).toString().padLeft(2, '0')}';
   }
 
-  final sugarItems = <Map<String, String>>[
-    {'time': '08:30', 'title': 'Oatmeal with honey', 'amount': '12.5g'},
-    {'time': '12:00', 'title': 'Iced coffee', 'amount': '18g'},
-  ].obs;
+  Future<List<HistoryModel>> fetchConsumptions() async {
+    final response = await http.get(
+      Uri.parse("$baseUrl/consumptions"),
+      headers: {
+        'Authorization': 'Bearer ${_authC.token.value}',
+        'Content-Type': 'application/json',
+      },
+    );
 
-  final bloodItems = <Map<String, String>>[
-    {'time': '14:35', 'label': 'Post-Meal', 'value': '118 mg/dL'},
-  ].obs;
+    final body = jsonDecode(response.body);
+    final List list = body['data'];
+    return list.map((e) => HistoryModel.fromJson(e)).toList();
+  }
+
+  Future<void> loadConsumptions() async {
+    final all = await fetchConsumptions();
+
+    // print('ALL DATA COUNT: ${all.length}');
+    // for (final e in all) {
+    //   print(
+    //     'RAW -> type: ${e.type}, '
+    //     'amount: ${e.amount}, '
+    //     'sugarData: ${e.sugarData}, '
+    //     'date: ${e.dateTime}',
+    //   );
+    // }
+
+    sugarItems.value = filterConsumptions(
+      all: all,
+      selectedDate: selectedDate.value,
+    );
+
+    bloodItems.value = filterConsumptions(
+      all: all,
+      selectedDate: selectedDate.value,
+    );
+
+    // print('SUGAR ITEMS COUNT: ${sugarItems.length}');
+    // print('BLOOD ITEMS COUNT: ${bloodItems.length}');
+  }
+
+  List<HistoryModel> filterConsumptions({
+    required List<HistoryModel> all,
+    required DateTime selectedDate,
+  }) {
+    return all.where((c) {
+      final localTime = c.dateTime.toLocal();
+
+      final sameDate =
+          localTime.year == selectedDate.year &&
+          localTime.month == selectedDate.month &&
+          localTime.day == selectedDate.day;
+
+      return sameDate;
+    }).toList();
+  }
 }
