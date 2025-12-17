@@ -73,9 +73,8 @@ class ConsumptionFormController extends GetxController {
     }
 
     try {
-
       isLoading.value = true;
-      
+
       final consumedAt = DateTime(
         selectedDate.year,
         selectedDate.month,
@@ -107,6 +106,7 @@ class ConsumptionFormController extends GetxController {
       );
 
       if (response.statusCode == 201) {
+        clearForm();
         Get.back();
         Get.snackbar("Success", "Consumption saved");
       } else if (response.statusCode == 401) {
@@ -119,6 +119,17 @@ class ConsumptionFormController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  void clearForm() {
+    typeC.clear();
+    sugarC.clear();
+    amount.value = 1;
+    selectedContext.value = "Snack";
+    selectedDate = DateTime.now();
+    selectedTime = TimeOfDay.now();
+    _updateDate();
+    _updateTime();
   }
 
   @override

@@ -63,6 +63,7 @@ class BloodSugarController extends GetxController {
   void _handleResponse(http.Response response, AuthController authC) {
     switch (response.statusCode) {
       case 201:
+        clearForm();
         Get.back();
         _showSuccess("Blood sugar saved successfully");
         break;
@@ -127,5 +128,16 @@ class BloodSugarController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  void clearForm() {
+    bloodSugarC.clear();
+    selectedContext.value = 'Post-meal';
+
+    selectedDate = DateTime.now();
+    selectedTime = TimeOfDay.now();
+
+    _updateDate();
+    _updateTime();
   }
 }
