@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:sweettake_app/app/data/models/blood_sugar_model.dart';
 import 'package:sweettake_app/app/routes/app_pages.dart';
 
+import '../../history/controllers/history_controller.dart';
 import '../../login/controllers/auth_controller.dart';
 
 class BloodSugarController extends GetxController {
@@ -30,6 +31,13 @@ class BloodSugarController extends GetxController {
   final timeString = "".obs;
 
   final baseUrl = "http://10.0.2.2:8080/v1/api/auth";
+
+  @override
+  void onInit() {
+    super.onInit();
+    _updateDate();
+    _updateTime();
+  }
 
   @override
   void onClose() {
@@ -64,6 +72,7 @@ class BloodSugarController extends GetxController {
     switch (response.statusCode) {
       case 201:
         clearForm();
+        Get.find<HistoryController>().loadBloodSugar();
         Get.back();
         _showSuccess("Blood sugar saved successfully");
         break;
