@@ -8,15 +8,13 @@ import '../controllers/history_controller.dart';
 class HistoryView extends GetView<HistoryController> {
   const HistoryView({super.key});
 
-  static const Color primary  = Color(0xFF4A3F24);
-  static const Color softBg   = Color(0xFFF7F3E8);
-  static const Color inputBg  = Color(0xFFFFFBF2);
-  static const Color border   = Color(0xFFE0D7C3);
+  static const Color primary = Color(0xFF4A3F24);
+  static const Color softBg = Color(0xFFF7F3E8);
+  static const Color inputBg = Color(0xFFFFFBF2);
+  static const Color border = Color(0xFFE0D7C3);
 
   @override
   Widget build(BuildContext context) {
-
-    controller.refreshData();
     return Scaffold(
       backgroundColor: softBg,
       body: SafeArea(
@@ -30,6 +28,9 @@ class HistoryView extends GetView<HistoryController> {
             const SizedBox(height: 16),
             Expanded(
               child: Obx(() {
+                if (controller.isLoading.value) {
+                  CircularProgressIndicator();
+                }
                 return controller.selectedTab.value == 0
                     ? _SugarList(items: controller.sugarItems)
                     : _BloodSugarList(items: controller.bloodItems);
@@ -103,19 +104,23 @@ class _DatePicker extends GetView<HistoryController> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.calendar_today_rounded,
-                  size: 18, color: HistoryView.primary),
+              const Icon(
+                Icons.calendar_today_rounded,
+                size: 18,
+                color: HistoryView.primary,
+              ),
               const SizedBox(width: 8),
-              Obx(() => Text(
-                    controller.dateText.value,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: HistoryView.primary,
-                    ),
-                  )),
+              Obx(
+                () => Text(
+                  controller.dateText.value,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: HistoryView.primary,
+                  ),
+                ),
+              ),
               const SizedBox(width: 4),
-              const Icon(Icons.keyboard_arrow_down,
-                  color: HistoryView.primary),
+              const Icon(Icons.keyboard_arrow_down, color: HistoryView.primary),
             ],
           ),
         ),
@@ -216,12 +221,14 @@ class _SugarList extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        ...items.map((e) => _HistoryCard(
-              icon: Icons.fastfood_rounded,
-              title: e.type,
-              subtitle: _time(e.dateTime),
-              value: "${e.sugarData.toStringAsFixed(1)} g",
-            )),
+        ...items.map(
+          (e) => _HistoryCard(
+            icon: Icons.fastfood_rounded,
+            title: e.type,
+            subtitle: _time(e.dateTime),
+            value: "${e.sugarData.toStringAsFixed(1)} g",
+          ),
+        ),
         _TotalCard(value: "${total.toStringAsFixed(1)} g"),
       ],
     );
@@ -247,12 +254,14 @@ class _BloodSugarList extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        ...items.map((e) => _HistoryCard(
-              icon: Icons.bloodtype_rounded,
-              title: e.context,
-              subtitle: _time(e.dateTime),
-              value: "${e.bloodSugarData} mg/dL",
-            )),
+        ...items.map(
+          (e) => _HistoryCard(
+            icon: Icons.bloodtype_rounded,
+            title: e.context,
+            subtitle: _time(e.dateTime),
+            value: "${e.bloodSugarData} mg/dL",
+          ),
+        ),
         _TotalCard(value: "$total mg/dL"),
       ],
     );
@@ -307,7 +316,7 @@ class _HistoryCard extends StatelessWidget {
                 Text(
                   subtitle,
                   style: TextStyle(
-                    color: HistoryView.primary.withValues(alpha:0.6),
+                    color: HistoryView.primary.withValues(alpha: 0.6),
                     fontSize: 12,
                   ),
                 ),
@@ -366,14 +375,15 @@ class _EmptyState extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.inbox_rounded,
-              size: 48, color: HistoryView.primary.withValues(alpha:0.4)),
+          Icon(
+            Icons.inbox_rounded,
+            size: 48,
+            color: HistoryView.primary.withValues(alpha: 0.4),
+          ),
           const SizedBox(height: 12),
           Text(
             text,
-            style: TextStyle(
-              color: HistoryView.primary.withValues(alpha:0.5),
-            ),
+            style: TextStyle(color: HistoryView.primary.withValues(alpha: 0.5)),
           ),
         ],
       ),

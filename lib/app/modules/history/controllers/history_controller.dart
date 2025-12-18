@@ -12,6 +12,8 @@ class HistoryController extends GetxController {
   final selectedDate = DateTime.now().obs;
   final dateText = ''.obs;
 
+  final isLoading = false.obs;
+
   final _authC = Get.find<AuthController>();
 
   final sugarItems = <HistoryConsumptionModel>[].obs;
@@ -21,8 +23,8 @@ class HistoryController extends GetxController {
   void onInit() {
     super.onInit();
     _updateDateText();
-    loadConsumptions();
-    loadBloodSugar();
+    // loadConsumptions();
+    // loadBloodSugar();
 
     ever(_authC.token, (token) {
       if (token.toString().isNotEmpty) {
@@ -30,6 +32,13 @@ class HistoryController extends GetxController {
         loadBloodSugar();
       }
     });
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+    loadConsumptions();
+    loadBloodSugar();
   }
 
   // Tab selection
@@ -86,13 +95,18 @@ class HistoryController extends GetxController {
     }).toList();
   }
 
-  Future<void> loadConsumptions() async {
-    final all = await fetchConsumptions();
-    sugarItems.value = filterConsumptions(
-      all: all,
-      selectedDate: selectedDate.value,
-    );
-  }
+Future<void> loadConsumptions() async {
+  isLoading.value = true;
+
+  final all = await fetchConsumptions();
+  sugarItems.value = filterConsumptions(
+    all: all,
+    selectedDate: selectedDate.value,
+  );
+
+  isLoading.value = false;
+}
+
 
   // ================= Blood Sugar =================
   Future<List<HistoryBloodsugarModel>> fetchBloodSugar() async {
@@ -119,25 +133,14 @@ class HistoryController extends GetxController {
   }
 
   Future<void> loadBloodSugar() async {
+    isLoading.value = true;
     final all = await fetchBloodSugar();
-
-    // for (var i = 0; i < all.length; i++) {
-    //   print("=================${all[i].bloodSugarData}=============");
-    //   print("=================${all[i].context}=============");
-    //   print("=================${all[i].dateTime}=============\n\n");
-    // }
 
     bloodItems.value = filterBloodSugar(
       all: all,
       selectedDate: selectedDate.value,
     );
-  }
 
-  Future<void> refreshData() async {
-    await loadConsumptions();
-
-    if (selectedTab.value == 1) {
-      await loadBloodSugar();
-    }
+    isLoading.value = false;
   }
 }

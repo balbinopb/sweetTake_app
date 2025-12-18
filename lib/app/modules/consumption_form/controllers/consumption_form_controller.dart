@@ -6,6 +6,8 @@ import 'package:sweettake_app/app/data/models/consumption_model.dart';
 import 'package:sweettake_app/app/modules/login/controllers/auth_controller.dart';
 import 'package:sweettake_app/app/routes/app_pages.dart';
 
+import '../../history/controllers/history_controller.dart';
+
 class ConsumptionFormController extends GetxController {
   final typeC = TextEditingController();
   final sugarC = TextEditingController();
@@ -107,6 +109,7 @@ class ConsumptionFormController extends GetxController {
 
       if (response.statusCode == 201) {
         clearForm();
+        Get.find<HistoryController>().loadConsumptions();
         Get.back();
         Get.snackbar("Success", "Consumption saved");
       } else if (response.statusCode == 401) {
