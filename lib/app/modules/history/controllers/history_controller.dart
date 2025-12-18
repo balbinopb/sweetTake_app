@@ -22,7 +22,14 @@ class HistoryController extends GetxController {
     super.onInit();
     _updateDateText();
     loadConsumptions();
-    loadBloodSugar(); 
+    loadBloodSugar();
+
+    ever(_authC.token, (token) {
+      if (token.toString().isNotEmpty) {
+        loadConsumptions();
+        loadBloodSugar();
+      }
+    });
   }
 
   // Tab selection
@@ -74,8 +81,8 @@ class HistoryController extends GetxController {
     return all.where((c) {
       final localTime = c.dateTime.toLocal();
       return localTime.year == selectedDate.year &&
-             localTime.month == selectedDate.month &&
-             localTime.day == selectedDate.day;
+          localTime.month == selectedDate.month &&
+          localTime.day == selectedDate.day;
     }).toList();
   }
 
@@ -106,8 +113,8 @@ class HistoryController extends GetxController {
     return all.where((c) {
       final localTime = c.dateTime.toLocal();
       return localTime.year == selectedDate.year &&
-             localTime.month == selectedDate.month &&
-             localTime.day == selectedDate.day;
+          localTime.month == selectedDate.month &&
+          localTime.day == selectedDate.day;
     }).toList();
   }
 
@@ -124,5 +131,13 @@ class HistoryController extends GetxController {
       all: all,
       selectedDate: selectedDate.value,
     );
+  }
+
+  Future<void> refreshData() async {
+    await loadConsumptions();
+
+    if (selectedTab.value == 1) {
+      await loadBloodSugar();
+    }
   }
 }

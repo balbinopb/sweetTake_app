@@ -5,191 +5,120 @@ import '../controllers/consumption_form_controller.dart';
 class ConsumptionFormView extends GetView<ConsumptionFormController> {
   const ConsumptionFormView({super.key});
 
+  static const Color primary = Color(0xFF4A3F24);
+  static const Color softBg = Color(0xFFF7F3E8);
+  static const Color inputBg = Color(0xFFFFFBF2);
+  static const Color border = Color(0xFFE0D7C3);
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: Colors.white,
-      insetPadding: EdgeInsets.symmetric(horizontal: 18, vertical: 24),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      backgroundColor: softBg,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       child: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 22, vertical: 18),
+        padding: const EdgeInsets.fromLTRB(24, 20, 24, 26),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Align(
-              alignment: Alignment.centerRight,
-              child: IconButton(
-                onPressed: () => Get.back(),
-                icon: Icon(Icons.close, color: Color(0xFF4A3F24)),
-              ),
-            ),
-
-            Column(
-              children: [
-                Text(
-                  "LOAD YOUR SWEETS INTAKE!",
-                  style: TextStyle(
-                    fontSize: 18,
-                    letterSpacing: 0.8,
-                    color: Color(0xFF4A3F24),
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 4),
-                Text(
-                  "Sugar Consumption",
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: Color(0xFF4A3F24),
-                    fontStyle: FontStyle.italic,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-            SizedBox(height: 25),
+            _header(),
+            const SizedBox(height: 26),
 
             Row(
               children: [
                 Expanded(child: _buildDatePicker(context)),
-                SizedBox(width: 14),
+                const SizedBox(width: 12),
                 Expanded(child: _buildTimePicker(context)),
               ],
             ),
 
-            SizedBox(height: 20),
+            const SizedBox(height: 22),
 
-            // food type
-            Text(
-              "Food Type",
-              style: TextStyle(
-                color: Color(0xFF4A3F24),
-                fontWeight: FontWeight.w600,
-                fontSize: 15,
-              ),
-            ),
+            _label("Food Type"),
             _buildTextField(controller.typeC, "Milk Tea"),
-            SizedBox(height: 20),
+            const SizedBox(height: 22),
 
-            // amount
-            Text(
-              "Amount",
-              style: TextStyle(
-                color: Color(0xFF4A3F24),
-                fontWeight: FontWeight.w600,
-                fontSize: 15,
-              ),
-            ),
-            Obx(
-              () => Container(
-                height: 50,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
-                  color: Color(0xFF4A3F24),
-                ),
-                child: Row(
-                  children: [
-                    IconButton(
-                      onPressed: controller.decrementAmount,
-                      icon: Icon(Icons.remove, color: Colors.white),
-                    ),
-                    Expanded(
-                      child: Container(
-                        color: Colors.white,
-                        alignment: Alignment.center,
-                        child: Text(
-                          controller.amount.value.toString(),
-                          style: TextStyle(
-                            color: Color(0xFF4A3F24),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: controller.incrementAmount,
-                      icon: Icon(Icons.add, color: Colors.white),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            _label("Amount"),
+            _amountSelector(),
+            const SizedBox(height: 22),
 
-            SizedBox(height: 20),
-
-            // sugar input
-            Text(
-              "Sugar (g)",
-              style: TextStyle(
-                color: Color(0xFF4A3F24),
-                fontWeight: FontWeight.w600,
-                fontSize: 15,
-              ),
-            ),
+            _label("Sugar (g)"),
             _buildTextField(controller.sugarC, "42"),
-            SizedBox(height: 20),
+            const SizedBox(height: 22),
 
-            // choose context
-            Text(
-              "Context",
-              style: TextStyle(
-                color: Color(0xFF4A3F24),
-                fontWeight: FontWeight.w600,
-                fontSize: 15,
-              ),
-            ),
+            _label("Context"),
             _buildContextDropdown(),
+            const SizedBox(height: 32),
 
-            SizedBox(height: 35),
-
-            // submit button
-            Obx(
-              () => Center(
-                child: ElevatedButton(
-                  onPressed: () async {
-                    controller.isLoading.value
-                        ? null
-                        : await controller.submitConsumption();
-                  },
-
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF4A3F24),
-                    padding: EdgeInsets.symmetric(vertical: 14, horizontal: 40),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(40),
-                    ),
-                  ),
-                  child: Text(
-                    controller.isLoading.value ? "Submitting..." : "Submit",
-                    style: TextStyle(fontSize: 16, color: Colors.white),
-                  ),
-                ),
-              ),
-            ),
+            _submitButton(),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildTextField(TextEditingController c, String hint) => Container(
-    padding: EdgeInsets.symmetric(horizontal: 12),
-    decoration: BoxDecoration(
-      color: Color(0xFFFDF4C8),
-      borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: Color(0xFFA08C6A)),
-    ),
-    child: TextField(
-      controller: c,
-      decoration: InputDecoration(
-        border: InputBorder.none,
-        hintText: hint,
-        suffixIcon: Icon(Icons.edit, color: Color(0xFF4A3F24)),
+  // ================= HEADER =================
+
+  Widget _header() => Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const [
+          Text(
+            "Add Sugar Intake",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: primary,
+            ),
+          ),
+          SizedBox(height: 4),
+          Text(
+            "Track what you consumed",
+            style: TextStyle(fontSize: 14, color: Colors.black54),
+          ),
+        ],
+      ),
+      IconButton(onPressed: Get.back, icon: const Icon(Icons.close)),
+    ],
+  );
+
+  // ================= LABEL =================
+
+  Widget _label(String text) => Padding(
+    padding: const EdgeInsets.only(bottom: 6),
+    child: Text(
+      text,
+      style: const TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: primary,
       ),
     ),
   );
+
+  // ================= TEXT FIELD =================
+
+  Widget _buildTextField(TextEditingController c, String hint) => Container(
+    decoration: BoxDecoration(
+      color: inputBg,
+      borderRadius: BorderRadius.circular(14),
+      border: Border.all(color: border),
+    ),
+    padding: const EdgeInsets.symmetric(horizontal: 14),
+    child: TextField(
+      controller: c,
+      style: const TextStyle(fontSize: 14),
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: TextStyle(color: Colors.grey.shade500),
+        border: InputBorder.none,
+      ),
+    ),
+  );
+
+  // ================= DATE PICKER =================
 
   Widget _buildDatePicker(BuildContext context) => GestureDetector(
     onTap: () async {
@@ -201,31 +130,20 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
       );
       if (picked != null) controller.updateDate(picked);
     },
-    child: Container(
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-      decoration: BoxDecoration(
-        color: Color(0xFFFDF4C8),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Color(0xFFA08C6A)),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.calendar_today, color: Color(0xFF4A3F24)),
-          SizedBox(width: 10),
-          Expanded(
-            child: Obx(
-              () => Text(
-                controller.dateString.value,
-                style: TextStyle(fontSize: 14),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ),
-          Icon(Icons.keyboard_arrow_down, color: Color(0xFF4A3F24)),
-        ],
+    child: _pickerBox(
+      Obx(
+        () => Row(
+          children: [
+            const Icon(Icons.calendar_today_outlined, size: 18),
+            const SizedBox(width: 10),
+            Expanded(child: Text(controller.dateString.value)),
+          ],
+        ),
       ),
     ),
   );
+
+  // ================= TIME PICKER =================
 
   Widget _buildTimePicker(BuildContext context) => GestureDetector(
     onTap: () async {
@@ -235,50 +153,105 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
       );
       if (picked != null) controller.updateTime(picked);
     },
-    child: Container(
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+    child: _pickerBox(
+      Obx(
+        () => Row(
+          children: [
+            const Icon(Icons.access_time_outlined, size: 18),
+            const SizedBox(width: 10),
+            Expanded(child: Text(controller.timeString.value)),
+          ],
+        ),
+      ),
+    ),
+  );
+
+  Widget _pickerBox(Widget child) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+    decoration: BoxDecoration(
+      color: inputBg,
+      borderRadius: BorderRadius.circular(14),
+      border: Border.all(color: border),
+    ),
+    child: child,
+  );
+
+  // ================= AMOUNT =================
+
+  Widget _amountSelector() => Obx(
+    () => Container(
       decoration: BoxDecoration(
-        color: Color(0xFFFDF4C8),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Color(0xFFA08C6A)),
+        color: inputBg,
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(color: border),
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Icon(Icons.access_time, color: Color(0xFF4A3F24)),
-          SizedBox(width: 10),
-          Expanded(
-            child: Obx(
-              () => Text(
-                controller.timeString.value,
-                style: TextStyle(fontSize: 14),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
+          IconButton(
+            onPressed: controller.decrementAmount,
+            icon: const Icon(Icons.remove),
           ),
-          Icon(Icons.keyboard_arrow_down, color: Color(0xFF4A3F24)),
+          Text(
+            controller.amount.value.toString(),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          IconButton(
+            onPressed: controller.incrementAmount,
+            icon: const Icon(Icons.add),
+          ),
         ],
       ),
     ),
   );
 
+  // ================= DROPDOWN =================
+
   Widget _buildContextDropdown() => Obx(
     () => Container(
-      padding: EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
-        color: Color(0xFFFDF4C8),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Color(0xFFA08C6A)),
+        color: inputBg,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: border),
       ),
-      child: DropdownButton<String>(
-        value: controller.contextList.contains(controller.selectedContext.value)
-            ? controller.selectedContext.value
-            : controller.contextList.first,
-        isExpanded: true,
-        underline: SizedBox(),
-        items: controller.contextList
-            .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-            .toList(),
-        onChanged: (value) => controller.selectedContext.value = value ?? "",
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          value: controller.selectedContext.value,
+          isExpanded: true,
+          items: controller.contextList
+              .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+              .toList(),
+          onChanged: (v) => controller.selectedContext.value = v!,
+        ),
+      ),
+    ),
+  );
+
+  // ================= BUTTON =================
+
+  Widget _submitButton() => SizedBox(
+    width: double.infinity,
+    child: Obx(
+      () => ElevatedButton(
+        onPressed: controller.isLoading.value
+            ? null
+            : controller.submitConsumption,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: primary,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
+        ),
+        child: Text(
+          controller.isLoading.value ? "Submitting..." : "Save Intake",
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     ),
   );

@@ -196,9 +196,12 @@ class HistoryView extends GetView<HistoryController> {
 
                       // switch tab
                       Expanded(
-                        child: controller.selectedTab.value == 0
-                            ? _SugarList(items: controller.sugarItems)
-                            : _BloodSugarList(items: controller.bloodItems),
+                        child: RefreshIndicator(
+                          onRefresh: controller.refreshData,
+                          child: controller.selectedTab.value == 0
+                              ? _SugarList(items: controller.sugarItems)
+                              : _BloodSugarList(items: controller.bloodItems),
+                        ),
                       ),
                     ],
                   );
@@ -228,15 +231,22 @@ class _SugarList extends StatelessWidget {
     final double total = items.fold(0, (sum, item) => sum + item.sugarData);
 
     if (items.isEmpty) {
-      return Center(
-        child: Text(
-          'No sugar consumption data',
-          style: TextStyle(color: Colors.grey),
-        ),
+      return ListView(
+        physics: AlwaysScrollableScrollPhysics(),
+        children: [
+          SizedBox(height: 150),
+          Center(
+            child: Text(
+              'No sugar consumption data',
+              style: TextStyle(color: Colors.grey),
+            ),
+          ),
+        ],
       );
     }
 
     return ListView(
+      physics: AlwaysScrollableScrollPhysics(),
       padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
       children: [
         ...items.map(
@@ -337,8 +347,6 @@ class _SugarItem extends StatelessWidget {
   }
 }
 
-
-
 // history for blood sugar
 /// Blood Sugar list
 class _BloodSugarList extends StatelessWidget {
@@ -353,19 +361,28 @@ class _BloodSugarList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    final double total = items.fold(0.0, (sum, item) => sum + item.bloodSugarData);
+    final double total = items.fold(
+      0.0,
+      (sum, item) => sum + item.bloodSugarData,
+    );
 
     if (items.isEmpty) {
-      return Center(
-        child: Text(
-          'No sugar blood sugar data',
-          style: TextStyle(color: Colors.grey),
-        ),
+      return ListView(
+        physics: AlwaysScrollableScrollPhysics(),
+        children: [
+          SizedBox(height: 150),
+          Center(
+            child: Text(
+              'No blood sugar data',
+              style: TextStyle(color: Colors.grey),
+            ),
+          ),
+        ],
       );
     }
 
     return ListView(
+      physics: AlwaysScrollableScrollPhysics(),
       padding: EdgeInsets.symmetric(horizontal: 18.0, vertical: 8.0),
       children: [
         ...items.map(

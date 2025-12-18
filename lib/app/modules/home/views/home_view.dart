@@ -1,411 +1,217 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
-
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
 
+  static const Color primary = Color(0xFF4C462A);
+  static const Color bg = Color(0xFFFFF7D6);
+  static const Color card = Color(0xFFFFFDF8);
+  static const Color accent = Color(0xFFFFCF71);
+  static const Color chartBg = Color(0xFF4C462A);
+
   @override
   Widget build(BuildContext context) {
     const double bottomNavHeight = 90;
-    const int topSpacerFlex = 2;
 
     final media = MediaQuery.of(context);
-    final screenHeight = media.size.height;
-    final topPadding = media.padding.top;
-    final minHeight = screenHeight - topPadding - bottomNavHeight;
+    final minHeight =
+        media.size.height - media.padding.top - bottomNavHeight;
 
-    // Measure Y-label width dynamically
-    final labelStrings = ['40', '30', '20', '10'];
-    final TextStyle yLabelStyle = HomeView._yLabelStyle();
-    double maxLabelWidth = 0;
-    for (final s in labelStrings) {
-      final tp = TextPainter(
-        text: TextSpan(text: s, style: yLabelStyle),
-        textDirection: TextDirection.ltr,
-      )..layout();
-      if (tp.width > maxLabelWidth) maxLabelWidth = tp.width;
-    }
-    final double yLabelWidth = (maxLabelWidth + 8).ceilToDouble();
+    // Measure Y-axis label width
+    final yLabels = ['40', '30', '20', '10'];
+    double yLabelWidth = _measureMaxLabelWidth(yLabels) + 8;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF7D6),
+      backgroundColor: bg,
       body: SafeArea(
         child: SingleChildScrollView(
-          // beri padding bottom agar konten tidak tertutup bottom nav saat discroll
-          padding: EdgeInsets.only(bottom: bottomNavHeight / 2),
+          padding: const EdgeInsets.only(bottom: bottomNavHeight / 2),
           child: ConstrainedBox(
             constraints: BoxConstraints(minHeight: minHeight),
-            child: IntrinsicHeight(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // Spacer di awal: ini yang mendorong seluruh isi ke bawah.
-                    Spacer(flex: topSpacerFlex),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 24),
 
-                    const SizedBox(height: 16),
-                    // Header Section
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // User Avatar and Greeting
-                        Row(
-                          children: [
-                            Container(
-                              width: 48,
-                              height: 48,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: const Color(0xFF4C462A),
-                                  width: 2,
-                                ),
-                                color: const Color(0xFFFFFDF8),
-                              ),
-                              child: const Icon(
-                                Icons.person,
-                                color: Color(0xFF4C462A),
-                                size: 28,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Hello,',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: const Color(0xFF4C462A),
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                Text(
-                                  'Sweetie Telutizen',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: const Color(0xFF4C462A),
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        // Menu Icon
-                        GestureDetector(
-                          onTap: () {
-                            // Menu action
-                          },
-                          child: Icon(
-                            Icons.menu,
-                            color: const Color(0xFF4C462A),
-                            size: 24,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Title above chart
-                    Text(
-                      'Sugar Consumption History',
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: 'SansitaOne',
-                        letterSpacing: 0.5,
-                        color: Color(0xFF4C462A),
-                      ),
-                    ),
-
-                    const SizedBox(height: 12),
-
-                    // Segmented control (Weekly / Monthly)
-                    Obx(() {
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFFFFDF8),
-                          borderRadius: BorderRadius.circular(24),
-                          border: Border.all(color: const Color(0xFF4C462A)),
-                        ),
-                        padding: const EdgeInsets.all(4),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            _buildSegmentButton(
-                              label: 'Weekly',
-                              isActive:
-                                  controller.selectedRange.value == 'Weekly',
-                              onTap: () => controller.updateRange('Weekly'),
-                            ),
-                            _buildSegmentButton(
-                              label: 'Monthly',
-                              isActive:
-                                  controller.selectedRange.value == 'Monthly',
-                              onTap: () => controller.updateRange('Monthly'),
-                            ),
-                          ],
-                        ),
-                      );
-                    }),
-
-                    const SizedBox(height: 18),
-
-                    // Chart Section
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF4C462A),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: const Color(0xFF000000),
-                          width: 1,
-                        ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                  // ================= HEADER =================
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
                         children: [
-                          SizedBox(
-                            height: 180,
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                // Y-axis labels with fixed (measured) width so chart can mirror it on the right
-                                SizedBox(
-                                  width: yLabelWidth,
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text('40', style: _yLabelStyle()),
-                                      Text('30', style: _yLabelStyle()),
-                                      Text('20', style: _yLabelStyle()),
-                                      Text('10', style: _yLabelStyle()),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                // Chart area: give right padding equal to label width to make left/right symmetric
-                                Expanded(
-                                  child: Padding(
-                                    padding: EdgeInsets.only(
-                                      right: yLabelWidth,
-                                    ),
-                                    child: CustomPaint(
-                                      painter: ChartLinePainter(),
-                                      size: Size.infinite,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                          Container(
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: card,
+                              border: Border.all(color: primary),
                             ),
+                            child: const Icon(Icons.person, color: primary),
                           ),
-                          const SizedBox(height: 16),
-                          // X-axis labels (Days of week)
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('Sun', style: _xLabelStyle()),
-                              Text('Mon', style: _xLabelStyle()),
-                              Text('Tue', style: _xLabelStyle()),
-                              Text('Wed', style: _xLabelStyle()),
-                              Text('Thu', style: _xLabelStyle()),
-                              Text('Fri', style: _xLabelStyle()),
-                              Text('Sat', style: _xLabelStyle()),
+                          const SizedBox(width: 12),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: const [
+                              Text("Hello,",
+                                  style: TextStyle(
+                                      fontSize: 14, color: primary)),
+                              Text(
+                                "Sweetie Telutizen",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: primary,
+                                ),
+                              ),
                             ],
                           ),
                         ],
                       ),
+                      const Icon(Icons.menu, color: primary),
+                    ],
+                  ),
+
+                  const SizedBox(height: 28),
+
+                  // ================= TITLE =================
+                  const Text(
+                    "Sugar Consumption History",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: primary,
                     ),
+                  ),
 
-                    const SizedBox(height: 24),
+                  const SizedBox(height: 12),
 
-                    // Today's Sugar Intake Button
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFFFDF8),
-                        border: Border.all(
-                          color: const Color(0xFF4C462A),
-                          width: 1,
+                  // ================= SEGMENT =================
+                  Obx(() => Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: card,
+                          borderRadius: BorderRadius.circular(30),
                         ),
-                        borderRadius: BorderRadius.circular(24),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.05),
-                            blurRadius: 4,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Text(
-                        "Today's Sugar Intake",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: const Color(0xFF4C462A),
-                          fontWeight: FontWeight.w600,
+                        child: Row(
+                          children: [
+                            _segment(
+                              label: "Weekly",
+                              active:
+                                  controller.selectedRange.value == "Weekly",
+                              onTap: () =>
+                                  controller.updateRange("Weekly"),
+                            ),
+                            _segment(
+                              label: "Monthly",
+                              active:
+                                  controller.selectedRange.value == "Monthly",
+                              onTap: () =>
+                                  controller.updateRange("Monthly"),
+                            ),
+                          ],
                         ),
-                      ),
+                      )),
+
+                  const SizedBox(height: 20),
+
+                  // ================= CHART =================
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: chartBg,
+                      borderRadius: BorderRadius.circular(24),
                     ),
-                    const SizedBox(height: 24),
-
-                    // Consumption Items
-                    Column(
+                    child: Column(
                       children: [
-                        // Milk Tea Card
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFFCF71),
-                            border: Border.all(
-                              color: const Color(0xFF4C462A),
-                              width: 1,
-                            ),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
+                        SizedBox(
+                          height: 180,
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.access_time,
-                                        color: const Color(0xFF4C462A),
-                                        size: 16,
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        '8.00',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: const Color(0xFF4C462A),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 12),
-                                  Text(
-                                    'Milk Tea',
-                                    style: TextStyle(
-                                      fontSize: 32,
-                                      color: const Color(0xFF4C462A),
-                                    ),
-                                  ),
-                                ],
+                              SizedBox(
+                                width: yLabelWidth,
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: yLabels
+                                      .map((e) => Text(e,
+                                          style: _axisStyle()))
+                                      .toList(),
+                                ),
                               ),
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.opacity,
-                                    color: const Color(0xFF4C462A),
-                                    size: 20,
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Padding(
+                                  padding:
+                                      EdgeInsets.only(right: yLabelWidth),
+                                  child: CustomPaint(
+                                    painter: ChartLinePainter(),
                                   ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    '42gram',
-                                    style: TextStyle(
-                                      fontSize: 24,
-                                      color: const Color(0xFF4C462A),
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
                             ],
                           ),
                         ),
-                        const SizedBox(height: 14),
-                        // Burger Card
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFFCF71),
-                            border: Border.all(
-                              color: const Color(0xFF4C462A),
-                              width: 1,
-                            ),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.access_time,
-                                        color: const Color(0xFF4C462A),
-                                        size: 16,
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        '12.00',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: const Color(0xFF4C462A),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 12),
-                                  Text(
-                                    'Burger',
-                                    style: TextStyle(
-                                      fontSize: 32,
-                                      color: const Color(0xFF4C462A),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.opacity,
-                                    color: const Color(0xFF4C462A),
-                                    size: 20,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    '25gram',
-                                    style: TextStyle(
-                                      fontSize: 24,
-                                      color: const Color(0xFF4C462A),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                        const SizedBox(height: 12),
+                        Row(
+                          mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
+                          children: const [
+                            Text("Sun", style: _axisText),
+                            Text("Mon", style: _axisText),
+                            Text("Tue", style: _axisText),
+                            Text("Wed", style: _axisText),
+                            Text("Thu", style: _axisText),
+                            Text("Fri", style: _axisText),
+                            Text("Sat", style: _axisText),
+                          ],
                         ),
                       ],
                     ),
+                  ),
 
-                    const SizedBox(height: 24),
+                  const SizedBox(height: 24),
 
-                    // Jika ingin ada ruang bawah ekstra sebelum bottom nav:
-                    SizedBox(height: bottomNavHeight / 2),
+                  // ================= TODAY SUMMARY =================
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 14, horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: card,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Text(
+                      "Today's Sugar Intake",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: primary,
+                      ),
+                    ),
+                  ),
 
-                    // Kalau perlu, spacer akhir agar IntrinsicHeight terpenuhi —
-                    const Spacer(flex: 1),
-                  ],
-                ),
+                  const SizedBox(height: 24),
+
+                  // ================= CONSUMPTION LIST =================
+                  _consumptionCard(
+                    time: "08:00",
+                    title: "Milk Tea",
+                    sugar: "42g",
+                  ),
+                  const SizedBox(height: 14),
+                  _consumptionCard(
+                    time: "12:00",
+                    title: "Burger",
+                    sugar: "25g",
+                  ),
+
+                  const SizedBox(height: bottomNavHeight / 2),
+                ],
               ),
             ),
           ),
@@ -414,44 +220,46 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  // Styles helper
-  static TextStyle _yLabelStyle() {
-    return const TextStyle(
-      fontSize: 12,
-      color: Color(0xFFFFF7D6),
-      fontWeight: FontWeight.w400,
-    );
+  // ================= HELPERS =================
+
+  static double _measureMaxLabelWidth(List<String> labels) {
+    double max = 0;
+    for (final s in labels) {
+      final tp = TextPainter(
+        text: TextSpan(text: s, style: _axisStyle()),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      if (tp.width > max) max = tp.width;
+    }
+    return max;
   }
 
-  static TextStyle _xLabelStyle() {
-    return const TextStyle(
-      fontSize: 12,
-      color: Color(0xFFFFF7D6),
-      fontWeight: FontWeight.w400,
-    );
-  }
+  static TextStyle _axisStyle() =>
+      const TextStyle(color: bg, fontSize: 12);
 
-  Widget _buildSegmentButton({
+  static const TextStyle _axisText =
+      TextStyle(color: bg, fontSize: 12);
+
+  Widget _segment({
     required String label,
-    required bool isActive,
+    required bool active,
     required VoidCallback onTap,
   }) {
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
+          duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
-            color: isActive ? const Color(0xFF4C462A) : Colors.transparent,
-            borderRadius: BorderRadius.circular(20),
+            color: active ? primary : Colors.transparent,
+            borderRadius: BorderRadius.circular(24),
           ),
           alignment: Alignment.center,
           child: Text(
             label,
             style: TextStyle(
-              color: isActive ? Colors.white : const Color(0xFF4C462A),
-              fontSize: 14,
+              color: active ? Colors.white : primary,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -459,7 +267,64 @@ class HomeView extends GetView<HomeController> {
       ),
     );
   }
+
+  Widget _consumptionCard({
+    required String time,
+    required String title,
+    required String sugar,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: accent,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.access_time, size: 14, color: primary),
+                  const SizedBox(width: 6),
+                  Text(time,
+                      style:
+                          const TextStyle(fontSize: 14, color: primary)),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w500,
+                  color: primary,
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              const Icon(Icons.opacity, color: primary),
+              const SizedBox(width: 6),
+              Text(
+                sugar,
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w500,
+                  color: primary,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }
+
 
 // CustomPainter untuk menggambar line chart dengan dukungan customization
 class ChartLinePainter extends CustomPainter {
@@ -505,11 +370,11 @@ class ChartLinePainter extends CustomPainter {
       ..isAntiAlias = true;
 
     // Draw dotted horizontal grid
-    const int gridCount = 4;
+    int gridCount = 4;
     for (int i = 0; i <= gridCount; i++) {
       final double y = (h / gridCount) * i;
-      const double dashWidth = 6;
-      const double dashSpace = 6;
+      double dashWidth = 6;
+      double dashSpace = 6;
       double x = 0;
       while (x < w) {
         final double xEnd = (x + dashWidth).clamp(0, w);
