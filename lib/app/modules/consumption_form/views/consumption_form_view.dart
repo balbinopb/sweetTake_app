@@ -58,7 +58,6 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
   }
 
   // ================= HEADER =================
-
   Widget _header() => Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
@@ -84,8 +83,9 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
     ],
   );
 
-  // ================= LABEL =================
 
+
+  // ================= LABEL =================
   Widget _label(String text) => Padding(
     padding: const EdgeInsets.only(bottom: 6),
     child: Text(
@@ -98,8 +98,8 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
     ),
   );
 
-  // ================= TEXT FIELD =================
 
+  // ================= TEXT FIELD =================
   Widget _buildTextField(TextEditingController c, String hint) => Container(
     decoration: BoxDecoration(
       color: inputBg,
@@ -118,8 +118,9 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
     ),
   );
 
-  // ================= DATE PICKER =================
 
+
+  // ================= DATE PICKER =================
   Widget _buildDatePicker(BuildContext context) => GestureDetector(
     onTap: () async {
       final picked = await showDatePicker(

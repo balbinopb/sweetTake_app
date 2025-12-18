@@ -32,6 +32,13 @@ class BloodSugarController extends GetxController {
   final baseUrl = "http://10.0.2.2:8080/v1/api/auth";
 
   @override
+  void onInit() {
+    super.onInit();
+    _updateDate();
+    _updateTime();
+  }
+
+  @override
   void onClose() {
     bloodSugarC.dispose();
     super.onClose();
