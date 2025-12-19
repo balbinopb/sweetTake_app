@@ -10,4 +10,7 @@ class AppColors {
   static const Color background2 = Color(0xFFFFCF71);
 
 
+  static const Color white = Color.fromARGB(255, 255, 255, 255);
+
+
 }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:sweettake_app/app/data/models/login_model.dart';
@@ -13,11 +14,10 @@ class LoginController extends GetxController {
   final isObscure = false.obs;
   final isLoading = false.obs;
 
-  final baseUrl = "http://10.0.2.2:8080/v1/api";
-
   Future<void> login() async {
     final email = emailC.text.trim();
     final password = passwordC.text.trim();
+
 
     if (email.isEmpty || !GetUtils.isEmail(email)) {
       Get.snackbar("Warning", "Valid email is required");
@@ -32,11 +32,12 @@ class LoginController extends GetxController {
       isLoading.value = true;
 
       final response = await http.post(
-        Uri.parse("$baseUrl/login"),
+        Uri.parse("${dotenv.get('BASE_URL')}/login"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(LoginModel(email: email, password: password).toJson()),
       );
 
+    // print("==============login.....${response.body}.........==================");
       final decoded = jsonDecode(response.body);
       // print("LOGIN RESPONSE = $decoded");
 

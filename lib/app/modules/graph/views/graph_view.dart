@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/graph_controller.dart';
@@ -133,6 +134,13 @@ class GraphView extends GetView<GraphController> {
   // ===========CHART CARD==============
 
   Widget _chartCard() => Obx(() {
+    if (controller.isLoading.value) {
+      return const SizedBox(
+        height: 220,
+        child: Center(child: CircularProgressIndicator(color: Colors.white)),
+      );
+    }
+
     final isWeekly = controller.selectedRange.value == 'Weekly';
 
     return Container(
@@ -144,7 +152,7 @@ class GraphView extends GetView<GraphController> {
           BoxShadow(
             blurRadius: 18,
             offset: const Offset(0, 10),
-            color: Colors.black.withValues(alpha:.25),
+            color: Colors.black.withValues(alpha: .25),
           ),
         ],
       ),
@@ -153,7 +161,7 @@ class GraphView extends GetView<GraphController> {
         children: [
           _chartArea(isWeekly),
           const SizedBox(height: 14),
-          _xLabels(),
+          _xLabels(isWeekly),
         ],
       ),
     );
@@ -161,48 +169,70 @@ class GraphView extends GetView<GraphController> {
 
   Widget _chartArea(bool isWeekly) => SizedBox(
     height: 190,
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        SizedBox(
-          width: yLabelWidth,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: const [
-              _YLabel('40'),
-              _YLabel('30'),
-              _YLabel('20'),
-              _YLabel('10'),
-            ],
-          ),
+    child: LineChart(
+      LineChartData(
+        minY: 0,
+        gridData: FlGridData(
+          show: true,
+          horizontalInterval: 10,
+          getDrawingHorizontalLine: (_) =>
+              FlLine(color: lineColor.withValues(alpha:0.4), strokeWidth: 1),
         ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(right: yLabelWidth),
-            child: CustomPaint(painter: ChartLinePainter(isWeekly: isWeekly)),
-          ),
+        borderData: FlBorderData(show: false),
+
+        titlesData: FlTitlesData(
+          topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
         ),
-      ],
+
+        lineBarsData: [
+          LineChartBarData(
+            isCurved: true,
+            barWidth: 3,
+            color: lineColor,
+            dotData: FlDotData(show: true),
+            belowBarData: BarAreaData(
+              show: true,
+              color: lineColor.withValues(alpha:0.15),
+            ),
+            spots: controller.activeSpots,
+          ),
+        ],
+      ),
     ),
   );
 
-  Widget _xLabels() => const Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      _ChartLabel('Sun'),
-      _ChartLabel('Mon'),
-      _ChartLabel('Tue'),
-      _ChartLabel('Wed'),
-      _ChartLabel('Thu'),
-      _ChartLabel('Fri'),
-      _ChartLabel('Sat'),
-    ],
-  );
+  Widget _xLabels(bool isWeekly) {
+    if (isWeekly) {
+      return const Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _ChartLabel('Sun'),
+          _ChartLabel('Mon'),
+          _ChartLabel('Tue'),
+          _ChartLabel('Wed'),
+          _ChartLabel('Thu'),
+          _ChartLabel('Fri'),
+          _ChartLabel('Sat'),
+        ],
+      );
+    }
+
+    return const Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _ChartLabel('W1'),
+        _ChartLabel('W2'),
+        _ChartLabel('W3'),
+        _ChartLabel('W4'),
+        _ChartLabel('W5'),
+      ],
+    );
+  }
 
   // ==========RECOMMENDATION===============
-
   Widget _recommendationCard() => Container(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
     decoration: BoxDecoration(
@@ -240,7 +270,6 @@ class GraphView extends GetView<GraphController> {
   );
 
   // ===========SUMMARY==============
-
   Widget _summaryCard() => Container(
     padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
     decoration: BoxDecoration(
@@ -285,11 +314,9 @@ class GraphView extends GetView<GraphController> {
   );
 }
 
-
 class _MetricTile extends StatelessWidget {
   final String label;
   final String value;
-
 
   const _MetricTile(this.label, this.value);
 
@@ -307,37 +334,15 @@ class _MetricTile extends StatelessWidget {
         children: [
           Text(
             label,
-            style: const TextStyle(
-              fontSize: 12,
-              color: Color(0xFF4A3F24),
-            ),
+            style: const TextStyle(fontSize: 12, color: Color(0xFF4A3F24)),
           ),
           const SizedBox(height: 2),
           Text(
             value,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-            ),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
           ),
         ],
       ),
-    );
-  }
-}
-
-
-/// ==========SMALL WIDGETS===============
-
-class _YLabel extends StatelessWidget {
-  final String text;
-  const _YLabel(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: const TextStyle(color: GraphView.muted, fontSize: 11),
     );
   }
 }
@@ -352,102 +357,5 @@ class _ChartLabel extends StatelessWidget {
       text,
       style: const TextStyle(color: GraphView.muted, fontSize: 11),
     );
-  }
-}
-
-// class _SummaryRow extends StatelessWidget {
-//   final String label;
-//   final String value;
-
-//   const _SummaryRow({required this.label, required this.value});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: const EdgeInsets.symmetric(vertical: 3),
-//       child: Row(
-//         children: [
-//           Text('• $label: ', style: const TextStyle(fontSize: 14)),
-//           Text(
-//             value,
-//             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-class ChartLinePainter extends CustomPainter {
-  final bool isWeekly;
-
-  ChartLinePainter({required this.isWeekly});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final gridPaint = Paint()
-      ..color = const Color(0xFFE8DFC5)
-      ..strokeWidth = 1;
-
-    final axisPaint = Paint()
-      ..color = const Color(0xFFF6F0DC)
-      ..strokeWidth = 2;
-
-    final linePaint = Paint()
-      ..color = const Color(0xFFF6F0DC)
-      ..strokeWidth = 2
-      ..style = PaintingStyle.stroke;
-
-    // Horizontal grid lines
-    const gridCount = 4;
-    final stepY = size.height / (gridCount + 1);
-    for (int i = 1; i <= gridCount + 1; i++) {
-      final y = stepY * i;
-      canvas.drawLine(Offset(0, y), Offset(size.width, y), gridPaint);
-    }
-
-    // Axes
-    canvas.drawLine(
-      Offset(0, stepY * 0.5),
-      Offset(0, size.height - stepY * 0.3),
-      axisPaint,
-    );
-    canvas.drawLine(
-      Offset(0, size.height - stepY * 0.3),
-      Offset(size.width, size.height - stepY * 0.3),
-      axisPaint,
-    );
-
-    final points = isWeekly
-        ? <Offset>[
-            Offset(size.width * 0.05, size.height * 0.6),
-            Offset(size.width * 0.18, size.height * 0.25),
-            Offset(size.width * 0.32, size.height * 0.35),
-            Offset(size.width * 0.46, size.height * 0.65),
-            Offset(size.width * 0.60, size.height * 0.45),
-            Offset(size.width * 0.76, size.height * 0.40),
-            Offset(size.width * 0.92, size.height * 0.48),
-          ]
-        : <Offset>[
-            Offset(size.width * 0.05, size.height * 0.50),
-            Offset(size.width * 0.20, size.height * 0.55),
-            Offset(size.width * 0.35, size.height * 0.30),
-            Offset(size.width * 0.50, size.height * 0.40),
-            Offset(size.width * 0.65, size.height * 0.70),
-            Offset(size.width * 0.80, size.height * 0.45),
-            Offset(size.width * 0.95, size.height * 0.60),
-          ];
-
-    final path = Path()..moveTo(points.first.dx, points.first.dy);
-    for (int i = 1; i < points.length; i++) {
-      path.lineTo(points[i].dx, points[i].dy);
-    }
-
-    canvas.drawPath(path, linePaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant ChartLinePainter oldDelegate) {
-    return oldDelegate.isWeekly != isWeekly;
   }
 }

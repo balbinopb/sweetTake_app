@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:sweettake_app/app/data/models/register_model.dart';
@@ -53,8 +54,6 @@ class RegisterController extends GetxController {
     "Maintain Stable Blood Sugar",
     "Weight Loss",
   ];
-
-  final baseUrl = "http://10.0.2.2:8080/v1/api";
 
   Future<void> register() async {
     final fullname = fullnameC.text.trim();
@@ -144,7 +143,7 @@ class RegisterController extends GetxController {
       // print("========================");
 
       final response = await http.post(
-        Uri.parse("$baseUrl/register"),
+        Uri.parse("${dotenv.get('BASE_URL')}/register"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(data.toJson()),
       );

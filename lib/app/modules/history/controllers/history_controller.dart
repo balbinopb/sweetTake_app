@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:sweettake_app/app/data/models/history_bloodsugar_model.dart';
@@ -6,7 +7,6 @@ import '../../../data/models/history_consumption_model.dart';
 import '../../login/controllers/auth_controller.dart';
 
 class HistoryController extends GetxController {
-  final baseUrl = "http://10.0.2.2:8080/v1/api/auth";
 
   final selectedTab = 0.obs;
   final selectedDate = DateTime.now().obs;
@@ -71,7 +71,7 @@ class HistoryController extends GetxController {
   // ================= Sugar Consumption =================
   Future<List<HistoryConsumptionModel>> fetchConsumptions() async {
     final response = await http.get(
-      Uri.parse("$baseUrl/consumptions"),
+      Uri.parse("${dotenv.get('BASE_URL_AUTH')}/consumptions"),
       headers: {
         'Authorization': 'Bearer ${_authC.token.value}',
         'Content-Type': 'application/json',
@@ -111,7 +111,7 @@ Future<void> loadConsumptions() async {
   // ================= Blood Sugar =================
   Future<List<HistoryBloodsugarModel>> fetchBloodSugar() async {
     final response = await http.get(
-      Uri.parse("$baseUrl/bloodsugars"),
+      Uri.parse("${dotenv.get('BASE_URL_AUTH')}/bloodsugars"),
       headers: {'Authorization': 'Bearer ${_authC.token.value}'},
     );
 
