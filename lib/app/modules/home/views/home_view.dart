@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/home_controller.dart';
@@ -17,12 +18,7 @@ class HomeView extends GetView<HomeController> {
     const double bottomNavHeight = 90;
 
     final media = MediaQuery.of(context);
-    final minHeight =
-        media.size.height - media.padding.top - bottomNavHeight;
-
-    // Measure Y-axis label width
-    final yLabels = ['40', '30', '20', '10'];
-    double yLabelWidth = _measureMaxLabelWidth(yLabels) + 8;
+    final minHeight = media.size.height - media.padding.top - bottomNavHeight;
 
     return Scaffold(
       backgroundColor: bg,
@@ -39,7 +35,7 @@ class HomeView extends GetView<HomeController> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const SizedBox(height: 24),
-          
+
                     // ================= HEADER =================
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -60,9 +56,13 @@ class HomeView extends GetView<HomeController> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: const [
-                                Text("Hello,",
-                                    style: TextStyle(
-                                        fontSize: 14, color: primary)),
+                                Text(
+                                  "Hello,",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: primary,
+                                  ),
+                                ),
                                 Text(
                                   "Sweetie Telutizen",
                                   style: TextStyle(
@@ -75,12 +75,11 @@ class HomeView extends GetView<HomeController> {
                             ),
                           ],
                         ),
-                        const Icon(Icons.menu, color: primary),
                       ],
                     ),
-          
+
                     const SizedBox(height: 28),
-          
+
                     // ================= TITLE =================
                     const Text(
                       "Sugar Consumption History",
@@ -90,38 +89,38 @@ class HomeView extends GetView<HomeController> {
                         color: primary,
                       ),
                     ),
-          
+
                     const SizedBox(height: 12),
-          
+
                     // ================= SEGMENT =================
-                    Obx(() => Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color: card,
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: Row(
-                            children: [
-                              _segment(
-                                label: "Weekly",
-                                active:
-                                    controller.selectedRange.value == "Weekly",
-                                onTap: () =>
-                                    controller.updateRange("Weekly"),
-                              ),
-                              _segment(
-                                label: "Monthly",
-                                active:
-                                    controller.selectedRange.value == "Monthly",
-                                onTap: () =>
-                                    controller.updateRange("Monthly"),
-                              ),
-                            ],
-                          ),
-                        )),
-          
+                    Obx(
+                      () => Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: card,
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: Row(
+                          children: [
+                            _segment(
+                              label: "Weekly",
+                              active:
+                                  controller.selectedRange.value == "Weekly",
+                              onTap: () => controller.updateRange("Weekly"),
+                            ),
+                            _segment(
+                              label: "Monthly",
+                              active:
+                                  controller.selectedRange.value == "Monthly",
+                              onTap: () => controller.updateRange("Monthly"),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
                     const SizedBox(height: 20),
-          
+
                     // ================= CHART =================
                     Container(
                       padding: const EdgeInsets.all(20),
@@ -133,37 +132,56 @@ class HomeView extends GetView<HomeController> {
                         children: [
                           SizedBox(
                             height: 180,
-                            child: Row(
-                              children: [
-                                SizedBox(
-                                  width: yLabelWidth,
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: yLabels
-                                        .map((e) => Text(e,
-                                            style: _axisStyle()))
-                                        .toList(),
+                            child: LineChart(
+                              LineChartData(
+                                minY: 0,
+                                gridData: FlGridData(show: false),
+                                borderData: FlBorderData(show: false),
+
+                                titlesData: FlTitlesData(
+                                  topTitles: AxisTitles(
+                                    sideTitles: SideTitles(showTitles: false),
+                                  ),
+                                  rightTitles: AxisTitles(
+                                    sideTitles: SideTitles(showTitles: false),
+                                  ),
+                                  leftTitles: AxisTitles(
+                                    sideTitles: SideTitles(showTitles: false),
+                                  ),
+                                  bottomTitles: AxisTitles(
+                                    sideTitles: SideTitles(showTitles: false),
                                   ),
                                 ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Padding(
-                                    padding:
-                                        EdgeInsets.only(right: yLabelWidth),
-                                    child: CustomPaint(
-                                      painter: ChartLinePainter(),
+
+                                lineBarsData: [
+                                  LineChartBarData(
+                                    isCurved: true,
+                                    barWidth: 3,
+                                    color: bg,
+                                    dotData: FlDotData(show: false),
+                                    belowBarData: BarAreaData(
+                                      show: true,
+                                      color: bg.withValues(alpha:0.15),
                                     ),
+                                    spots: const [
+                                      FlSpot(0, 20),
+                                      FlSpot(1, 35),
+                                      FlSpot(2, 28),
+                                      FlSpot(3, 42),
+                                      FlSpot(4, 30),
+                                      FlSpot(5, 50),
+                                      FlSpot(6, 38),
+                                    ],
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
+
                           const SizedBox(height: 12),
+
                           Row(
-                            mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: const [
                               Text("Sun", style: _axisText),
                               Text("Mon", style: _axisText),
@@ -177,13 +195,15 @@ class HomeView extends GetView<HomeController> {
                         ],
                       ),
                     ),
-          
+
                     const SizedBox(height: 24),
-          
+
                     // ================= TODAY SUMMARY =================
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 14, horizontal: 16),
+                        vertical: 14,
+                        horizontal: 16,
+                      ),
                       decoration: BoxDecoration(
                         color: card,
                         borderRadius: BorderRadius.circular(20),
@@ -197,9 +217,9 @@ class HomeView extends GetView<HomeController> {
                         ),
                       ),
                     ),
-          
+
                     const SizedBox(height: 24),
-          
+
                     // ================= CONSUMPTION LIST =================
                     _consumptionCard(
                       time: "08:00",
@@ -212,7 +232,7 @@ class HomeView extends GetView<HomeController> {
                       title: "Burger",
                       sugar: "25g",
                     ),
-          
+
                     const SizedBox(height: bottomNavHeight / 2),
                   ],
                 ),
@@ -226,23 +246,9 @@ class HomeView extends GetView<HomeController> {
 
   // ================= HELPERS =================
 
-  static double _measureMaxLabelWidth(List<String> labels) {
-    double max = 0;
-    for (final s in labels) {
-      final tp = TextPainter(
-        text: TextSpan(text: s, style: _axisStyle()),
-        textDirection: TextDirection.ltr,
-      )..layout();
-      if (tp.width > max) max = tp.width;
-    }
-    return max;
-  }
 
-  static TextStyle _axisStyle() =>
-      const TextStyle(color: bg, fontSize: 12);
 
-  static const TextStyle _axisText =
-      TextStyle(color: bg, fontSize: 12);
+  static const TextStyle _axisText = TextStyle(color: bg, fontSize: 12);
 
   Widget _segment({
     required String label,
@@ -293,9 +299,7 @@ class HomeView extends GetView<HomeController> {
                 children: [
                   const Icon(Icons.access_time, size: 14, color: card),
                   const SizedBox(width: 6),
-                  Text(time,
-                      style:
-                          const TextStyle(fontSize: 14, color: card)),
+                  Text(time, style: const TextStyle(fontSize: 14, color: card)),
                 ],
               ),
               const SizedBox(height: 10),
@@ -326,112 +330,5 @@ class HomeView extends GetView<HomeController> {
         ],
       ),
     );
-  }
-}
-
-
-// CustomPainter untuk menggambar line chart dengan dukungan customization
-class ChartLinePainter extends CustomPainter {
-  final List<double> dataPoints;
-  final double maxValue;
-  final Color lineColor;
-  final double strokeWidth;
-
-  ChartLinePainter({
-    List<double>? data,
-    this.maxValue = 40.0,
-    this.lineColor = Colors.white,
-    this.strokeWidth = 2.2,
-  }) : dataPoints = data ?? [28, 30, 20, 12, 18, 25, 22];
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final double paddingLeft =
-        0; // paddingLeft is 0 because we already reserved Y-label width outside
-    final double w = size.width - paddingLeft;
-    final double h = size.height;
-
-    // Grid (dotted) paint
-    final Paint gridPaint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.18)
-      ..strokeWidth = 1
-      ..style = PaintingStyle.stroke
-      ..isAntiAlias = true;
-
-    // Line paint (only stroke, no fill)
-    final Paint linePaint = Paint()
-      ..color = lineColor
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round
-      ..isAntiAlias = true
-      ..strokeJoin = StrokeJoin.round;
-
-    // Dot paint
-    final Paint dotPaint = Paint()
-      ..color = lineColor
-      ..style = PaintingStyle.fill
-      ..isAntiAlias = true;
-
-    // Draw dotted horizontal grid
-    int gridCount = 4;
-    for (int i = 0; i <= gridCount; i++) {
-      final double y = (h / gridCount) * i;
-      double dashWidth = 6;
-      double dashSpace = 6;
-      double x = 0;
-      while (x < w) {
-        final double xEnd = (x + dashWidth).clamp(0, w);
-        canvas.drawLine(
-          Offset(paddingLeft + x, y),
-          Offset(paddingLeft + xEnd, y),
-          gridPaint,
-        );
-        x += dashWidth + dashSpace;
-      }
-    }
-
-    // Map data to canvas points
-    final int n = dataPoints.length;
-    if (n < 2) return;
-    final double spacingX = w / (n - 1);
-    final List<Offset> pts = List.generate(n, (i) {
-      final double x = paddingLeft + i * spacingX;
-      final double y = h - (dataPoints[i] / maxValue) * h;
-      return Offset(x, y);
-    });
-
-    // Build smooth path using Catmull-Rom to cubic Bezier conversion
-    final Path path = Path();
-    path.moveTo(pts[0].dx, pts[0].dy);
-
-    for (int i = 0; i < pts.length - 1; i++) {
-      final Offset p0 = i == 0 ? pts[i] : pts[i - 1];
-      final Offset p1 = pts[i];
-      final Offset p2 = pts[i + 1];
-      final Offset p3 = (i + 2 < pts.length) ? pts[i + 2] : pts[i + 1];
-
-      // Catmull–Rom to Bezier control points (practical approximation)
-      final Offset c1 = p1 + (p2 - p0) * (1 / 6);
-      final Offset c2 = p2 - (p3 - p1) * (1 / 6);
-
-      path.cubicTo(c1.dx, c1.dy, c2.dx, c2.dy, p2.dx, p2.dy);
-    }
-
-    // Draw the line only
-    canvas.drawPath(path, linePaint);
-
-    // Draw small dots at each point (improves readability)
-    for (final p in pts) {
-      canvas.drawCircle(p, 2.8, dotPaint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant ChartLinePainter oldDelegate) {
-    return oldDelegate.dataPoints != dataPoints ||
-        oldDelegate.maxValue != maxValue ||
-        oldDelegate.lineColor != lineColor ||
-        oldDelegate.strokeWidth != strokeWidth;
   }
 }

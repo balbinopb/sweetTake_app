@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:sweettake_app/app/data/models/consumption_model.dart';
@@ -23,8 +24,6 @@ class ConsumptionFormController extends GetxController {
 
   final dateString = "".obs;
   final timeString = "".obs;
-
-  final baseUrl = "http://10.0.2.2:8080/v1/api/auth";
 
   @override
   void onInit() {
@@ -91,7 +90,7 @@ class ConsumptionFormController extends GetxController {
       // print("=========TOKEN = ${authC.token.value}============");
 
       final response = await http.post(
-        Uri.parse("$baseUrl/consumption"),
+        Uri.parse("${dotenv.get('BASE_URL_AUTH')}/consumption"),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer ${authC.token.value}",

@@ -63,7 +63,7 @@ class HomeController extends GetxController {
   void _buildMonthly() {
     final now = DateTime.now();
 
-    final weeklyBuckets = <double>[0, 0, 0, 0];
+    final weeklyBuckets = <double>[10, 0, 100, 0];
 
     for (final e in sugarHistory) {
       final d = e['date'] as DateTime;

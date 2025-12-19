@@ -1,66 +1,107 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:get/get.dart';
+import 'package:sweettake_app/app/data/models/consumption_graph_model.dart';
+import '../../../data/services/consumption_service.dart';
 
-/// Periode grafik: mingguan / bulanan
 enum GraphPeriod { weekly, monthly }
 
 class GraphController extends GetxController {
-  /// Periode yang dipilih (default: weekly)
   final period = GraphPeriod.weekly.obs;
-
-  /// String untuk binding di UI segmented button ("Weekly"/"Monthly")
   final selectedRange = 'Weekly'.obs;
+  final isLoading = true.obs;
 
-  /// Label untuk chart mingguan (Sun..Sat)
-  final weeklyLabels = <String>[
-    'Sun',
-    'Mon',
-    'Tue',
-    'Wed',
-    'Thu',
-    'Fri',
-    'Sat',
-  ].obs;
+  final _service = ConsumptionService();
+  final RxList<ConsumptionGraphModel> consumptions =
+      <ConsumptionGraphModel>[].obs;
 
-  /// Data gula mingguan (dummy, dalam gram)
-  final weeklySugar = <double>[22, 30, 26, 35, 18, 20, 17].obs;
-
-  /// Label untuk chart bulanan (misal 4 minggu)
-  final monthlyLabels = <String>['W1', 'W2', 'W3', 'W4'].obs;
-
-  /// Data gula bulanan (dummy, total per minggu)
-  final monthlySugar = <double>[160, 175, 168, 180].obs;
-
-  /// Summary (bisa nanti dihitung dari data kalau mau)
-  final total = 168.0.obs; // Total gula (gram)
-  final averagePerDay = 24.0.obs; // Rata-rata per hari (gram/hari)
-  final highest = 38.0.obs; // Nilai tertinggi (gram)
-  final trendText = 'UP +12%'.obs; // Tren (teks)
-
-  /// Recommendation text
-  final recommendation =
-      'Avoid sugary drinks in the evening to reduce spikes.'.obs;
-
-  /// Getter untuk data yang sedang aktif dipakai chart
-  List<String> get currentLabels =>
-      period.value == GraphPeriod.weekly ? weeklyLabels : monthlyLabels;
-
-  List<double> get currentSugar =>
-      period.value == GraphPeriod.weekly ? weeklySugar : monthlySugar;
-
-  /// Ganti periode grafik pakai enum (kalau dipanggil dari logic lain)
-  void setPeriod(GraphPeriod value) {
-    if (period.value == value) return;
-
-    period.value = value;
-    selectedRange.value = value == GraphPeriod.weekly ? 'Weekly' : 'Monthly';
-
+  @override
+  void onInit() {
+    super.onInit();
+    fetchData();
   }
+
+  // ================= RANGE HANDLING =================
 
   void updateRange(String value) {
     if (selectedRange.value == value) return;
 
     selectedRange.value = value;
     period.value = value == 'Weekly' ? GraphPeriod.weekly : GraphPeriod.monthly;
-
   }
+
+  // ================= API =================
+
+Future<void> fetchData() async {
+  try {
+    isLoading.value = true;
+    final data = await _service.fetchConsumptions();
+
+    // print('==============RAW API DATA: $data =================');
+
+    consumptions.value = data
+        .map((e) => ConsumptionGraphModel.fromJson(e))
+        .toList();
+
+    // print('===============PARSED MODEL COUNT: ${consumptions.length}===============');
+  } finally {
+    isLoading.value = false;
+  }
+}
+
+
+  // ================= WEEKLY =================
+  /// Daily total (Sun–Sat)
+  List<FlSpot> get weeklySpots {
+    final now = DateTime.now();
+    final startOfWeek = now.subtract(Duration(days: now.weekday % 7));
+    final endOfWeek = startOfWeek.add(const Duration(days: 7));
+
+    final Map<int, double> daily = {};
+
+    for (var item in consumptions) {
+      if (item.dateTime.isBefore(startOfWeek) ||
+          item.dateTime.isAfter(endOfWeek)) {
+        continue;
+      }
+
+      final dayIndex = item.dateTime.weekday % 7;
+      daily[dayIndex] = (daily[dayIndex] ?? 0) + item.sugar;
+    }
+
+    return List.generate(7, (i) => FlSpot(i.toDouble(), daily[i] ?? 0));
+  }
+
+  // ================= MONTHLY =================
+  /// Weekly average (Week 1–4/5)
+  List<FlSpot> get monthlySpots {
+    final now = DateTime.now();
+
+    final Map<int, List<double>> weeks = {};
+
+    for (var item in consumptions) {
+      if (item.dateTime.year != now.year || item.dateTime.month != now.month){
+        continue;
+      }
+
+      final weekIndex = ((item.dateTime.day - 1) ~/ 7);
+      weeks.putIfAbsent(weekIndex, () => []);
+      weeks[weekIndex]!.add(item.sugar);
+    }
+
+    if (weeks.isEmpty) {
+      return [const FlSpot(0, 0)];
+    }
+
+    final keys = weeks.keys.toList()..sort();
+
+    return keys.map((k) {
+      final avg = weeks[k]!.reduce((a, b) => a + b) / weeks[k]!.length;
+      return FlSpot(k.toDouble(), avg);
+    }).toList();
+  }
+
+  // ================= ACTIVE DATA =================
+
+  List<FlSpot> get activeSpots =>
+      period.value == GraphPeriod.weekly ? weeklySpots : monthlySpots;
 }
