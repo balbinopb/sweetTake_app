@@ -23,6 +23,6 @@ class ConsumptionService {
 
     final body = jsonDecode(response.body);
 
-    return body['data']; // must match backend
+    return body['data'];
   }
 }
