@@ -19,6 +19,9 @@ import '../modules/graph/views/graph_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 
+import '../modules/profile/bindings/profile_binding.dart';
+import '../modules/profile/views/profile_view.dart';
+
 import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
 
@@ -29,14 +32,12 @@ import '../modules/register/bindings/register_binding.dart';
 import '../modules/register/views/register_view.dart';
 import '../modules/register/views/register_view2.dart';
 
-
 part 'app_routes.dart';
 
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.LOGIN;
-
+  static const INITIAL = Routes.PROFILE;
 
   static final routes = [
     GetPage(
@@ -58,6 +59,11 @@ class AppPages {
       name: _Paths.REGISTER2,
       page: () => RegisterView2(),
       binding: RegisterBinding(),
+    ),
+    GetPage(
+      name: _Paths.PROFILE,
+      page: () => const ProfileView(),
+      binding: ProfileBinding(), // attaches controller lifecycle
     ),
     GetPage(
       name: _Paths.HOME,
@@ -85,7 +91,7 @@ class AppPages {
       binding: BloodSugarBinding(),
     ),
     GetPage(
-            name: _Paths.HISTORY,
+      name: _Paths.HISTORY,
       page: () => const HistoryView(),
       binding: HistoryBinding(),
     ),

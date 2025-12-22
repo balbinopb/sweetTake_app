@@ -10,6 +10,7 @@ abstract class Routes {
   static const LOGIN = _Paths.LOGIN;
   static const REGISTER2 = _Paths.REGISTER2;
   static const HOME = _Paths.HOME;
+  static const PROFILE = _Paths.PROFILE;
   static const TEST = _Paths.TEST;
   static const BLOOD_SUGAR = _Paths.BLOOD_SUGAR;
   static const HISTORY = _Paths.HISTORY;
@@ -26,6 +27,7 @@ abstract class _Paths {
   static const REGISTER = '/register';
   static const REGISTER2 = '/register2';
   static const HOME = '/home';
+  static const PROFILE = '/profile';
   static const TEST = '/test';
   static const BLOOD_SUGAR = '/blood-sugar';
   static const HISTORY = '/history';

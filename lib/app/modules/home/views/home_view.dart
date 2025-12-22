@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/home_controller.dart';
+import '../../../routes/app_pages.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
@@ -74,6 +75,14 @@ class HomeView extends GetView<HomeController> {
                               ],
                             ),
                           ],
+                        ),
+                        IconButton(
+                          tooltip: 'Open Profile',
+                          icon: const Icon(
+                            Icons.account_circle,
+                            color: primary,
+                          ),
+                          onPressed: () => Get.toNamed(Routes.PROFILE),
                         ),
                       ],
                     ),
@@ -161,7 +170,7 @@ class HomeView extends GetView<HomeController> {
                                     dotData: FlDotData(show: false),
                                     belowBarData: BarAreaData(
                                       show: true,
-                                      color: bg.withValues(alpha:0.15),
+                                      color: bg.withValues(alpha: 0.15),
                                     ),
                                     spots: const [
                                       FlSpot(0, 20),
@@ -245,8 +254,6 @@ class HomeView extends GetView<HomeController> {
   }
 
   // ================= HELPERS =================
-
-
 
   static const TextStyle _axisText = TextStyle(color: bg, fontSize: 12);
 
