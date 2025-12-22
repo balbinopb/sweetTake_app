@@ -7,7 +7,7 @@ class HomeController extends GetxController {
 
   final sugarHistory = <Map<String, dynamic>>[].obs;
 
-  var selectedRange = 'Weekly'.obs;
+  final selectedRange = 'Weekly'.obs;
 
   final isLoading = false.obs;
 
@@ -36,7 +36,7 @@ class HomeController extends GetxController {
     _rebuildChart();
   }
 
-  /// Call this when API data arrives
+  /// Call when API data arrives
   void setSugarHistory(List<dynamic> data) {
     final normalized = data.map<Map<String, dynamic>>((e) {
       final dateTime = DateTime.parse(e['date_time']).toLocal();

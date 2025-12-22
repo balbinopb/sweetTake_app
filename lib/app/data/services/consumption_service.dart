@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 
 import '../../modules/login/controllers/auth_controller.dart';
@@ -8,9 +7,11 @@ import '../../modules/login/controllers/auth_controller.dart';
 class ConsumptionService {
   final AuthController authC = Get.find<AuthController>();
 
+  final baseUrl='http://10.0.2.2:8080/v1/api/auth';
+
   Future<List<dynamic>> fetchConsumptions() async {
     final response = await http.get(
-      Uri.parse("${dotenv.get('BASE_URL_AUTH')}/consumptions"),
+      Uri.parse("$baseUrl/consumptions"),
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer ${authC.token.value}",
