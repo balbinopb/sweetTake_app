@@ -22,6 +22,7 @@ dependencies:
   iconify_flutter_plus: ^1.0.4
   get_storage: ^2.1.1
   fl_chart: ^1.1.1
+  flutter_native_splash: ^2.4.7
 
 dev_dependencies:
   flutter_test:
@@ -36,6 +37,7 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/logo/
     # - assets/icons
 
 

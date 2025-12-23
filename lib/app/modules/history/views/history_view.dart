@@ -53,11 +53,6 @@ class _Header extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: [
-          IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new_rounded),
-            color: HistoryView.primary,
-            onPressed: () => Get.back(),
-          ),
           const Spacer(),
           const Text(
             "History",

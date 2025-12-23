@@ -176,7 +176,7 @@ class GraphView extends GetView<GraphController> {
           show: true,
           horizontalInterval: 10,
           getDrawingHorizontalLine: (_) =>
-              FlLine(color: lineColor.withValues(alpha:0.4), strokeWidth: 1),
+              FlLine(color: lineColor.withValues(alpha: 0.4), strokeWidth: 1),
         ),
         borderData: FlBorderData(show: false),
 
@@ -195,7 +195,7 @@ class GraphView extends GetView<GraphController> {
             dotData: FlDotData(show: true),
             belowBarData: BarAreaData(
               show: true,
-              color: lineColor.withValues(alpha:0.15),
+              color: lineColor.withValues(alpha: 0.15),
             ),
             spots: controller.activeSpots,
           ),
@@ -233,41 +233,47 @@ class GraphView extends GetView<GraphController> {
   }
 
   // ==========RECOMMENDATION===============
-  Widget _recommendationCard() => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-    decoration: BoxDecoration(
-      color: Colors.black,
-      borderRadius: BorderRadius.circular(20),
-    ),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
-        Icon(Icons.lightbulb_outline, color: bg, size: 24),
-        SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Recommendation',
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  decoration: TextDecoration.underline,
-                  decorationColor: Colors.yellow,
-                  color: bg,
-                ),
-              ),
-              SizedBox(height: 4),
-              Text(
-                'Avoid sugary drinks in the evening to reduce spikes.',
-                style: TextStyle(color: bg, fontSize: 13, height: 1.3),
-              ),
-            ],
-          ),
+  Widget _recommendationCard() {
+    final controller = Get.find<GraphController>();
+
+    return Obx(
+      () => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: Colors.black,
+          borderRadius: BorderRadius.circular(20),
         ),
-      ],
-    ),
-  );
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.lightbulb_outline, color: bg, size: 24),
+            SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Recommendation',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      decoration: TextDecoration.underline,
+                      decorationColor: Colors.yellow,
+                      color: bg,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    controller.recommendationText.value,
+                    style: TextStyle(color: bg, fontSize: 13, height: 1.3),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   // ===========SUMMARY==============
   Widget _summaryCard() => Container(
