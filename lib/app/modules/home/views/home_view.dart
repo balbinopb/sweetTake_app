@@ -130,67 +130,60 @@ class HomeView extends GetView<HomeController> {
                       ),
                       child: Column(
                         children: [
-                          SizedBox(
-                            height: 180,
-                            child: LineChart(
-                              LineChartData(
-                                minY: 0,
-                                gridData: FlGridData(show: false),
-                                borderData: FlBorderData(show: false),
+                          Obx(() {
+                            final points = controller.chartPoints;
 
-                                titlesData: FlTitlesData(
-                                  topTitles: AxisTitles(
-                                    sideTitles: SideTitles(showTitles: false),
-                                  ),
-                                  rightTitles: AxisTitles(
-                                    sideTitles: SideTitles(showTitles: false),
-                                  ),
-                                  leftTitles: AxisTitles(
-                                    sideTitles: SideTitles(showTitles: false),
-                                  ),
-                                  bottomTitles: AxisTitles(
-                                    sideTitles: SideTitles(showTitles: false),
+                            if (points.isEmpty) {
+                              return const SizedBox(
+                                height: 180,
+                                child: Center(
+                                  child: Text(
+                                    "No data yet",
+                                    style: TextStyle(color: Colors.white70),
                                   ),
                                 ),
+                              );
+                            }
 
-                                lineBarsData: [
-                                  LineChartBarData(
-                                    isCurved: true,
-                                    barWidth: 3,
-                                    color: bg,
-                                    dotData: FlDotData(show: false),
-                                    belowBarData: BarAreaData(
-                                      show: true,
-                                      color: bg.withValues(alpha:0.15),
+                            return SizedBox(
+                              height: 180,
+                              child: LineChart(
+                                LineChartData(
+                                  minY: 0,
+                                  gridData: FlGridData(show: false),
+                                  borderData: FlBorderData(show: false),
+                                  titlesData: FlTitlesData(show: false),
+
+                                  lineBarsData: [
+                                    LineChartBarData(
+                                      isCurved: true,
+                                      barWidth: 3,
+                                      color: bg,
+                                      dotData: FlDotData(show: false),
+                                      belowBarData: BarAreaData(
+                                        show: true,
+                                        color: bg.withValues(alpha: 0.15),
+                                      ),
+                                      spots: List.generate(
+                                        points.length,
+                                        (i) => FlSpot(i.toDouble(), points[i]),
+                                      ),
                                     ),
-                                    spots: const [
-                                      FlSpot(0, 20),
-                                      FlSpot(1, 35),
-                                      FlSpot(2, 28),
-                                      FlSpot(3, 42),
-                                      FlSpot(4, 30),
-                                      FlSpot(5, 50),
-                                      FlSpot(6, 38),
-                                    ],
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                          ),
+                            );
+                          }),
 
                           const SizedBox(height: 12),
 
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: const [
-                              Text("Sun", style: _axisText),
-                              Text("Mon", style: _axisText),
-                              Text("Tue", style: _axisText),
-                              Text("Wed", style: _axisText),
-                              Text("Thu", style: _axisText),
-                              Text("Fri", style: _axisText),
-                              Text("Sat", style: _axisText),
-                            ],
+                          Obx(
+                            () => Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: controller.chartLabels
+                                  .map((e) => Text(e, style: _axisText))
+                                  .toList(),
+                            ),
                           ),
                         ],
                       ),
@@ -221,17 +214,33 @@ class HomeView extends GetView<HomeController> {
                     const SizedBox(height: 24),
 
                     // ================= CONSUMPTION LIST =================
-                    _consumptionCard(
-                      time: "08:00",
-                      title: "Milk Tea",
-                      sugar: "42g",
-                    ),
-                    const SizedBox(height: 14),
-                    _consumptionCard(
-                      time: "12:00",
-                      title: "Burger",
-                      sugar: "25g",
-                    ),
+                    Obx(() {
+                      final today = controller.todayConsumptions;
+
+                      if (today.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.only(top: 12),
+                          child: Text(
+                            "No sugar intake recorded today",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: primary),
+                          ),
+                        );
+                      }
+
+                      return Column(
+                        children: today.map((e) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 14),
+                            child: _consumptionCard(
+                              time: e['time'], // "08:00"
+                              title: e['title'], // "Milk Tea"
+                              sugar: "${e['sugar']}g",
+                            ),
+                          );
+                        }).toList(),
+                      );
+                    }),
 
                     const SizedBox(height: bottomNavHeight / 2),
                   ],
@@ -245,8 +254,6 @@ class HomeView extends GetView<HomeController> {
   }
 
   // ================= HELPERS =================
-
-
 
   static const TextStyle _axisText = TextStyle(color: bg, fontSize: 12);
 
