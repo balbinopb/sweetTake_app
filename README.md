@@ -8,11 +8,11 @@ It aims to raise awareness about the risks of excessive sugar intake and support
 ## 👥 Team Members
 
 - Balbino Pedro Baptista
-- Achmad Faiz Siregar  
+- Violina Helena Sapan
+- Inaya Sakina Jakamartana  
 - Amira Kamila Arvina  
 - Nesha Rizqika Dwinity  
-- Inaya Sakina Jakamartana  
-- Violina Helena Sapan  
+- Achmad Faiz Siregar  
 
 Telkom University — 2025
 
@@ -21,12 +21,11 @@ Telkom University — 2025
 ## 📱 Features
 
 - Track daily, weekly, and monthly sugar intake  
-- Manual input or barcode scanning for food items  
+- Manual input for food items  
 - Graphs and charts for sugar consumption trends  
 - Personalized health recommendations  
-- Notifications and reminders  
-- Secure login and user data protection  
-- Integration with fitness trackers
+- Notifications and reminders
+- Secure login and user data protection
 
 ---
 
@@ -40,7 +39,7 @@ Telkom University — 2025
 ### Backend
 - **Language:** Go (Golang)  
 - **Framework:** Gin  
-- **Database:** MySQL  
+- **Database:** Postgresql  
 - **API Type:** RESTful API  
 
 ---
