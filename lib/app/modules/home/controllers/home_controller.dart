@@ -130,4 +130,9 @@ class HomeController extends GetxController {
       return d.year == now.year && d.month == now.month && d.day == now.day;
     }).toList();
   }
+
+  Future<void> refreshHome()async{
+    fetchSugarHistory();
+    update(); 
+  }
 }

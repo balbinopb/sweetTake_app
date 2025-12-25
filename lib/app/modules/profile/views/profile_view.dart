@@ -34,105 +34,88 @@ class ProfileView extends GetView<ProfileController> {
           return Center(child: Text('No profile data'));
         }
 
-        return SingleChildScrollView(
-          child: SafeArea(
+        return RefreshIndicator(
+          onRefresh: controller.refreshProfile,
+          child: SingleChildScrollView(
             child: Column(
               children: [
-                // ===== Header =====
-                Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.symmetric(vertical: 40),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [primary, Color(0xFF776A4F)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(32),
-                      bottomRight: Radius.circular(32),
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      CircleAvatar(
-                        radius: 50,
-                        backgroundColor: primary.withValues(alpha: 0.2),
-                        child: Text(
-                          data.fullname.isNotEmpty ? data.fullname[0] : "-",
-                          style: TextStyle(
-                            fontSize: 40,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 12),
-                      Text(
-                        data.fullname,
-                        style: TextStyle(
-                          fontSize: 22,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                        data.email,
-                        style: TextStyle(color: Colors.white70, fontSize: 14),
-                      ),
-                    ],
-                  ),
-                ),
-            
+                // ===== Header =====y
+                _buildHeader(data),
+
                 SizedBox(height: 24),
-            
+
                 // ===== Info Section =====
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 24),
                   child: Column(
                     children: [
-                      _infoTile("Gender", data.gender ?? "-"),
-                      _infoTile("Date of Birth", _formatDate(data.dateOfBirth)),
-                      _infoTile(
-                        "Height",
-                        data.height != null ? "${data.height} cm" : "-",
+                      _editableInfoTile(
+                        fieldKey: 'gender',
+                        title: "Gender",
+                        value: data.gender ?? "-",
                       ),
-                      _infoTile(
-                        "Weight",
-                        data.weight != null ? "${data.weight} kg" : "-",
+                      _editableInfoTile(
+                        fieldKey: 'dob',
+                        title: "Date of Birth",
+                        value: _formatDate(data.dateOfBirth),
+                        keyboard: TextInputType.datetime,
                       ),
-                      _infoTile("Contact", data.contactInfo ?? "-"),
-                      _infoTile("Health Goal", data.healthGoal ?? "-"),
-                      _infoTile("Preference", data.preference ?? "-"),
+                      _editableInfoTile(
+                        fieldKey: 'height',
+                        title: "Height (cm)",
+                        value: data.height != null ? "${data.height}" : "-",
+                        keyboard: TextInputType.number,
+                      ),
+                      _editableInfoTile(
+                        fieldKey: 'weight',
+                        title: "Weight (kg)",
+                        value: data.weight != null ? "${data.weight}" : "-",
+                        keyboard: TextInputType.number,
+                      ),
+                      _editableInfoTile(
+                        fieldKey: 'contact',
+                        title: "Contact",
+                        value: data.contactInfo ?? "-",
+                        keyboard: TextInputType.phone,
+                      ),
+                      _editableInfoTile(
+                        fieldKey: 'goal',
+                        title: "Health Goal",
+                        value: data.healthGoal ?? "-",
+                      ),
+                      _editableInfoTile(
+                        fieldKey: 'preference',
+                        title: "Preference",
+                        value: data.preference ?? "-",
+                      ),
                     ],
                   ),
                 ),
-            
+
                 SizedBox(height: 30),
-            
-                // ===== Buttons =====
+
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24),
-                  child: Column(
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: Size.fromHeight(48),
-                          backgroundColor: primary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
-                        child: Text(
-                          "Edit Profile",
-                          style: TextStyle(color: Colors.white, fontSize: 16),
-                        ),
+                  padding: EdgeInsets.all(24.0),
+                  child: OutlinedButton(
+                    onPressed: _showLogoutDialog,
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: Size.fromHeight(50),
+                      side: BorderSide(color: primary),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
                       ),
-                    ],
+                    ),
+                    child: Text(
+                      "Logout",
+                      style: TextStyle(
+                        color: primary,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ),
+
                 SizedBox(height: 40),
               ],
             ),
@@ -142,42 +125,171 @@ class ProfileView extends GetView<ProfileController> {
     );
   }
 
-  // ===== Info Tile Widget =====
-  Widget _infoTile(String title, String value) {
+  Widget _buildHeader(dynamic data) {
+    final topInset = MediaQuery.of(Get.context!).padding.top;
+
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 8),
-      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+      width: double.infinity,
+      padding: EdgeInsets.fromLTRB(24, topInset + 32, 24, 32),
       decoration: BoxDecoration(
-        color: inputBg,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: border),
+        gradient: LinearGradient(
+          colors: [primary, Color(0xFF776A4F)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(32),
+          bottomRight: Radius.circular(32),
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 6,
-            offset: Offset(0, 3),
+            color: Colors.black.withValues(alpha: 0.12),
+            blurRadius: 20,
+            offset: Offset(0, 8),
           ),
         ],
       ),
-      child: Row(
+      child: Column(
         children: [
-          Expanded(
-            child: Text(title, style: TextStyle(fontWeight: FontWeight.w500)),
-          ),
-          Flexible(
-            child: Text(
-              value,
-              textAlign: TextAlign.right,
-              style: TextStyle(fontWeight: FontWeight.bold),
+          // Avatar with soft glow
+          Container(
+            padding: EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white.withValues(alpha: 0.12),
             ),
+            child: CircleAvatar(
+              radius: 48,
+              backgroundColor: primary.withValues(alpha: 0.25),
+              child: Text(
+                data.fullname.isNotEmpty ? data.fullname[0] : "-",
+                style: TextStyle(
+                  fontSize: 36,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+
+          SizedBox(height: 16),
+
+          // Name
+          Text(
+            data.fullname,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 22,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.2,
+            ),
+          ),
+
+          SizedBox(height: 6),
+
+          // Email
+          Text(
+            data.email,
+            style: TextStyle(color: Colors.white70, fontSize: 14),
           ),
         ],
       ),
     );
   }
 
+  Widget _editableInfoTile({
+    required String fieldKey,
+    required String title,
+    required String value,
+    TextInputType keyboard = TextInputType.text,
+  }) {
+    return Obx(() {
+      final isEditing = controller.editingField.value == fieldKey;
+
+      return Container(
+        margin: EdgeInsets.symmetric(vertical: 8),
+        padding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+        decoration: BoxDecoration(
+          color: inputBg,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: border),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: isEditing
+                  ? TextField(
+                      autofocus: true,
+                      keyboardType: keyboard,
+                      controller: TextEditingController(text: value),
+                      onChanged: (v) => controller.tempValue.value = v,
+                      decoration: InputDecoration(
+                        isDense: true,
+                        border: InputBorder.none,
+                      ),
+                    )
+                  : Text(title, style: TextStyle(fontWeight: FontWeight.w500)),
+            ),
+
+            SizedBox(width: 12),
+
+            if (!isEditing)
+              Expanded(
+                child: Text(
+                  value,
+                  textAlign: TextAlign.right,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            SizedBox(width: 10),
+
+            GestureDetector(
+              onTap: () => isEditing
+                  ? controller.saveEdit(fieldKey)
+                  : controller.startEdit(fieldKey, value),
+              child: Icon(isEditing ? Icons.check : Icons.edit, color: primary),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
   String _formatDate(String? iso) {
     if (iso == null || iso.isEmpty) return "-";
     return iso.split("T").first;
+  }
+
+  void _showLogoutDialog() {
+    Get.dialog(
+      AlertDialog(
+        backgroundColor: inputBg,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text("Logout", style: TextStyle(fontWeight: FontWeight.w600)),
+        content: Text("Are you sure you want to logout from your account?"),
+        actions: [
+          TextButton(
+            onPressed: Get.back,
+            child: Text("Cancel", style: TextStyle(color: primary)),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Get.back();
+              controller.logout();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: primary,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+            ),
+            child: Text("Logout", style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
   }
 }
