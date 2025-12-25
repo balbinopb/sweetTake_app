@@ -34,4 +34,29 @@ class ProfileModel {
       preference: json['preference'],
     );
   }
+
+
+    ProfileModel copyWith({
+    String? fullname,
+    String? gender,
+    String? dateOfBirth,
+    double? height,
+    double? weight,
+    String? contactInfo,
+    String? healthGoal,
+    String? preference,
+    String? email,
+  }) {
+    return ProfileModel(
+      fullname: fullname ?? this.fullname,
+      gender: gender ?? this.gender,
+      dateOfBirth: dateOfBirth ?? this.dateOfBirth,
+      height: height ?? this.height,
+      weight: weight ?? this.weight,
+      contactInfo: contactInfo ?? this.contactInfo,
+      healthGoal: healthGoal ?? this.healthGoal,
+      preference: preference ?? this.preference,
+      email: email ?? this.email,
+    );
+  }
 }
