@@ -174,14 +174,16 @@ class ProfileController extends GetxController {
     }
   }
 
-  void logout() async {
+  Future<void> logout() async {
     // clear auth data
-    _authC.logout;
+    _authC.logout();
 
     // clear profile state
     profile.value = null;
     editingField.value = '';
     tempValue.value = '';
+
+    // print("==============${_authC.token.value}=============");
 
     // go to login
     Get.offAllNamed(Routes.LOGIN);
