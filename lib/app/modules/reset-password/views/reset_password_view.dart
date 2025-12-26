@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+
 import 'package:get/get.dart';
+import 'package:sweettake_app/app/constants/app_colors.dart';
 import 'package:sweettake_app/app/widgets/custom_textfield.dart';
-import '../../../constants/app_colors.dart';
-import '../../../routes/app_pages.dart';
-import '../controllers/login_controller.dart';
 
-class LoginView extends GetView<LoginController> {
-  const LoginView({super.key});
+import '../controllers/reset_password_controller.dart';
 
+class ResetPasswordView extends GetView<ResetPasswordController> {
+  const ResetPasswordView({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +30,6 @@ class LoginView extends GetView<LoginController> {
                       : MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // App Title
                     Text(
                       'sweetTake',
                       style: TextStyle(
@@ -44,7 +43,7 @@ class LoginView extends GetView<LoginController> {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'Welcome back!',
+                        'Reset Password',
                         style: TextStyle(
                           fontSize: 18,
                           fontFamily: 'sansitaOne',
@@ -58,22 +57,28 @@ class LoginView extends GetView<LoginController> {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'Log in to continue tracking your balanced and healthy sugar levels',
+                        'Create a new secure password',
                         style: TextStyle(color: Colors.grey),
                       ),
                     ),
-                    const SizedBox(height: 16),
-
+                    const SizedBox(height: 24),
                     CustomTextfield(
-                      textController: controller.emailC,
-                      labelText: "Email",
+                      textController: controller.tokenC,
+                      labelText: "Reset Code",
                     ),
                     const SizedBox(height: 16),
 
                     CustomTextfield(
                       textController: controller.passwordC,
+                      labelText: "New Password",
                       isObscure: true,
-                      labelText: "Password",
+                    ),
+                    const SizedBox(height: 16),
+
+                    CustomTextfield(
+                      textController: controller.confirmPasswordC,
+                      labelText: "Confirm Password",
+                      isObscure: true,
                     ),
                     const SizedBox(height: 40),
 
@@ -84,7 +89,7 @@ class LoginView extends GetView<LoginController> {
                         child: ElevatedButton(
                           onPressed: controller.isLoading.value
                               ? null
-                              : controller.login,
+                              : controller.resetPassword,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primary,
                             shape: RoundedRectangleBorder(
@@ -92,40 +97,13 @@ class LoginView extends GetView<LoginController> {
                             ),
                           ),
                           child: Text(
-                            controller.isLoading.value ? "Login..." : "Login",
-                            style: TextStyle(color: Colors.white),
+                            controller.isLoading.value
+                                ? "Resetting..."
+                                : "Reset Password",
+                            style: const TextStyle(color: Colors.white),
                           ),
                         ),
                       ),
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    TextButton(
-                      onPressed: () {
-                        Get.toNamed(Routes.FORGOT_PASSWORD);
-                      },
-                      child: Text(
-                        "Forgot your password?",
-                        style: TextStyle(color: AppColors.primary),
-                      ),
-                    ),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Don’t have an account? ",
-                          style: TextStyle(color: AppColors.primary),
-                        ),
-                        TextButton(
-                          onPressed: () => Get.toNamed(Routes.REGISTER),
-                          child: Text(
-                            "Register",
-                            style: TextStyle(color: AppColors.primary),
-                          ),
-                        ),
-                      ],
                     ),
                   ],
                 ),
