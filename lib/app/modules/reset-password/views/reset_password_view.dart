@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:sweettake_app/app/constants/app_colors.dart';
-import 'package:sweettake_app/app/widgets/custom_textfield.dart';
 
+import '../../../widgets/input_decorations.dart' show appInputDecoration;
 import '../controllers/reset_password_controller.dart';
 
 class ResetPasswordView extends GetView<ResetPasswordController> {
@@ -62,46 +62,70 @@ class ResetPasswordView extends GetView<ResetPasswordController> {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    CustomTextfield(
-                      textController: controller.tokenC,
-                      labelText: "Reset Code",
+                    Obx(
+                      () => TextField(
+                        controller: controller.tokenC,
+                        onChanged: controller.onTokenChanged,
+                        decoration: appInputDecoration(
+                          label: "Token",
+                          errorText: controller.tokenError.value,
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 16),
-
-                    CustomTextfield(
-                      textController: controller.passwordC,
-                      labelText: "New Password",
-                      isObscure: true,
-                    ),
-                    const SizedBox(height: 16),
-
-                    CustomTextfield(
-                      textController: controller.confirmPasswordC,
-                      labelText: "Confirm Password",
-                      isObscure: true,
-                    ),
-                    const SizedBox(height: 40),
 
                     Obx(
-                      () => SizedBox(
-                        width: double.infinity,
-                        height: 48,
-                        child: ElevatedButton(
-                          onPressed: controller.isLoading.value
-                              ? null
-                              : controller.resetPassword,
+                      () => TextField(
+                        controller: controller.passwordC,
+                        obscureText: true,
+                        keyboardType: TextInputType.text,
+                        onChanged: controller.onPasswordChanged,
+                        decoration: appInputDecoration(
+                          label: 'New Password',
+                          errorText: controller.passwordError.value,
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    Obx(
+                      () => TextField(
+                        controller: controller.confirmPasswordC,
+                        obscureText: true,
+                        keyboardType: TextInputType.text,
+                        onChanged: controller.onConfirmPasswordChanged,
+                        decoration: appInputDecoration(
+                          label: "Confirm Password",
+                          errorText: controller.confirmPasswordError.value,
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 40),
+
+                    SizedBox(
+                      width: double.infinity,
+                      height: 48,
+                      child: Obx(
+                        () => ElevatedButton(
+                          onPressed: controller.isAllRulesCompleted
+                              ? controller.resetPassword
+                              : null,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primary,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
                             ),
                           ),
-                          child: Text(
-                            controller.isLoading.value
-                                ? "Resetting..."
-                                : "Reset Password",
-                            style: const TextStyle(color: Colors.white),
-                          ),
+                          child: controller.isLoading.value
+                              ? const CircularProgressIndicator(
+                                  color: Colors.white,
+                                )
+                              : const Text(
+                                  "Reset Password",
+                                  style: TextStyle(color: Colors.white),
+                                ),
                         ),
                       ),
                     ),
