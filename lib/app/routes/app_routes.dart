@@ -15,6 +15,8 @@ abstract class Routes {
   static const GRAPH = _Paths.GRAPH;
   static const CONSUMPTION_FORM = _Paths.CONSUMPTION_FORM;
   static const BOTTOM_NAV_BAR = _Paths.BOTTOM_NAV_BAR;
+  static const FORGOT_PASSWORD = _Paths.FORGOT_PASSWORD;
+  static const RESET_PASSWORD = _Paths.RESET_PASSWORD;
 }
 
 abstract class _Paths {
@@ -29,4 +31,6 @@ abstract class _Paths {
   static const GRAPH = '/graph';
   static const CONSUMPTION_FORM = '/consumption-form';
   static const BOTTOM_NAV_BAR = '/bottom-nav-bar';
+  static const FORGOT_PASSWORD = '/forgot-password';
+  static const RESET_PASSWORD = '/reset-password';
 }
