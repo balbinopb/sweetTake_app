@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:sweettake_app/app/constants/api_endpoints.dart';
 import 'package:sweettake_app/app/data/models/register_model.dart';
 
 import '../../../routes/app_pages.dart';
@@ -18,8 +19,6 @@ class RegisterController extends GetxController {
   final TextEditingController numberController = TextEditingController();
   final isObscure = false.obs;
   final isLoading = false.obs;
-
-  final baseUrl='http://10.0.2.2:8080/v1/api';
 
   // PAGE 2 — Dropdown values (reactive)
   RxString gender = ''.obs;
@@ -144,7 +143,7 @@ class RegisterController extends GetxController {
       // print("========================");
 
       final response = await http.post(
-        Uri.parse("$baseUrl/register"),
+        Uri.parse(ApiEndpoints.register),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(data.toJson()),
       );

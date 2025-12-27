@@ -1,17 +1,16 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
+import 'package:sweettake_app/app/constants/api_endpoints.dart';
 
 import '../../modules/login/controllers/auth_controller.dart';
 
 class ConsumptionService {
   final AuthController authC = Get.find<AuthController>();
 
-  final baseUrl='http://10.0.2.2:8080/v1/api/auth';
-
   Future<List<dynamic>> fetchConsumptions() async {
     final response = await http.get(
-      Uri.parse("$baseUrl/consumptions"),
+      Uri.parse(ApiEndpoints.getAllConsumptions),
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer ${authC.token.value}",

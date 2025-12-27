@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:sweettake_app/app/constants/api_endpoints.dart';
 import 'package:sweettake_app/app/constants/app_colors.dart';
 import 'package:sweettake_app/app/modules/login/controllers/auth_controller.dart';
 import 'package:sweettake_app/app/routes/app_pages.dart';
@@ -10,7 +11,6 @@ import 'package:sweettake_app/app/routes/app_pages.dart';
 import '../../../data/models/profile_model.dart';
 
 class ProfileController extends GetxController {
-  final baseUrl = 'http://10.0.2.2:8080/v1/api/auth';
   final _authC = Get.find<AuthController>();
 
   final profile = Rxn<ProfileModel>();
@@ -38,7 +38,7 @@ class ProfileController extends GetxController {
       await Future.delayed(const Duration(seconds: 1));
 
       final response = await http.get(
-        Uri.parse("$baseUrl/profile"),
+        Uri.parse(ApiEndpoints.profile),
         headers: {
           'Authorization': "Bearer ${_authC.token.value}",
           'Content-Type': 'application/json',
@@ -125,7 +125,7 @@ class ProfileController extends GetxController {
 
     try {
       final response = await http.patch(
-        Uri.parse("$baseUrl/profile"),
+        Uri.parse(ApiEndpoints.profile),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer ${_authC.token.value}",
