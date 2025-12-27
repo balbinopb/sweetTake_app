@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:sweettake_app/app/constants/api_endpoints.dart';
 import 'package:sweettake_app/app/data/models/blood_sugar_model.dart';
 import 'package:sweettake_app/app/routes/app_pages.dart';
 
@@ -12,8 +13,6 @@ import '../../login/controllers/auth_controller.dart';
 class BloodSugarController extends GetxController {
   final bloodSugarC = TextEditingController();
   // final typeC = TextEditingController();
-
-  final baseUrl='http://10.0.2.2:8080/v1/api/auth';
 
   final contextList = [
     'Fasting',
@@ -123,7 +122,7 @@ class BloodSugarController extends GetxController {
       ).toJson();
 
       final response = await http.post(
-        Uri.parse("$baseUrl/bloodsugar"),
+        Uri.parse(ApiEndpoints.submitBloodSugar),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer ${authC.token.value}",

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:sweettake_app/app/constants/api_endpoints.dart';
 import 'package:sweettake_app/app/data/models/reset_password_model.dart';
 import 'package:sweettake_app/app/routes/app_pages.dart';
 
@@ -17,8 +18,6 @@ class ResetPasswordController extends GetxController {
 
   final isLoading = false.obs;
   final isOkay=false.obs;
-
-  final String baseUrl = 'http://10.0.2.2:8080/v1/api';
 
 bool get isAllRulesCompleted {
   return passwordError.value == null &&
@@ -93,7 +92,7 @@ bool get isAllRulesCompleted {
       isLoading.value = true;
 
       final response = await http.post(
-        Uri.parse('$baseUrl/reset-password'),
+        Uri.parse(ApiEndpoints.resetPassword),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(
           ResetPasswordModel(

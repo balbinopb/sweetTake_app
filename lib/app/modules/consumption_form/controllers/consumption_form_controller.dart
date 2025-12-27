@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:sweettake_app/app/constants/api_endpoints.dart';
 import 'package:sweettake_app/app/data/models/consumption_model.dart';
 import 'package:sweettake_app/app/modules/login/controllers/auth_controller.dart';
 import 'package:sweettake_app/app/routes/app_pages.dart';
@@ -11,8 +12,6 @@ import '../../history/controllers/history_controller.dart';
 class ConsumptionFormController extends GetxController {
   final typeC = TextEditingController();
   final sugarC = TextEditingController();
-
-  final baseUrl='http://10.0.2.2:8080/v1/api/auth';
 
   final selectedContext = "Snack".obs;
   final contextList = ["Snack", "Breakfast", "Lunch", "Dinner"];
@@ -91,7 +90,7 @@ class ConsumptionFormController extends GetxController {
       // print("=========TOKEN = ${authC.token.value}============");
 
       final response = await http.post(
-        Uri.parse("$baseUrl/consumption"),
+        Uri.parse(ApiEndpoints.submitConsumption),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer ${authC.token.value}",

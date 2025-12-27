@@ -23,6 +23,7 @@ dependencies:
   get_storage: ^2.1.1
   fl_chart: ^1.1.1
   flutter_native_splash: ^2.4.7
+  flutter_dotenv: ^6.0.0
 
 dev_dependencies:
   flutter_test:
