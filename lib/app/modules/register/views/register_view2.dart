@@ -84,7 +84,7 @@ class RegisterView2 extends GetView<RegisterController> {
                 ),
               ),
 
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
 
               // Health goal dropdown
               Obx(

@@ -1,42 +1,43 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../constants/app_colors.dart';
 import '../controllers/graph_controller.dart';
 
 class GraphView extends GetView<GraphController> {
   const GraphView({super.key});
 
   // static const Color bg = Color(0xFFF7EEC8);
-  static const Color bg = Color(0xFFF7F3E8);
-  static const Color primary = Color(0xFF4A3F24);
-  static const Color softWhite = Color(0xFFFFFDF8);
-  static const Color lineColor = Color(0xFFF6F0DC);
-  static const Color muted = Color(0xFFE8DFC5);
+  // static const Color bg = Color(0xFFF7F3E8);
+  // static const Color primary = Color(0xFF4A3F24);
+  // static const Color softWhite = Color(0xFFFFFDF8);
+  // static const Color lineColor = Color(0xFFF6F0DC);
+  // static const Color muted = Color(0xFFE8DFC5);
 
   static const double yLabelWidth = 30;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: bg,
+      backgroundColor: AppColors.softBg,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.only(top: 18),
+          padding: EdgeInsets.only(top: 18),
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 22),
+            padding: EdgeInsets.symmetric(horizontal: 22),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _title(),
-                const SizedBox(height: 22),
+                SizedBox(height: 22),
                 _rangeSelector(),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 _chartCard(),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 _recommendationCard(),
-                const SizedBox(height: 28),
+                SizedBox(height: 28),
                 _summaryCard(),
-                const SizedBox(height: 32),
+                SizedBox(height: 32),
               ],
             ),
           ),
@@ -47,7 +48,7 @@ class GraphView extends GetView<GraphController> {
 
   // ============TITLE=============
 
-  Widget _title() => const Center(
+  Widget _title() => Center(
     child: Text(
       'Sugar Trends',
       style: TextStyle(
@@ -55,7 +56,7 @@ class GraphView extends GetView<GraphController> {
         fontWeight: FontWeight.w600,
         fontFamily: 'SansitaOne',
         letterSpacing: 0.6,
-        color: primary,
+        color: AppColors.primary2,
       ),
     ),
   );
@@ -64,16 +65,16 @@ class GraphView extends GetView<GraphController> {
 
   Widget _rangeSelector() => Obx(
     () => Container(
-      padding: const EdgeInsets.all(4),
+      padding: EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: softWhite,
+        color: AppColors.softWhite,
         borderRadius: BorderRadius.circular(32),
         // border: Border.all(color: primary.withValues(alpha:0.3)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
-            offset: const Offset(0, 4),
+            offset: Offset(0, 4),
           ),
         ],
       ),
@@ -99,30 +100,30 @@ class GraphView extends GetView<GraphController> {
       child: GestureDetector(
         onTap: onTap,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
+          duration: Duration(milliseconds: 300),
           curve: Curves.easeInOut,
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          margin: const EdgeInsets.symmetric(horizontal: 2),
+          padding: EdgeInsets.symmetric(vertical: 14),
+          margin: EdgeInsets.symmetric(horizontal: 2),
           decoration: BoxDecoration(
-            color: active ? primary : softWhite,
+            color: active ? AppColors.primary2 : AppColors.softWhite,
             borderRadius: BorderRadius.circular(28),
             boxShadow: active
                 ? [
                     BoxShadow(
-                      color: primary.withValues(alpha: 0.3),
+                      color: AppColors.primary2.withValues(alpha: 0.3),
                       blurRadius: 10,
-                      offset: const Offset(0, 4),
+                      offset: Offset(0, 4),
                     ),
                   ]
                 : [],
           ),
           alignment: Alignment.center,
           child: AnimatedDefaultTextStyle(
-            duration: const Duration(milliseconds: 300),
+            duration: Duration(milliseconds: 300),
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w600,
-              color: active ? Colors.white : primary,
+              color: active ? Colors.white : AppColors.primary2,
             ),
             child: Text(label),
           ),
@@ -135,7 +136,7 @@ class GraphView extends GetView<GraphController> {
 
   Widget _chartCard() => Obx(() {
     if (controller.isLoading.value) {
-      return const SizedBox(
+      return SizedBox(
         height: 220,
         child: Center(child: CircularProgressIndicator(color: Colors.white)),
       );
@@ -144,14 +145,14 @@ class GraphView extends GetView<GraphController> {
     final isWeekly = controller.selectedRange.value == 'Weekly';
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: primary,
+        color: AppColors.primary2,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
             blurRadius: 18,
-            offset: const Offset(0, 10),
+            offset: Offset(0, 10),
             color: Colors.black.withValues(alpha: .25),
           ),
         ],
@@ -160,7 +161,7 @@ class GraphView extends GetView<GraphController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _chartArea(isWeekly),
-          const SizedBox(height: 14),
+          SizedBox(height: 14),
           _xLabels(isWeekly),
         ],
       ),
@@ -175,8 +176,10 @@ class GraphView extends GetView<GraphController> {
         gridData: FlGridData(
           show: true,
           horizontalInterval: 10,
-          getDrawingHorizontalLine: (_) =>
-              FlLine(color: lineColor.withValues(alpha: 0.4), strokeWidth: 1),
+          getDrawingHorizontalLine: (_) => FlLine(
+            color: AppColors.lineColor.withValues(alpha: 0.4),
+            strokeWidth: 1,
+          ),
         ),
         borderData: FlBorderData(show: false),
 
@@ -191,11 +194,11 @@ class GraphView extends GetView<GraphController> {
           LineChartBarData(
             isCurved: true,
             barWidth: 3,
-            color: lineColor,
+            color: AppColors.lineColor,
             dotData: FlDotData(show: true),
             belowBarData: BarAreaData(
               show: true,
-              color: lineColor.withValues(alpha: 0.15),
+              color: AppColors.lineColor.withValues(alpha: 0.15),
             ),
             spots: controller.activeSpots,
           ),
@@ -206,7 +209,7 @@ class GraphView extends GetView<GraphController> {
 
   Widget _xLabels(bool isWeekly) {
     if (isWeekly) {
-      return const Row(
+      return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _ChartLabel('Sun'),
@@ -220,7 +223,7 @@ class GraphView extends GetView<GraphController> {
       );
     }
 
-    return const Row(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         _ChartLabel('W1'),
@@ -238,7 +241,7 @@ class GraphView extends GetView<GraphController> {
 
     return Obx(
       () => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
           color: Colors.black,
           borderRadius: BorderRadius.circular(20),
@@ -246,7 +249,7 @@ class GraphView extends GetView<GraphController> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.lightbulb_outline, color: bg, size: 24),
+            Icon(Icons.lightbulb_outline, color: AppColors.softBg, size: 24),
             SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -258,13 +261,17 @@ class GraphView extends GetView<GraphController> {
                       fontWeight: FontWeight.w700,
                       decoration: TextDecoration.underline,
                       decorationColor: Colors.yellow,
-                      color: bg,
+                      color: AppColors.softBg,
                     ),
                   ),
                   SizedBox(height: 4),
                   Text(
                     controller.recommendationText.value,
-                    style: TextStyle(color: bg, fontSize: 13, height: 1.3),
+                    style: TextStyle(
+                      color: AppColors.softBg,
+                      fontSize: 13,
+                      height: 1.3,
+                    ),
                   ),
                 ],
               ),
@@ -277,15 +284,15 @@ class GraphView extends GetView<GraphController> {
 
   // ===========SUMMARY==============
   Widget _summaryCard() => Container(
-    padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
+    padding: EdgeInsets.fromLTRB(20, 18, 20, 20),
     decoration: BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.circular(26),
       boxShadow: [
         BoxShadow(
           blurRadius: 16,
-          offset: const Offset(0, 10),
-          color: primary.withValues(alpha: .25),
+          offset: Offset(0, 10),
+          color: AppColors.primary2.withValues(alpha: .25),
         ),
       ],
     ),
@@ -329,23 +336,20 @@ class _MetricTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 248, 247, 247),
+        color: Color.fromARGB(255, 248, 247, 247),
         borderRadius: BorderRadius.circular(14),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            label,
-            style: const TextStyle(fontSize: 12, color: Color(0xFF4A3F24)),
-          ),
-          const SizedBox(height: 2),
+          Text(label, style: TextStyle(fontSize: 12, color: Color(0xFF4A3F24))),
+          SizedBox(height: 2),
           Text(
             value,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
           ),
         ],
       ),
@@ -359,9 +363,6 @@ class _ChartLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: const TextStyle(color: GraphView.muted, fontSize: 11),
-    );
+    return Text(text, style: TextStyle(color: AppColors.muted, fontSize: 11));
   }
 }

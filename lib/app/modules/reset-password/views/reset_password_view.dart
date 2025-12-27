@@ -18,7 +18,7 @@ class ResetPasswordView extends GetView<ResetPasswordController> {
             final keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
 
             return SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(
+              padding: EdgeInsets.symmetric(
                 horizontal: 24.0,
                 vertical: 60,
               ),
@@ -38,7 +38,7 @@ class ResetPasswordView extends GetView<ResetPasswordController> {
                         color: AppColors.primary,
                       ),
                     ),
-                    const SizedBox(height: 50),
+                    SizedBox(height: 50),
 
                     Align(
                       alignment: Alignment.centerLeft,
@@ -52,7 +52,7 @@ class ResetPasswordView extends GetView<ResetPasswordController> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8),
 
                     Align(
                       alignment: Alignment.centerLeft,
@@ -61,7 +61,7 @@ class ResetPasswordView extends GetView<ResetPasswordController> {
                         style: TextStyle(color: Colors.grey),
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    SizedBox(height: 24),
                     Obx(
                       () => TextField(
                         controller: controller.tokenC,
@@ -72,7 +72,7 @@ class ResetPasswordView extends GetView<ResetPasswordController> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16),
 
                     Obx(
                       () => TextField(
@@ -87,7 +87,7 @@ class ResetPasswordView extends GetView<ResetPasswordController> {
                       ),
                     ),
 
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16),
 
                     Obx(
                       () => TextField(
@@ -102,7 +102,7 @@ class ResetPasswordView extends GetView<ResetPasswordController> {
                       ),
                     ),
 
-                    const SizedBox(height: 40),
+                    SizedBox(height: 40),
 
                     SizedBox(
                       width: double.infinity,
@@ -119,10 +119,10 @@ class ResetPasswordView extends GetView<ResetPasswordController> {
                             ),
                           ),
                           child: controller.isLoading.value
-                              ? const CircularProgressIndicator(
+                              ? CircularProgressIndicator(
                                   color: Colors.white,
                                 )
-                              : const Text(
+                              : Text(
                                   "Reset Password",
                                   style: TextStyle(color: Colors.white),
                                 ),

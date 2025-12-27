@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sweettake_app/app/constants/app_colors.dart';
 
 import '../modules/profile/controllers/profile_controller.dart';
-import '../modules/profile/views/profile_view.dart';
 
 class ProfileField extends GetView<ProfileController> {
   final String label;
@@ -24,18 +24,18 @@ class ProfileField extends GetView<ProfileController> {
       final isEditing = controller.editingField.value == fieldKey;
 
       return Container(
-        margin: const EdgeInsets.only(bottom: 14),
-        padding: const EdgeInsets.all(16),
+        margin: EdgeInsets.only(bottom: 14),
+        padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: ProfileView.inputBg,
+          color: AppColors.inputBg,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: ProfileView.border),
+          border: Border.all(color: AppColors.border),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(label, style: TextStyle(fontSize: 12, color: Colors.black54)),
-            const SizedBox(height: 6),
+            SizedBox(height: 6),
             Row(
               children: [
                 Expanded(
@@ -44,14 +44,14 @@ class ProfileField extends GetView<ProfileController> {
                           autofocus: true,
                           keyboardType: keyboard,
                           controller: controller.editController,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                             isDense: true,
                             border: InputBorder.none,
                           ),
                         )
                       : Text(
                           value,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
                           ),
@@ -60,7 +60,7 @@ class ProfileField extends GetView<ProfileController> {
                 IconButton(
                   icon: Icon(
                     isEditing ? Icons.check_circle : Icons.edit,
-                    color: ProfileView.primary,
+                    color: AppColors.primary2,
                   ),
                   onPressed: () => isEditing
                       ? controller.saveEdit(fieldKey)

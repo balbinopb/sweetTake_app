@@ -1,16 +1,17 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../constants/app_colors.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
 
-  static const Color primary = Color(0xFF4C462A);
-  static const Color bg = Color(0xFFF7F3E8);
-  static const Color card = Color(0xFFFFFDF8);
-  static const Color accent = Color(0xFF4C462A);
-  static const Color chartBg = Color(0xFF4C462A);
+  // static const Color primary = Color(0xFF4C462A);
+  // static const Color bg = Color(0xFFF7F3E8);
+  // static const Color card = Color(0xFFFFFDF8);
+  // static const Color accent = Color(0xFF4C462A);
+  // static const Color chartBg = Color(0xFF4C462A);
 
   @override
   Widget build(BuildContext context) {
@@ -20,23 +21,23 @@ class HomeView extends GetView<HomeController> {
     final minHeight = media.size.height - media.padding.top - bottomNavHeight;
 
     return Scaffold(
-      backgroundColor: bg,
+      backgroundColor: AppColors.softBg,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.only(top: 5),
+          padding: EdgeInsets.only(top: 5),
           child: RefreshIndicator(
             onRefresh: controller.refreshHome,
             child: SingleChildScrollView(
-              padding: const EdgeInsets.only(bottom: bottomNavHeight / 2),
+              padding: EdgeInsets.only(bottom: bottomNavHeight / 2),
               child: ConstrainedBox(
                 constraints: BoxConstraints(minHeight: minHeight),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: EdgeInsets.symmetric(horizontal: 24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      const SizedBox(height: 24),
-            
+                      SizedBox(height: 24),
+
                       // ================= HEADER =================
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -48,20 +49,23 @@ class HomeView extends GetView<HomeController> {
                                 height: 48,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: card,
-                                  border: Border.all(color: primary),
+                                  color: AppColors.card,
+                                  border: Border.all(color: AppColors.primary),
                                 ),
-                                child: const Icon(Icons.person, color: primary),
+                                child: Icon(
+                                  Icons.person,
+                                  color: AppColors.primary,
+                                ),
                               ),
-                              const SizedBox(width: 12),
+                              SizedBox(width: 12),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: const [
+                                children: [
                                   Text(
                                     "Hello,",
                                     style: TextStyle(
                                       fontSize: 14,
-                                      color: primary,
+                                      color: AppColors.primary,
                                     ),
                                   ),
                                   Text(
@@ -69,7 +73,7 @@ class HomeView extends GetView<HomeController> {
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,
-                                      color: primary,
+                                      color: AppColors.primary,
                                     ),
                                   ),
                                 ],
@@ -78,27 +82,27 @@ class HomeView extends GetView<HomeController> {
                           ),
                         ],
                       ),
-            
-                      const SizedBox(height: 28),
-            
+
+                      SizedBox(height: 28),
+
                       // ================= TITLE =================
-                      const Text(
+                      Text(
                         "Sugar Consumption History",
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w600,
-                          color: primary,
+                          color: AppColors.primary,
                         ),
                       ),
-            
-                      const SizedBox(height: 12),
-            
+
+                      SizedBox(height: 12),
+
                       // ================= SEGMENT =================
                       Obx(
                         () => Container(
-                          padding: const EdgeInsets.all(4),
+                          padding: EdgeInsets.all(4),
                           decoration: BoxDecoration(
-                            color: card,
+                            color: AppColors.card,
                             borderRadius: BorderRadius.circular(30),
                           ),
                           child: Row(
@@ -119,23 +123,23 @@ class HomeView extends GetView<HomeController> {
                           ),
                         ),
                       ),
-            
-                      const SizedBox(height: 20),
-            
+
+                      SizedBox(height: 20),
+
                       // ================= CHART =================
                       Container(
-                        padding: const EdgeInsets.all(20),
+                        padding: EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          color: chartBg,
+                          color: AppColors.primary,
                           borderRadius: BorderRadius.circular(24),
                         ),
                         child: Column(
                           children: [
                             Obx(() {
                               final points = controller.chartPoints;
-            
+
                               if (points.isEmpty) {
-                                return const SizedBox(
+                                return SizedBox(
                                   height: 180,
                                   child: Center(
                                     child: Text(
@@ -145,7 +149,7 @@ class HomeView extends GetView<HomeController> {
                                   ),
                                 );
                               }
-            
+
                               return SizedBox(
                                 height: 180,
                                 child: LineChart(
@@ -154,20 +158,23 @@ class HomeView extends GetView<HomeController> {
                                     gridData: FlGridData(show: false),
                                     borderData: FlBorderData(show: false),
                                     titlesData: FlTitlesData(show: false),
-            
+
                                     lineBarsData: [
                                       LineChartBarData(
                                         isCurved: true,
                                         barWidth: 3,
-                                        color: bg,
+                                        color: AppColors.softBg,
                                         dotData: FlDotData(show: false),
                                         belowBarData: BarAreaData(
                                           show: true,
-                                          color: bg.withValues(alpha: 0.15),
+                                          color: AppColors.softBg.withValues(
+                                            alpha: 0.15,
+                                          ),
                                         ),
                                         spots: List.generate(
                                           points.length,
-                                          (i) => FlSpot(i.toDouble(), points[i]),
+                                          (i) =>
+                                              FlSpot(i.toDouble(), points[i]),
                                         ),
                                       ),
                                     ],
@@ -175,12 +182,13 @@ class HomeView extends GetView<HomeController> {
                                 ),
                               );
                             }),
-            
-                            const SizedBox(height: 12),
-            
+
+                            SizedBox(height: 12),
+
                             Obx(
                               () => Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: controller.chartLabels
                                     .map((e) => Text(e, style: _axisText))
                                     .toList(),
@@ -189,61 +197,61 @@ class HomeView extends GetView<HomeController> {
                           ],
                         ),
                       ),
-            
-                      const SizedBox(height: 24),
-            
+
+                      SizedBox(height: 24),
+
                       // ================= TODAY SUMMARY =================
                       Container(
-                        padding: const EdgeInsets.symmetric(
+                        padding: EdgeInsets.symmetric(
                           vertical: 14,
                           horizontal: 16,
                         ),
                         decoration: BoxDecoration(
-                          color: card,
+                          color: AppColors.card,
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: const Text(
+                        child: Text(
                           "Today's Sugar Intake",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
-                            color: primary,
+                            color: AppColors.primary,
                           ),
                         ),
                       ),
-            
-                      const SizedBox(height: 24),
-            
+
+                      SizedBox(height: 24),
+
                       // ================= CONSUMPTION LIST =================
                       Obx(() {
                         final today = controller.todayConsumptions;
-            
+
                         if (today.isEmpty) {
-                          return const Padding(
+                          return Padding(
                             padding: EdgeInsets.only(top: 12),
                             child: Text(
                               "No sugar intake recorded today",
                               textAlign: TextAlign.center,
-                              style: TextStyle(color: primary),
+                              style: TextStyle(color: AppColors.primary),
                             ),
                           );
                         }
-            
+
                         return Column(
                           children: today.map((e) {
                             return Padding(
-                              padding: const EdgeInsets.only(bottom: 14),
+                              padding: EdgeInsets.only(bottom: 14),
                               child: _consumptionCard(
-                                time: e['time'], // "08:00"
-                                title: e['title'], // "Milk Tea"
+                                time: e['time'],
+                                title: e['title'],
                                 sugar: "${e['sugar']}g",
                               ),
                             );
                           }).toList(),
                         );
                       }),
-            
-                      const SizedBox(height: bottomNavHeight / 2),
+
+                      SizedBox(height: bottomNavHeight / 2),
                     ],
                   ),
                 ),
@@ -256,8 +264,10 @@ class HomeView extends GetView<HomeController> {
   }
 
   // ================= HELPERS =================
-
-  static const TextStyle _axisText = TextStyle(color: bg, fontSize: 12);
+  static const TextStyle _axisText = TextStyle(
+    color: AppColors.softBg,
+    fontSize: 12,
+  );
 
   Widget _segment({
     required String label,
@@ -268,17 +278,17 @@ class HomeView extends GetView<HomeController> {
       child: GestureDetector(
         onTap: onTap,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(vertical: 10),
+          duration: Duration(milliseconds: 200),
+          padding: EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
-            color: active ? primary : Colors.transparent,
+            color: active ? AppColors.primary : Colors.transparent,
             borderRadius: BorderRadius.circular(24),
           ),
           alignment: Alignment.center,
           child: Text(
             label,
             style: TextStyle(
-              color: active ? Colors.white : primary,
+              color: active ? Colors.white : AppColors.primary,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -293,9 +303,9 @@ class HomeView extends GetView<HomeController> {
     required String sugar,
   }) {
     return Container(
-      padding: const EdgeInsets.all(18),
+      padding: EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: accent,
+        color: AppColors.primary,
         borderRadius: BorderRadius.circular(24),
       ),
       child: Row(
@@ -306,32 +316,35 @@ class HomeView extends GetView<HomeController> {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.access_time, size: 14, color: card),
-                  const SizedBox(width: 6),
-                  Text(time, style: const TextStyle(fontSize: 14, color: card)),
+                  Icon(Icons.access_time, size: 14, color: AppColors.card),
+                  SizedBox(width: 6),
+                  Text(
+                    time,
+                    style: TextStyle(fontSize: 14, color: AppColors.card),
+                  ),
                 ],
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 10),
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.w500,
-                  color: card,
+                  color: AppColors.card,
                 ),
               ),
             ],
           ),
           Row(
             children: [
-              const Icon(Icons.opacity, color: card),
-              const SizedBox(width: 6),
+              Icon(Icons.opacity, color: AppColors.card),
+              SizedBox(width: 6),
               Text(
                 sugar,
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w500,
-                  color: card,
+                  color: AppColors.card,
                 ),
               ),
             ],

@@ -15,7 +15,7 @@ class BottomNavBarView extends GetView<BottomNavBarController> {
       Container(
         padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
         ),
         child: Column(
