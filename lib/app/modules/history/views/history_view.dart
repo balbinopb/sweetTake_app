@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sweettake_app/app/constants/app_colors.dart';
 
 import '../../../data/models/history_bloodsugar_model.dart';
 import '../../../data/models/history_consumption_model.dart';
@@ -8,15 +9,15 @@ import '../controllers/history_controller.dart';
 class HistoryView extends GetView<HistoryController> {
   const HistoryView({super.key});
 
-  static const Color primary = Color(0xFF4A3F24);
-  static const Color softBg = Color(0xFFF7F3E8);
-  static const Color inputBg = Color(0xFFFFFBF2);
-  static const Color border = Color(0xFFE0D7C3);
+  // static const Color primary = Color(0xFF4A3F24);
+  // static const Color softBg = Color(0xFFF7F3E8);
+  // static const Color inputBg = Color(0xFFFFFBF2);
+  // static const Color border = Color(0xFFE0D7C3);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: softBg,
+      backgroundColor: AppColors.softBg,
       body: SafeArea(
         child: Column(
           children: [
@@ -59,7 +60,7 @@ class _Header extends StatelessWidget {
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w600,
-              color: HistoryView.primary,
+              color: AppColors.primary,
             ),
           ),
           const Spacer(),
@@ -102,7 +103,7 @@ class _DatePicker extends GetView<HistoryController> {
               const Icon(
                 Icons.calendar_today_rounded,
                 size: 18,
-                color: HistoryView.primary,
+                color: AppColors.primary,
               ),
               const SizedBox(width: 8),
               Obx(
@@ -110,12 +111,12 @@ class _DatePicker extends GetView<HistoryController> {
                   controller.dateText.value,
                   style: const TextStyle(
                     fontWeight: FontWeight.w600,
-                    color: HistoryView.primary,
+                    color: AppColors.primary,
                   ),
                 ),
               ),
               const SizedBox(width: 4),
-              const Icon(Icons.keyboard_arrow_down, color: HistoryView.primary),
+              const Icon(Icons.keyboard_arrow_down, color: AppColors.primary),
             ],
           ),
         ),
@@ -137,7 +138,7 @@ class _SoftTabBar extends GetView<HistoryController> {
           decoration: BoxDecoration(
             color: Color(0xFFFFFBF2),
             borderRadius: BorderRadius.circular(22),
-            border: Border.all(color: HistoryView.border),
+            border: Border.all(color: AppColors.border),
           ),
           child: Row(
             children: [
@@ -180,14 +181,14 @@ class _TabItem extends StatelessWidget {
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: isActive ? HistoryView.primary : Colors.transparent,
+            color: isActive ? AppColors.primary : Colors.transparent,
             borderRadius: BorderRadius.circular(22),
           ),
           alignment: Alignment.center,
           child: Text(
             label,
             style: TextStyle(
-              color: isActive ? Colors.white : HistoryView.primary,
+              color: isActive ? AppColors.white : AppColors.primary,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -285,14 +286,14 @@ class _HistoryCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: HistoryView.inputBg,
+        color: AppColors.inputBg,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: HistoryView.border),
+        border: Border.all(color: AppColors.border),
       ),
       child: Row(
         children: [
           CircleAvatar(
-            backgroundColor: HistoryView.primary,
+            backgroundColor: AppColors.primary,
             child: Icon(icon, color: Colors.white),
           ),
           const SizedBox(width: 12),
@@ -304,14 +305,14 @@ class _HistoryCard extends StatelessWidget {
                   title,
                   style: const TextStyle(
                     fontWeight: FontWeight.w600,
-                    color: HistoryView.primary,
+                    color: AppColors.primary,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   subtitle,
                   style: TextStyle(
-                    color: HistoryView.primary.withValues(alpha: 0.6),
+                    color: AppColors.primary.withValues(alpha: 0.6),
                     fontSize: 12,
                   ),
                 ),
@@ -322,7 +323,7 @@ class _HistoryCard extends StatelessWidget {
             value,
             style: const TextStyle(
               fontWeight: FontWeight.w700,
-              color: HistoryView.primary,
+              color: AppColors.primary,
             ),
           ),
         ],
@@ -342,7 +343,7 @@ class _TotalCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.only(top: 8),
       decoration: BoxDecoration(
-        color: HistoryView.primary,
+        color: AppColors.primary,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Center(
@@ -373,12 +374,12 @@ class _EmptyState extends StatelessWidget {
           Icon(
             Icons.inbox_rounded,
             size: 48,
-            color: HistoryView.primary.withValues(alpha: 0.4),
+            color: AppColors.primary.withValues(alpha: 0.4),
           ),
           const SizedBox(height: 12),
           Text(
             text,
-            style: TextStyle(color: HistoryView.primary.withValues(alpha: 0.5)),
+            style: TextStyle(color: AppColors.primary.withValues(alpha: 0.5)),
           ),
         ],
       ),

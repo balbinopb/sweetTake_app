@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sweettake_app/app/constants/app_colors.dart';
 import '../controllers/profile_controller.dart';
 
 class ProfileView extends GetView<ProfileController> {
   const ProfileView({super.key});
 
-  // colors
-  static const Color primary = Color(0xFF4A3F24);
-  static const Color softBg = Color(0xFFF7F3E8);
-  static const Color inputBg = Color(0xFFFFFBF2);
-  static const Color border = Color(0xFFE0D7C3);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: softBg,
+      backgroundColor: AppColors.softBg,
       body: Obx(() {
         if (controller.isLoading.value) {
-          return Center(child: CircularProgressIndicator(color: primary));
+          return Center(
+            child: CircularProgressIndicator(color: AppColors.primary2),
+          );
         }
 
         if (controller.errorMessage.value != null) {
@@ -100,7 +97,7 @@ class ProfileView extends GetView<ProfileController> {
                     onPressed: _showLogoutDialog,
                     style: OutlinedButton.styleFrom(
                       minimumSize: Size.fromHeight(50),
-                      side: BorderSide(color: primary),
+                      side: BorderSide(color: AppColors.primary2),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
@@ -108,7 +105,7 @@ class ProfileView extends GetView<ProfileController> {
                     child: Text(
                       "Logout",
                       style: TextStyle(
-                        color: primary,
+                        color: AppColors.primary2,
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
@@ -133,7 +130,7 @@ class ProfileView extends GetView<ProfileController> {
       padding: EdgeInsets.fromLTRB(24, topInset + 32, 24, 32),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [primary, Color(0xFF776A4F)],
+          colors: [AppColors.primary2, Color(0xFF776A4F)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -160,7 +157,7 @@ class ProfileView extends GetView<ProfileController> {
             ),
             child: CircleAvatar(
               radius: 48,
-              backgroundColor: primary.withValues(alpha: 0.25),
+              backgroundColor: AppColors.primary2.withValues(alpha: 0.25),
               child: Text(
                 data.fullname.isNotEmpty ? data.fullname[0] : "-",
                 style: TextStyle(
@@ -211,9 +208,9 @@ class ProfileView extends GetView<ProfileController> {
         margin: EdgeInsets.symmetric(vertical: 8),
         padding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
         decoration: BoxDecoration(
-          color: inputBg,
+          color: AppColors.inputBg,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: border),
+          border: Border.all(color: AppColors.border),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -249,7 +246,10 @@ class ProfileView extends GetView<ProfileController> {
               onTap: () => isEditing
                   ? controller.saveEdit(fieldKey)
                   : controller.startEdit(fieldKey, value),
-              child: Icon(isEditing ? Icons.check : Icons.edit, color: primary),
+              child: Icon(
+                isEditing ? Icons.check : Icons.edit,
+                color: AppColors.primary2,
+              ),
             ),
           ],
         ),
@@ -265,14 +265,14 @@ class ProfileView extends GetView<ProfileController> {
   void _showLogoutDialog() {
     Get.dialog(
       AlertDialog(
-        backgroundColor: inputBg,
+        backgroundColor: AppColors.inputBg,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Text("Logout", style: TextStyle(fontWeight: FontWeight.w600)),
         content: Text("Are you sure you want to logout from your account?"),
         actions: [
           TextButton(
             onPressed: Get.back,
-            child: Text("Cancel", style: TextStyle(color: primary)),
+            child: Text("Cancel", style: TextStyle(color: AppColors.primary2)),
           ),
           ElevatedButton(
             onPressed: () {
@@ -280,7 +280,7 @@ class ProfileView extends GetView<ProfileController> {
               controller.logout();
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: primary,
+              backgroundColor: AppColors.primary2,
               elevation: 0,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(14),

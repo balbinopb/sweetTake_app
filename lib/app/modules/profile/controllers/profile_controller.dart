@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:sweettake_app/app/constants/app_colors.dart';
 import 'package:sweettake_app/app/modules/login/controllers/auth_controller.dart';
-import 'package:sweettake_app/app/modules/profile/views/profile_view.dart';
 import 'package:sweettake_app/app/routes/app_pages.dart';
 
 import '../../../data/models/profile_model.dart';
@@ -158,7 +158,7 @@ class ProfileController extends GetxController {
         Get.snackbar(
           "Success",
           "Profile updated successfully",
-          backgroundColor: ProfileView.primary.withValues(alpha: 0.9),
+          backgroundColor: AppColors.primary2.withValues(alpha: 0.9),
           colorText: Colors.white,
         );
       } else {

@@ -1,54 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sweettake_app/app/constants/app_colors.dart';
 import '../controllers/consumption_form_controller.dart';
 
 class ConsumptionFormView extends GetView<ConsumptionFormController> {
   const ConsumptionFormView({super.key});
-
-  static const Color primary = Color(0xFF4A3F24);
-  static const Color softBg = Color(0xFFF7F3E8);
-  static const Color inputBg = Color(0xFFFFFBF2);
-  static const Color border = Color(0xFFE0D7C3);
-
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: softBg,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+      backgroundColor: AppColors.softBg,
+      insetPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 24),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(24, 20, 24, 26),
+        padding: EdgeInsets.fromLTRB(24, 20, 24, 26),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _header(),
-            const SizedBox(height: 26),
+            SizedBox(height: 26),
 
             Row(
               children: [
                 Expanded(child: _buildDatePicker(context)),
-                const SizedBox(width: 12),
+                SizedBox(width: 12),
                 Expanded(child: _buildTimePicker(context)),
               ],
             ),
 
-            const SizedBox(height: 22),
+            SizedBox(height: 22),
 
             _label("Food Type"),
             _buildTextField(controller.typeC, "Milk Tea"),
-            const SizedBox(height: 22),
+            SizedBox(height: 22),
 
             _label("Amount"),
             _amountSelector(),
-            const SizedBox(height: 22),
+            SizedBox(height: 22),
 
             _label("Sugar (g)"),
             _buildTextField(controller.sugarC, "42"),
-            const SizedBox(height: 22),
+            SizedBox(height: 22),
 
             _label("Context"),
             _buildContextDropdown(),
-            const SizedBox(height: 32),
+            SizedBox(height: 32),
 
             _submitButton(),
           ],
@@ -63,13 +58,13 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
     children: [
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
+        children: [
           Text(
             "Add Sugar Intake",
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: primary,
+              color: AppColors.primary,
             ),
           ),
           SizedBox(height: 4),
@@ -79,37 +74,34 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
           ),
         ],
       ),
-      IconButton(onPressed: Get.back, icon: const Icon(Icons.close)),
+      IconButton(onPressed: Get.back, icon: Icon(Icons.close)),
     ],
   );
 
-
-
   // ================= LABEL =================
   Widget _label(String text) => Padding(
-    padding: const EdgeInsets.only(bottom: 6),
+    padding: EdgeInsets.only(bottom: 6),
     child: Text(
       text,
-      style: const TextStyle(
+      style: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.w600,
-        color: primary,
+        color: AppColors.primary,
       ),
     ),
   );
 
-
   // ================= TEXT FIELD =================
   Widget _buildTextField(TextEditingController c, String hint) => Container(
     decoration: BoxDecoration(
-      color: inputBg,
+      color: AppColors.inputBg,
       borderRadius: BorderRadius.circular(14),
-      border: Border.all(color: border),
+      border: Border.all(color: AppColors.border),
     ),
-    padding: const EdgeInsets.symmetric(horizontal: 14),
+    padding: EdgeInsets.symmetric(horizontal: 14),
     child: TextField(
       controller: c,
-      style: const TextStyle(fontSize: 14),
+      style: TextStyle(fontSize: 14),
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: TextStyle(color: Colors.grey.shade500),
@@ -117,8 +109,6 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
       ),
     ),
   );
-
-
 
   // ================= DATE PICKER =================
   Widget _buildDatePicker(BuildContext context) => GestureDetector(
@@ -135,8 +125,8 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
       Obx(
         () => Row(
           children: [
-            const Icon(Icons.calendar_today_outlined, size: 18),
-            const SizedBox(width: 10),
+            Icon(Icons.calendar_today_outlined, size: 18),
+            SizedBox(width: 10),
             Expanded(child: Text(controller.dateString.value)),
           ],
         ),
@@ -145,7 +135,6 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
   );
 
   // ================= TIME PICKER =================
-
   Widget _buildTimePicker(BuildContext context) => GestureDetector(
     onTap: () async {
       final picked = await showTimePicker(
@@ -158,8 +147,8 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
       Obx(
         () => Row(
           children: [
-            const Icon(Icons.access_time_outlined, size: 18),
-            const SizedBox(width: 10),
+            Icon(Icons.access_time_outlined, size: 18),
+            SizedBox(width: 10),
             Expanded(child: Text(controller.timeString.value)),
           ],
         ),
@@ -168,38 +157,37 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
   );
 
   Widget _pickerBox(Widget child) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+    padding: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
     decoration: BoxDecoration(
-      color: inputBg,
+      color: AppColors.inputBg,
       borderRadius: BorderRadius.circular(14),
-      border: Border.all(color: border),
+      border: Border.all(color: AppColors.border),
     ),
     child: child,
   );
 
   // ================= AMOUNT =================
-
   Widget _amountSelector() => Obx(
     () => Container(
       decoration: BoxDecoration(
-        color: inputBg,
+        color: AppColors.inputBg,
         borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: border),
+        border: Border.all(color: AppColors.border),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           IconButton(
             onPressed: controller.decrementAmount,
-            icon: const Icon(Icons.remove),
+            icon: Icon(Icons.remove),
           ),
           Text(
             controller.amount.value.toString(),
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           IconButton(
             onPressed: controller.incrementAmount,
-            icon: const Icon(Icons.add),
+            icon: Icon(Icons.add),
           ),
         ],
       ),
@@ -207,14 +195,13 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
   );
 
   // ================= DROPDOWN =================
-
   Widget _buildContextDropdown() => Obx(
     () => Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14),
+      padding: EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
-        color: inputBg,
+        color: AppColors.inputBg,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: border),
+        border: Border.all(color: AppColors.border),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
@@ -230,7 +217,6 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
   );
 
   // ================= BUTTON =================
-
   Widget _submitButton() => SizedBox(
     width: double.infinity,
     child: Obx(
@@ -239,15 +225,15 @@ class ConsumptionFormView extends GetView<ConsumptionFormController> {
             ? null
             : controller.submitConsumption,
         style: ElevatedButton.styleFrom(
-          backgroundColor: primary,
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          backgroundColor: AppColors.primary,
+          padding: EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(18),
           ),
         ),
         child: Text(
           controller.isLoading.value ? "Submitting..." : "Save Intake",
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.white,
             fontSize: 16,
             fontWeight: FontWeight.bold,
