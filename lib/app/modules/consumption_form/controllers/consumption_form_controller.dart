@@ -1,9 +1,7 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
-import 'package:sweettake_app/app/constants/api_endpoints.dart';
 import 'package:sweettake_app/app/data/models/consumption_model.dart';
+import 'package:sweettake_app/app/data/services/consumption_service.dart';
 import 'package:sweettake_app/app/modules/login/controllers/auth_controller.dart';
 import 'package:sweettake_app/app/routes/app_pages.dart';
 
@@ -32,14 +30,9 @@ class ConsumptionFormController extends GetxController {
     _updateTime();
   }
 
-  void incrementAmount() {
-    amount.value++;
-  }
-
+  void incrementAmount() => amount.value++;
   void decrementAmount() {
-    if (amount.value > 1) {
-      amount.value--;
-    }
+    if (amount.value > 1) amount.value--;
   }
 
   void updateDate(DateTime d) {
@@ -66,7 +59,8 @@ class ConsumptionFormController extends GetxController {
   }
 
   Future<void> submitConsumption() async {
-    // print("===========inisialized============");
+    if (isLoading.value) return;
+
     final sugar = double.tryParse(sugarC.text.trim());
     if (typeC.text.trim().isEmpty || sugar == null || sugar <= 0) {
       Get.snackbar("Error", "Invalid input");
@@ -84,26 +78,19 @@ class ConsumptionFormController extends GetxController {
         selectedTime.minute,
       );
 
-      // print("AuthController registered: ${Get.isRegistered<AuthController>()}");
       final authC = Get.find<AuthController>();
 
-      // print("=========TOKEN = ${authC.token.value}============");
+      final model = ConsumptionModel(
+        type: typeC.text.trim(),
+        amount: amount.value.toDouble(),
+        sugarData: sugar,
+        context: selectedContext.value,
+        dateTime: consumedAt.toUtc().toIso8601String(),
+      );
 
-      final response = await http.post(
-        Uri.parse(ApiEndpoints.submitConsumption),
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer ${authC.token.value}",
-        },
-        body: jsonEncode(
-          ConsumptionModel(
-            type: typeC.text.trim(),
-            amount: amount.value.toDouble(),
-            sugarData: sugar,
-            context: selectedContext.value,
-            dateTime: consumedAt.toUtc().toIso8601String(),
-          ).toJson(),
-        ),
+      final response = await ConsumptionService.submitConsumption(
+        data: model,
+        token: authC.token.value,
       );
 
       if (response.statusCode == 201) {
@@ -115,7 +102,6 @@ class ConsumptionFormController extends GetxController {
         authC.logout();
         Get.offAllNamed(Routes.LOGIN);
       } else {
-        // print("=====${response.body}==============");
         Get.snackbar("Error", "Failed to save");
       }
     } finally {
