@@ -139,6 +139,7 @@ class RegisterController extends GetxController {
       healthGoal: healthGoal.value,
     );
 
+    print("API ENDPOINT: ${ApiEndpoints.register}");
     // ---------- API CALL ----------
     try {
       isLoading.value = true;
