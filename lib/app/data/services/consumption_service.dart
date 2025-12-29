@@ -8,7 +8,7 @@ import '../../modules/login/controllers/auth_controller.dart';
 class ConsumptionService {
   final AuthController authC = Get.find<AuthController>();
 
-  Future<List<dynamic>> fetchConsumptions() async {
+   Future<List<dynamic>> fetchConsumptions() async {
     final response = await http.get(
       Uri.parse(ApiEndpoints.getAllConsumptions),
       headers: {

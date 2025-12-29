@@ -12,6 +12,8 @@ class ApiEndpoints {
     return "$host$version";
   }
 
+
+
   // Auth
   static String get register => "$baseUrl/register";
   static String get login => "$baseUrl/login";
