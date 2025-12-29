@@ -7,7 +7,6 @@ import '../../../data/models/history_consumption_model.dart';
 import '../../login/controllers/auth_controller.dart';
 
 class HistoryController extends GetxController {
-
   final selectedTab = 0.obs;
   final selectedDate = DateTime.now().obs;
   final dateText = ''.obs;
@@ -95,18 +94,17 @@ class HistoryController extends GetxController {
     }).toList();
   }
 
-Future<void> loadConsumptions() async {
-  isLoading.value = true;
+  Future<void> loadConsumptions() async {
+    isLoading.value = true;
 
-  final all = await fetchConsumptions();
-  sugarItems.value = filterConsumptions(
-    all: all,
-    selectedDate: selectedDate.value,
-  );
+    final all = await fetchConsumptions();
+    sugarItems.value = filterConsumptions(
+      all: all,
+      selectedDate: selectedDate.value,
+    );
 
-  isLoading.value = false;
-}
-
+    isLoading.value = false;
+  }
 
   // ================= Blood Sugar =================
   Future<List<HistoryBloodsugarModel>> fetchBloodSugar() async {
