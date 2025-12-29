@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+
+import '../../../constants/storage_keys.dart';
+import '../../../routes/app_pages.dart';
 
 class OnboardingController extends GetxController {
   var currentPage = 0.obs;
   PageController pageController = PageController();
 
-
-    final List<Map<String, String>> onboardingData = [
+  final List<Map<String, String>> onboardingData = [
     {
       "image": "assets/images/onboarding1.png",
       "title": "Welcome to sweetTake",
@@ -47,5 +50,11 @@ class OnboardingController extends GetxController {
 
   void onPageChanged(int index) {
     currentPage.value = index;
+  }
+
+  void finishOnboarding() {
+    final box = GetStorage();
+    box.write(StorageKeys.hasSeenOnboarding, true);
+    Get.offAllNamed(Routes.LOGIN);
   }
 }
