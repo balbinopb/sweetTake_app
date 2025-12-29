@@ -22,5 +22,7 @@ class AuthController extends GetxController {
     token.value = '';
     _box.remove('token');
   }
+
+  bool get isLoggedIn => token.value.isNotEmpty;
 }
 

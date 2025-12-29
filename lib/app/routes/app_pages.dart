@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sweettake_app/app/routes/app_middleware.dart';
 
 import '../modules/blood_sugar/bindings/blood_sugar_binding.dart';
 import '../modules/blood_sugar/views/blood_sugar_view.dart';
@@ -31,9 +33,17 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.LOGIN;
+  static const INITIAL = Routes.INITIAL;
 
   static final routes = [
+
+    GetPage(
+      name: Routes.INITIAL,
+      page: () => const SizedBox(),
+      middlewares: [AppMiddleware()],
+    ),
+
+
     GetPage(
       name: _Paths.ONBOARDING,
       page: () => OnboardingView(),

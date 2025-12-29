@@ -4,32 +4,11 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../constants/app_colors.dart';
-import '../../../routes/app_pages.dart';
 import '../controllers/onboarding_controller.dart';
 
 class OnboardingView extends GetView<OnboardingController> {
   const OnboardingView({super.key});
 
-  // final List<Map<String, String>> onboardingData = [
-  //   {
-  //     "image": "assets/images/onboarding1.png",
-  //     "title": "Welcome to sweetTake",
-  //     "desc":
-  //         "Track your blood sugar easily and stay healthy every day. SweetTake helps you understand and manage your sugar intake for a better lifestyle.",
-  //   },
-  //   {
-  //     "image": "assets/images/onboarding2.png",
-  //     "title": "Monitor, Learn, and Improve",
-  //     "desc":
-  //         "Record your daily sugar intake, view progress graphs, and read helpful articles to maintain balanced sugar levels.",
-  //   },
-  //   {
-  //     "image": "assets/images/onboarding3.png",
-  //     "title": "Ready to Begin Your Healthy Journey?",
-  //     "desc":
-  //         "Stay connected, stay informed, and make every choice count. Let SweetTake guide you toward a healthier sugar balance!",
-  //   },
-  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -139,9 +118,8 @@ class OnboardingView extends GetView<OnboardingController> {
                         SizedBox(width: 100),
 
                       ElevatedButton(
-                        onPressed: isLastPage
-                            ? () {
-                                Get.offAllNamed(Routes.LOGIN);
+                        onPressed: isLastPage? () {
+                                controller.finishOnboarding();
                               }
                             : controller.nextPage,
                         style: ElevatedButton.styleFrom(

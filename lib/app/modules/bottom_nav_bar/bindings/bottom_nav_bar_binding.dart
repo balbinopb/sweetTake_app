@@ -29,8 +29,9 @@ class BottomNavBarBinding extends Bindings {
       () => BloodSugarController(),
       fenix: true
     );
-    Get.lazyPut<HistoryController>(
-      () => HistoryController(),
+    Get.put<HistoryController>(
+      HistoryController(),
+      permanent: true
     );
     Get.lazyPut<ProfileController>(
       () => ProfileController(),
