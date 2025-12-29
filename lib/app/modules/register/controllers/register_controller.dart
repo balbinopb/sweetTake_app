@@ -2,45 +2,33 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
-import 'package:sweettake_app/app/constants/api_endpoints.dart';
 import 'package:sweettake_app/app/data/models/register_model.dart';
+import 'package:sweettake_app/app/data/services/auth_service.dart';
 
 import '../../../routes/app_pages.dart';
 
 class RegisterController extends GetxController {
-  final TextEditingController fullnameC = TextEditingController();
-  final TextEditingController emailC = TextEditingController();
-  final TextEditingController passwordC = TextEditingController();
-  final TextEditingController dobController = TextEditingController();
-  final TextEditingController genderController = TextEditingController();
-  final TextEditingController weightController = TextEditingController();
-  final TextEditingController heightController = TextEditingController();
-  final TextEditingController numberController = TextEditingController();
-  final isObscure = false.obs;
+  // ---------- TEXT CONTROLLERS ----------
+  final fullnameC = TextEditingController();
+  final emailC = TextEditingController();
+  final passwordC = TextEditingController();
+  final dobController = TextEditingController();
+  final weightController = TextEditingController();
+  final heightController = TextEditingController();
+  final numberController = TextEditingController();
+
+  // ---------- STATE ----------
   final isLoading = false.obs;
 
-  // PAGE 2 — Dropdown values (reactive)
-  RxString gender = ''.obs;
-  RxString preference = ''.obs;
-  RxString healthGoal = ''.obs;
+  // ----------REACTIVE DROPDOWN----------
+  final RxString gender = ''.obs;
+  final RxString preference = ''.obs;
+  final RxString healthGoal = ''.obs;
 
-  // pick date
-  Future<void> selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime(2000),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-    );
+  // ---------- DATE ----------
+  DateTime? selectedDob;
 
-    if (picked != null) {
-      dobController.text =
-          "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}T00:00:00Z";
-    }
-  }
-
-  // List options
+  // ---------- OPTIONS ----------
   final genders = ["Male", "Female"];
 
   final preferences = [
@@ -55,23 +43,35 @@ class RegisterController extends GetxController {
     "Weight Loss",
   ];
 
+  // ---------- DATE PICKER ----------
+  Future<void> selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDob ?? DateTime(2000),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+
+    if (picked != null) {
+      selectedDob = picked;
+      dobController.text =
+          "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
+    }
+  }
+
+  // ---------- REGISTER ----------
   Future<void> register() async {
+    // ---------- GET VALUES ----------
     final fullname = fullnameC.text.trim();
     final email = emailC.text.trim();
     final password = passwordC.text.trim();
     final phoneNumber = numberController.text.trim();
-    final dob = DateTime.parse(
-      dobController.text.trim(),
-    ).toUtc().toIso8601String();
-    final genderValue = gender.value;
-    final weight = weightController.text.trim();
-    final height = heightController.text.trim();
-    final preferenceValue = preference.value;
-    final healthGoalValue = healthGoal.value;
+    final weightText = weightController.text.trim();
+    final heightText = heightController.text.trim();
 
     // ---------- VALIDATION ----------
     if (fullname.isEmpty) {
-      Get.snackbar("Warning", "Name is required");
+      Get.snackbar("Warning", "Full name is required");
       return;
     }
 
@@ -85,40 +85,45 @@ class RegisterController extends GetxController {
       return;
     }
 
-    if (password.isEmpty || password.length < 6) {
+    if (password.length < 6) {
       Get.snackbar("Warning", "Password must be at least 6 characters");
       return;
     }
 
-    if (dob.isEmpty) {
+    if (selectedDob == null) {
       Get.snackbar("Warning", "Date of birth is required");
       return;
     }
 
-    if (genderValue.isEmpty) {
+    if (gender.value.isEmpty) {
       Get.snackbar("Warning", "Gender is required");
       return;
     }
 
-    if (weight.isEmpty) {
-      Get.snackbar("Warning", "Weight is required");
+    final weight = double.tryParse(weightText);
+    if (weight == null) {
+      Get.snackbar("Warning", "Weight must be a valid number");
       return;
     }
 
-    if (height.isEmpty) {
-      Get.snackbar("Warning", "Height is required");
+    final height = double.tryParse(heightText);
+    if (height == null) {
+      Get.snackbar("Warning", "Height must be a valid number");
       return;
     }
 
-    if (preferenceValue.isEmpty) {
+    if (preference.value.isEmpty) {
       Get.snackbar("Warning", "Diet preference is required");
       return;
     }
 
-    if (healthGoalValue.isEmpty) {
+    if (healthGoal.value.isEmpty) {
       Get.snackbar("Warning", "Health goal is required");
       return;
     }
+
+    // ---------- FORMAT DOB FOR BACKEND ----------
+    final dobIso = selectedDob!.toUtc().toIso8601String();
 
     // ---------- CREATE MODEL ----------
     final data = RegisterModel(
@@ -126,27 +131,23 @@ class RegisterController extends GetxController {
       phoneNumber: phoneNumber,
       email: email,
       password: password,
-      dateOfBirth: dob,
-      gender: genderValue,
-      weight: double.parse(weight),
-      height: double.parse(height),
-      preference: preferenceValue,
-      healthGoal: healthGoalValue,
+      dateOfBirth: dobIso,
+      gender: gender.value,
+      weight: weight,
+      height: height,
+      preference: preference.value,
+      healthGoal: healthGoal.value,
     );
 
     // ---------- API CALL ----------
     try {
       isLoading.value = true;
-      // final payload = data.toJson();
-      // print("===== PAYLOAD SENT =====");
-      // print(payload);
-      // print("========================");
 
-      final response = await http.post(
-        Uri.parse(ApiEndpoints.register),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode(data.toJson()),
-      );
+      final response = await AuthService.register(data);
+
+      final decoded = response.body.isNotEmpty
+          ? jsonDecode(response.body)
+          : null;
 
       // ---------- SUCCESS ----------
       if (response.statusCode == 201) {
@@ -155,24 +156,9 @@ class RegisterController extends GetxController {
         return;
       }
 
-      // ---------- ERROR HANDLING ----------
-      final decoded = response.body.isNotEmpty
-          ? jsonDecode(response.body)
-          : null;
-
+      // ---------- ERRORS ----------
       if (response.statusCode == 400) {
-        if (decoded?["errors"] != null) {
-          Get.snackbar(
-            "Validation Error",
-            (decoded["errors"] as List).join("\n"),
-          );
-        } else {
-          Get.snackbar(
-            "Validation Errorr",
-            decoded?["error"] ?? "Invalid input",
-          );
-          // print("======${decoded?["error"]}===========");
-        }
+        Get.snackbar("Validation Error", decoded?["error"] ?? "Invalid input");
         return;
       }
 
@@ -182,10 +168,23 @@ class RegisterController extends GetxController {
       }
 
       Get.snackbar("Error", "Unexpected error occurred");
-    } catch (e) {
+    } catch (_) {
       Get.snackbar("Error", "Failed to connect to server");
     } finally {
       isLoading.value = false;
     }
+  }
+
+  // ---------- CLEANUP ----------
+  @override
+  void onClose() {
+    fullnameC.dispose();
+    emailC.dispose();
+    passwordC.dispose();
+    dobController.dispose();
+    weightController.dispose();
+    heightController.dispose();
+    numberController.dispose();
+    super.onClose();
   }
 }

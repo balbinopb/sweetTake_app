@@ -2,9 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
-import 'package:sweettake_app/app/constants/api_endpoints.dart';
 import 'package:sweettake_app/app/data/models/login_model.dart';
+import 'package:sweettake_app/app/data/services/auth_service.dart';
 import 'package:sweettake_app/app/modules/login/controllers/auth_controller.dart';
 import 'package:sweettake_app/app/routes/app_pages.dart';
 
@@ -31,11 +30,9 @@ class LoginController extends GetxController {
     try {
       isLoading.value = true;
 
-      final response = await http.post(
-        Uri.parse(ApiEndpoints.login),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode(LoginModel(email: email, password: password).toJson()),
-      );
+      final data=LoginModel(email: email, password: password);
+
+      final response = await AuthService.login(data);
 
       // print("==============login.....${response.body}.........==================");
       final decoded = jsonDecode(response.body);

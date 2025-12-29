@@ -71,7 +71,7 @@ class HistoryController extends GetxController {
   // ================= Sugar Consumption =================
   Future<List<HistoryConsumptionModel>> fetchConsumptions() async {
     final response = await http.get(
-      Uri.parse("${ApiEndpoints.getAllConsumptions}/consumptions"),
+      Uri.parse(ApiEndpoints.getAllConsumptions),
       headers: {
         'Authorization': 'Bearer ${_authC.token.value}',
         'Content-Type': 'application/json',

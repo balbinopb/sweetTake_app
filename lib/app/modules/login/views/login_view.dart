@@ -67,6 +67,7 @@ class LoginView extends GetView<LoginController> {
                     CustomTextfield(
                       textController: controller.emailC,
                       labelText: "Email",
+                      keyboardType: TextInputType.emailAddress,
                     ),
                     const SizedBox(height: 16),
 
@@ -74,6 +75,7 @@ class LoginView extends GetView<LoginController> {
                       textController: controller.passwordC,
                       isObscure: true,
                       labelText: "Password",
+                      
                     ),
                     const SizedBox(height: 40),
 
