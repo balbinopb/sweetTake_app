@@ -83,7 +83,7 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
                           child: Text(
                             controller.isLoading.value
                                 ? "Sending..."
-                                : "Send Reset Link",
+                                : "Send Reset Token",//this should be send token
                             style: TextStyle(color: Colors.white),
                           ),
                         ),
