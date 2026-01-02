@@ -316,10 +316,23 @@ class GraphView extends GetView<GraphController> {
           crossAxisSpacing: 12,
           childAspectRatio: 2.2,
           children: [
-            _MetricTile('Total', '168 g'),
-            _MetricTile('Average', '24 g/day'),
-            _MetricTile('Highest', '38 g'),
-            _MetricTile('Trend', '▲ 12%'),
+            _MetricTile(
+              'Total',
+              '${controller.totalSugar.toStringAsFixed(0)} g',
+            ),
+            _MetricTile(
+              'Average',
+              '${controller.weeklyAverageSugar.toStringAsFixed(0)} g',
+            ),
+            _MetricTile(
+              'Highest',
+              '${controller.highestSugar.toStringAsFixed(0)} g',
+            ),
+            _MetricTile(
+              'Trend',
+              '${controller.trendPercentage >= 0 ? '▲' : '▼'} '
+                  '${controller.trendPercentage.abs().toStringAsFixed(1)}%',
+            ),
           ],
         ),
       ],

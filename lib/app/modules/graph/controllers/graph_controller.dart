@@ -161,4 +161,26 @@ class GraphController extends GetxController {
 
   List<FlSpot> get activeSpots =>
       period.value == GraphPeriod.weekly ? weeklySpots : monthlySpots;
+
+  double get totalSugar {
+    final spots = activeSpots;
+    return spots.fold(0.0, (sum, s) => sum + s.y);
+  }
+
+  double get highestSugar {
+    final spots = activeSpots;
+    if (spots.isEmpty) return 0.0;
+    return spots.map((s) => s.y).reduce((a, b) => a > b ? a : b);
+  }
+
+  double get trendPercentage {
+    final spots = activeSpots;
+    if (spots.length < 2) return 0.0;
+
+    final first = spots.first.y;
+    final last = spots.last.y;
+
+    if (first == 0) return 0.0;
+    return ((last - first) / first) * 100;
+  }
 }

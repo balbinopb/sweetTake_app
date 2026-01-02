@@ -12,7 +12,7 @@ class HistoryBloodsugarModel {
 
   factory HistoryBloodsugarModel.fromJson(Map<String, dynamic> json) {
     return HistoryBloodsugarModel(
-      dateTime: DateTime.parse(json['date_time']),
+      dateTime: DateTime.parse(json['date_time']).toLocal(),
       bloodSugarData: (json['blood_sugar'] as num).toDouble(),
       context: json['context'] ?? '',
     );
