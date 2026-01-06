@@ -1,5 +1,3 @@
-
-
 class HistoryConsumptionModel {
   final String type;
   final double amount;
@@ -15,15 +13,17 @@ class HistoryConsumptionModel {
     required this.dateTime,
   });
 
-
-
   factory HistoryConsumptionModel.fromJson(Map<String, dynamic> json) {
     return HistoryConsumptionModel(
-      dateTime: DateTime.parse(json['date_time']),
-      type: json['type'] ?? '',
+      dateTime: DateTime.parse(json['date_time']).toLocal(),
+      type: json['type'] ?? 'Unknown',
       amount: (json['amount'] as num).toDouble(),
       sugarData: (json['sugar_data'] as num).toDouble(),
       context: json['context'] ?? '',
     );
   }
+
+  String get time => '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+
+  DateTime get date => DateTime(dateTime.year, dateTime.month, dateTime.day);
 }

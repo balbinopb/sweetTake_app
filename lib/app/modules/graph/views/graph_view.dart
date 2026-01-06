@@ -7,13 +7,6 @@ import '../controllers/graph_controller.dart';
 class GraphView extends GetView<GraphController> {
   const GraphView({super.key});
 
-  // static const Color bg = Color(0xFFF7EEC8);
-  // static const Color bg = Color(0xFFF7F3E8);
-  // static const Color primary = Color(0xFF4A3F24);
-  // static const Color softWhite = Color(0xFFFFFDF8);
-  // static const Color lineColor = Color(0xFFF6F0DC);
-  // static const Color muted = Color(0xFFE8DFC5);
-
   static const double yLabelWidth = 30;
 
   @override
@@ -283,59 +276,64 @@ class GraphView extends GetView<GraphController> {
   }
 
   // ===========SUMMARY==============
-  Widget _summaryCard() => Container(
-    padding: EdgeInsets.fromLTRB(20, 18, 20, 20),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(26),
-      boxShadow: [
-        BoxShadow(
-          blurRadius: 16,
-          offset: Offset(0, 10),
-          color: AppColors.primary2.withValues(alpha: .25),
-        ),
-      ],
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Summary',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-            decoration: TextDecoration.underline,
+  Widget _summaryCard() => Obx(
+    () => Container(
+      padding: EdgeInsets.fromLTRB(20, 18, 20, 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(26),
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 16,
+            offset: Offset(0, 10),
+            color: AppColors.primary2.withValues(alpha: .25),
           ),
-        ),
-        SizedBox(height: 12),
-        GridView.count(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          crossAxisCount: 2,
-          mainAxisSpacing: 12,
-          crossAxisSpacing: 12,
-          childAspectRatio: 2.2,
-          children: [
-            _MetricTile(
-              'Total',
-              '${controller.totalSugar.toStringAsFixed(0)} g',
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Summary',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              decoration: TextDecoration.underline,
             ),
-            _MetricTile(
-              'Average',
-              '${controller.weeklyAverageSugar.toStringAsFixed(0)} g',
-            ),
-            _MetricTile(
-              'Highest',
-              '${controller.highestSugar.toStringAsFixed(0)} g',
-            ),
-            _MetricTile(
-              'Trend',
-              '${controller.trendPercentage >= 0 ? '▲' : '▼'} '
-                  '${controller.trendPercentage.abs().toStringAsFixed(1)}%',
-            ),
-          ],
-        ),
-      ],
+          ),
+          SizedBox(height: 12),
+          GridView.count(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            crossAxisCount: 2,
+            mainAxisSpacing: 12,
+            crossAxisSpacing: 12,
+            childAspectRatio: 2.2,
+            children: [
+              _MetricTile(
+                'Total',
+                '${controller.periodTotalSugar.toStringAsFixed(0)} g',
+              ),
+
+              _MetricTile(
+                'Daily Avg',
+                '${controller.periodDailyAverage.toStringAsFixed(0)} g/day',
+              ),
+
+              _MetricTile(
+                'Highest Day',
+                '${controller.highestDailySugar.toStringAsFixed(0)} g',
+              ),
+
+              _MetricTile(
+                'Trend',
+                controller.trendText,
+                valueColor: controller.trendColor,
+              ),
+            ],
+          ),
+        ],
+      ),
     ),
   );
 }
@@ -343,8 +341,9 @@ class GraphView extends GetView<GraphController> {
 class _MetricTile extends StatelessWidget {
   final String label;
   final String value;
+  final Color valueColor;
 
-  const _MetricTile(this.label, this.value);
+  const _MetricTile(this.label, this.value, {this.valueColor = Colors.black});
 
   @override
   Widget build(BuildContext context) {
@@ -362,7 +361,11 @@ class _MetricTile extends StatelessWidget {
           SizedBox(height: 2),
           Text(
             value,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: valueColor,
+            ),
           ),
         ],
       ),
