@@ -6,30 +6,33 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 
 class AuthController extends GetxController {
   final _box = GetStorage();
+
   final token = ''.obs;
+  final isLoading = true.obs;
 
   @override
   void onInit() {
     super.onInit();
-    // token.value = _box.read('token') ?? '';
     _loadToken();
   }
 
-  
   void _loadToken() {
     final savedToken = _box.read('token');
 
     if (savedToken == null || savedToken.isEmpty) {
       token.value = '';
+      isLoading.value = false;
       return;
     }
 
     if (JwtDecoder.isExpired(savedToken)) {
       logout();
+      isLoading.value = false;
       return;
     }
 
     token.value = savedToken;
+    isLoading.value = false;
   }
 
   void setToken(String newToken) {

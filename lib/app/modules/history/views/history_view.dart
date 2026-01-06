@@ -217,14 +217,23 @@ class _SugarList extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        ...items.map(
-          (e) => _HistoryCard(
-            icon: Icons.fastfood_rounded,
-            title: e.type,
-            subtitle: _time(e.dateTime),
-            value: "${e.sugarData.toStringAsFixed(1)} g",
-          ),
-        ),
+        ...items.map((e) {
+          return Dismissible(
+            key: ValueKey(e.consumptionId),
+            direction: DismissDirection.endToStart,
+            background: _deleteBg(),
+            confirmDismiss: (_) => _confirmDelete("Delete sugar record?"),
+            onDismissed: (_) {
+              Get.find<HistoryController>().deleteSugar(e);
+            },
+            child: _HistoryCard(
+              icon: Icons.fastfood_rounded,
+              title: e.type,
+              subtitle: _time(e.dateTime),
+              value: "${e.sugarData.toStringAsFixed(1)} g",
+            ),
+          );
+        }),
         _TotalCard(value: "${total.toStringAsFixed(1)} g"),
       ],
     );
@@ -250,14 +259,30 @@ class _BloodSugarList extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        ...items.map(
-          (e) => _HistoryCard(
-            icon: Icons.bloodtype_rounded,
-            title: e.context,
-            subtitle: _time(e.dateTime),
-            value: "${e.bloodSugarData} mg/dL",
-          ),
-        ),
+        ...items.map((e) {
+          return Dismissible(
+            key: ValueKey(e.metricId),
+            direction: DismissDirection.endToStart,
+            background: Container(
+              alignment: Alignment.centerRight,
+              padding: const EdgeInsets.only(right: 20),
+              color: Colors.red.shade400,
+              child: const Icon(Icons.delete, color: Colors.white),
+            ),
+            confirmDismiss: (_) async {
+              return await _confirmDelete("Delete this blood sugar record?");
+            },
+            onDismissed: (_) {
+              Get.find<HistoryController>().deleteBloodSugar(e);
+            },
+            child: _HistoryCard(
+              icon: Icons.bloodtype_rounded,
+              title: e.context,
+              subtitle: _time(e.dateTime),
+              value: "${e.bloodSugarData} mg/dL",
+            ),
+          );
+        }),
         _TotalCard(value: "$total mg/dL"),
       ],
     );
@@ -389,3 +414,48 @@ class _EmptyState extends StatelessWidget {
 
 String _time(DateTime d) =>
     "${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}";
+
+Widget _deleteBg() {
+  return Container(
+    alignment: Alignment.centerRight,
+    padding: const EdgeInsets.only(right: 20),
+    color: Colors.red.shade400,
+    child: const Icon(Icons.delete, color: Colors.white),
+  );
+}
+
+Future<bool?> _confirmDelete(String text) {
+  return Get.dialog<bool>(
+    AlertDialog(
+      backgroundColor: AppColors.inputBg,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      title: const Text(
+        "Delete",
+        style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.primary),
+      ),
+      content: Text(
+        text,
+        style: TextStyle(color: AppColors.primary.withValues(alpha: 0.7)),
+      ),
+      actionsPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      actions: [
+        TextButton(
+          onPressed: () => Get.back(result: false),
+          style: TextButton.styleFrom(foregroundColor: AppColors.primary2),
+          child: const Text("Cancel"),
+        ),
+        ElevatedButton(
+          onPressed: () => Get.back(result: true),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primary2,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+          ),
+          child: const Text("Delete", style: TextStyle(color: Colors.white)),
+        ),
+      ],
+    ),
+  );
+}

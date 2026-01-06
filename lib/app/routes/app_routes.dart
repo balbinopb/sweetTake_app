@@ -5,7 +5,7 @@ part of 'app_pages.dart';
 
 abstract class Routes {
   Routes._();
-  static const INITIAL = _Paths.INITIAL;
+  // static const INITIAL = _Paths.INITIAL;
   static const ONBOARDING = _Paths.ONBOARDING;
   static const REGISTER = _Paths.REGISTER;
   static const LOGIN = _Paths.LOGIN;
@@ -18,11 +18,12 @@ abstract class Routes {
   static const BOTTOM_NAV_BAR = _Paths.BOTTOM_NAV_BAR;
   static const FORGOT_PASSWORD = _Paths.FORGOT_PASSWORD;
   static const RESET_PASSWORD = _Paths.RESET_PASSWORD;
+  static const INITIAL = _Paths.INITIAL;
 }
 
 abstract class _Paths {
   _Paths._();
-  static const INITIAL = '/';
+  // static const INITIAL = '/';
   static const ONBOARDING = '/onboarding';
   static const LOGIN = '/login';
   static const REGISTER = '/register';
@@ -35,4 +36,5 @@ abstract class _Paths {
   static const BOTTOM_NAV_BAR = '/bottom-nav-bar';
   static const FORGOT_PASSWORD = '/forgot-password';
   static const RESET_PASSWORD = '/reset-password';
+  static const INITIAL = '/initial';
 }
