@@ -32,13 +32,10 @@ class LoginController extends GetxController {
 
       final data=LoginModel(email: email, password: password);
 
-      print("========test login=====");
 
       final response = await AuthService.login(data);
 
-      // print("==============login.....${response.body}.........==================");
       final decoded = jsonDecode(response.body);
-      // print("LOGIN RESPONSE = $decoded");
 
       await Future.delayed(const Duration(seconds: 2));
 
