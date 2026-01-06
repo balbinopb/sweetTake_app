@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
+
 import 'package:get/get.dart';
-import 'package:sweettake_app/app/routes/app_middleware.dart';
 
 import '../modules/blood_sugar/bindings/blood_sugar_binding.dart';
 import '../modules/blood_sugar/views/blood_sugar_view.dart';
@@ -16,6 +15,8 @@ import '../modules/history/bindings/history_binding.dart';
 import '../modules/history/views/history_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
+import '../modules/initial/bindings/initial_binding.dart';
+import '../modules/initial/views/initial_view.dart';
 import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
@@ -36,14 +37,6 @@ class AppPages {
   static const INITIAL = Routes.INITIAL;
 
   static final routes = [
-
-    GetPage(
-      name: Routes.INITIAL,
-      page: () => const SizedBox(),
-      middlewares: [AppMiddleware()],
-    ),
-
-
     GetPage(
       name: _Paths.ONBOARDING,
       page: () => OnboardingView(),
@@ -103,6 +96,11 @@ class AppPages {
       name: _Paths.RESET_PASSWORD,
       page: () => const ResetPasswordView(),
       binding: ResetPasswordBinding(),
+    ),
+    GetPage(
+      name: _Paths.INITIAL,
+      page: () => const InitialView(),
+      binding: InitialBinding(),
     ),
   ];
 }

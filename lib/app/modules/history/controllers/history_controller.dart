@@ -141,4 +141,26 @@ class HistoryController extends GetxController {
 
     isLoading.value = false;
   }
+
+
+  Future<void> deleteSugar(HistoryConsumptionModel item) async {
+    try {
+      isLoading.value = true;
+
+
+      sugarItems.remove(item);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> deleteBloodSugar(HistoryBloodsugarModel item) async {
+    try {
+      isLoading.value = true;
+
+      bloodItems.remove(item);
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }
