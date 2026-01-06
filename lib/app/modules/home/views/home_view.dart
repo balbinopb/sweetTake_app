@@ -44,36 +44,47 @@ class HomeView extends GetView<HomeController> {
                         children: [
                           Row(
                             children: [
+                              // avatar
                               Container(
-                                width: 48,
-                                height: 48,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: AppColors.card,
-                                  border: Border.all(color: AppColors.primary),
-                                ),
-                                child: Icon(
-                                  Icons.person,
-                                  color: AppColors.primary,
+                                padding: EdgeInsets.all(4),
+                                child: CircleAvatar(
+                                  radius: 28,
+                                  backgroundColor: AppColors.primary2
+                                      .withValues(alpha: 0.8),
+                                  child: Obx(
+                                    () => Text(
+                                      controller.firstLetterOfName,
+                                      style: TextStyle(
+                                        fontSize: 24,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
+
                               SizedBox(width: 12),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Hello,",
+                                    controller.greeting,
                                     style: TextStyle(
                                       fontSize: 14,
                                       color: AppColors.primary,
                                     ),
                                   ),
-                                  Text(
-                                    "Sweetie Telutizen",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.primary,
+                                  Obx(
+                                    () => Text(
+                                      controller.name,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.primary,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -244,7 +255,7 @@ class HomeView extends GetView<HomeController> {
                               child: _consumptionCard(
                                 time: e['time'],
                                 title: e['title'],
-                                sugar: "${e['sugar']}g",
+                                sugar: "${e['sugar']*e['amount']}g",
                               ),
                             );
                           }).toList(),
