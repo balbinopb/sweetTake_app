@@ -1,12 +1,11 @@
-// import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiEndpoints {
   static String get baseUrl {
-    // final host = dotenv.env["API_HOST"] ?? (throw Exception("API_HOST not defined"));
-    final host = 'http://10.0.2.2:8080';
+    final host = dotenv.env["API_HOST"] ?? (throw Exception("API_HOST not defined"));
 
-    // final version = dotenv.env["API_VERSION"] ?? "/v1/api";
-    final version = "/v1/api";
+    final version = dotenv.env["API_VERSION"] ?? "/v1/api";
+    // final version = "/v1/api";
 
     // return "$host$version";
     return "$host$version";

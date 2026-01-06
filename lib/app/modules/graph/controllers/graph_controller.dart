@@ -35,9 +35,10 @@ class GraphController extends GetxController {
   void onInit() {
     super.onInit();
 
-    ever(consumptions, (_) {
+    everAll([consumptions, userProfile], (_) {
       final profile = userProfile.value;
-      if (profile == null) return;
+      if (profile == null || consumptions.isEmpty) return;
+
       evaluateRiskAndRecommendationUnified(
         todaySugar: todayTotalSugar,
         periodAverage: periodDailyAverage,
@@ -160,43 +161,48 @@ class GraphController extends GetxController {
     required String dietPreference,
     required String healthGoal,
   }) {
-    // ===== 1. Determine recommended limit =====
     double recommended;
     double upperLimit;
+    // node 1
 
     if (dietPreference == "Diabetic-Friendly Diet") {
-      recommended = 20.0;
-      upperLimit = 30.0;
+      //node 2
+      recommended = 20.0; //node 3
+      upperLimit = 30.0; //node 4
     } else if (dietPreference == "Low Sugar Diet") {
-      recommended = 25.0;
-      upperLimit = 40.0;
+      //node 5
+      recommended = 25.0; //node 6
+      upperLimit = 40.0; //node 7
     } else {
-      // Balanced Diet
-      recommended = 30.0;
-      upperLimit = 50.0;
+      recommended = 30.0; //node 8
+      upperLimit = 50.0; //node 9
     }
 
-    // ===== 2. Adjust based on health goal =====
     if (healthGoal == "Maintain Stable Blood Sugar") {
-      upperLimit -= 5;
+      //node 10
+      upperLimit -= 5; //node 11
     } else if (healthGoal == "Weight Loss") {
-      recommended -= 5;
+      //node 12
+      recommended -= 5; //node 13
+    }
+    //       node 14                         nod15
+    if (todaySugar > upperLimit && periodAverage > recommended) {
+      riskLevel.value = RiskLevel.high; //node 16
+      recommendationText.value =
+          "Your sugar intake is too high for your health plan. Reduce sugary foods and drinks."; //node 17
+
+      //                 node 18                        node 19
+    } else if (todaySugar > recommended || periodAverage > recommended) {
+      riskLevel.value = RiskLevel.moderate; //node 20
+      recommendationText.value =
+          "Your sugar intake is slightly above your target. Try balancing your meals."; //node 21
+    } else {
+      riskLevel.value = RiskLevel.low; //node 22
+      recommendationText.value =
+          "Great job! Your sugar intake matches your health goals."; //node 23
     }
 
-    // ===== 3. Risk decision =====
-    if (todaySugar > upperLimit && periodAverage > recommended) {
-      riskLevel.value = RiskLevel.high;
-      recommendationText.value =
-          "Your sugar intake is too high for your health plan. Reduce sugary foods and drinks.";
-    } else if (todaySugar > recommended || periodAverage > recommended) {
-      riskLevel.value = RiskLevel.moderate;
-      recommendationText.value =
-          "Your sugar intake is slightly above your target. Try balancing your meals.";
-    } else {
-      riskLevel.value = RiskLevel.low;
-      recommendationText.value =
-          "Great job! Your sugar intake matches your health goals.";
-    }
+    //node 24
   }
 
   // ================= RANGE =================
