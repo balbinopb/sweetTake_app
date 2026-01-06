@@ -1,4 +1,5 @@
 class HistoryConsumptionModel {
+  final int consumptionId;
   final String type;
   final double amount;
   final double sugarData;
@@ -6,6 +7,7 @@ class HistoryConsumptionModel {
   final DateTime dateTime;
 
   HistoryConsumptionModel({
+    required this.consumptionId,
     required this.type,
     required this.amount,
     required this.sugarData,
@@ -15,6 +17,7 @@ class HistoryConsumptionModel {
 
   factory HistoryConsumptionModel.fromJson(Map<String, dynamic> json) {
     return HistoryConsumptionModel(
+      consumptionId: json['consumption_id'],
       dateTime: DateTime.parse(json['date_time']).toLocal(),
       type: json['type'] ?? 'Unknown',
       amount: (json['amount'] as num).toDouble(),

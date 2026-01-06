@@ -24,6 +24,9 @@ class ApiEndpoints {
   static String get profile => "$baseUrl$_auth/profile";
   static String get submitConsumption => "$baseUrl$_auth/consumption";
   static String get getAllConsumptions => "$baseUrl$_auth/consumptions";
+  static String deleteConsumption(int id) => "$baseUrl$_auth/consumptions/$id";
+
   static String get submitBloodSugar => "$baseUrl$_auth/bloodsugar";
   static String get getAllBloodSugars => "$baseUrl$_auth/bloodsugars";
+  static String deleteBloodSugar(int id) => "$baseUrl$_auth/bloodsugars/$id";
 }

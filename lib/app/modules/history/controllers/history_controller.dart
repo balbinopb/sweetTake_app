@@ -1,8 +1,7 @@
-import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
-import 'package:sweettake_app/app/constants/api_endpoints.dart';
 import 'package:sweettake_app/app/data/models/history_bloodsugar_model.dart';
+import 'package:sweettake_app/app/data/services/history_service.dart';
 import '../../../data/models/history_consumption_model.dart';
 import '../../login/controllers/auth_controller.dart';
 
@@ -14,6 +13,7 @@ class HistoryController extends GetxController {
   final isLoading = false.obs;
 
   final _authC = Get.find<AuthController>();
+  final _service = HistoryService();
 
   final sugarItems = <HistoryConsumptionModel>[].obs;
   final bloodItems = <HistoryBloodsugarModel>[].obs;
@@ -69,16 +69,7 @@ class HistoryController extends GetxController {
 
   // ================= Sugar Consumption =================
   Future<List<HistoryConsumptionModel>> fetchConsumptions() async {
-    final response = await http.get(
-      Uri.parse(ApiEndpoints.getAllConsumptions),
-      headers: {
-        'Authorization': 'Bearer ${_authC.token.value}',
-        'Content-Type': 'application/json',
-      },
-    );
-
-    final body = jsonDecode(response.body);
-    final List list = body['data'];
+    final list = await _service.sugarConsumption();
     return list.map((e) => HistoryConsumptionModel.fromJson(e)).toList();
   }
 
@@ -108,13 +99,7 @@ class HistoryController extends GetxController {
 
   // ================= Blood Sugar =================
   Future<List<HistoryBloodsugarModel>> fetchBloodSugar() async {
-    final response = await http.get(
-      Uri.parse(ApiEndpoints.getAllBloodSugars),
-      headers: {'Authorization': 'Bearer ${_authC.token.value}'},
-    );
-
-    final Map<String, dynamic> body = jsonDecode(response.body);
-    final List list = body['data'];
+    final list = await _service.bloodSugar();
     return list.map((e) => HistoryBloodsugarModel.fromJson(e)).toList();
   }
 
@@ -142,25 +127,32 @@ class HistoryController extends GetxController {
     isLoading.value = false;
   }
 
-
   Future<void> deleteSugar(HistoryConsumptionModel item) async {
+    final backup = List.of(sugarItems);
+    sugarItems.remove(item);
+
     try {
-      isLoading.value = true;
-
-
-      sugarItems.remove(item);
-    } finally {
-      isLoading.value = false;
+      await _service.deleteSugar(item.consumptionId);
+    } catch (e) {
+      sugarItems.value = backup;
+      Get.snackbar("Error", "Failed to delete");
     }
   }
 
-  Future<void> deleteBloodSugar(HistoryBloodsugarModel item) async {
-    try {
-      isLoading.value = true;
+  void deleteBloodSugar(HistoryBloodsugarModel e) async {
+    bloodItems.removeWhere((x) => x.metricId == e.metricId);
 
-      bloodItems.remove(item);
-    } finally {
-      isLoading.value = false;
+    try {
+      await _service.deleteBloodSugar(e.metricId);
+    } catch (err) {
+      bloodItems.insert(0, e);
+
+      Get.snackbar(
+        "Error",
+        "Failed to delete blood sugar record",
+        backgroundColor: Colors.red.shade400,
+        colorText: Colors.white,
+      );
     }
   }
 }
