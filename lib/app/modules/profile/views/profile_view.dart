@@ -148,7 +148,6 @@ class ProfileView extends GetView<ProfileController> {
       ),
       child: Column(
         children: [
-          // Avatar with soft glow
           Container(
             padding: EdgeInsets.all(6),
             decoration: BoxDecoration(

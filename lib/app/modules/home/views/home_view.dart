@@ -7,12 +7,6 @@ import '../controllers/home_controller.dart';
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
 
-  // static const Color primary = Color(0xFF4C462A);
-  // static const Color bg = Color(0xFFF7F3E8);
-  // static const Color card = Color(0xFFFFFDF8);
-  // static const Color accent = Color(0xFF4C462A);
-  // static const Color chartBg = Color(0xFF4C462A);
-
   @override
   Widget build(BuildContext context) {
     const double bottomNavHeight = 90;

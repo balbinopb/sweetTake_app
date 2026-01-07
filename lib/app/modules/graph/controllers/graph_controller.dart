@@ -51,7 +51,6 @@ class GraphController extends GetxController {
     fetchData();
   }
 
-  // ================= RAW → DAILY AGGREGATION =================
 
   /// Key = date (yyyy-mm-dd), Value = total sugar that day
   Map<DateTime, double> get dailyTotals {
