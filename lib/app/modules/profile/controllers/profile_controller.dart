@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:sweettake_app/app/constants/api_endpoints.dart';
 import 'package:sweettake_app/app/constants/app_colors.dart';
+import 'package:sweettake_app/app/data/services/profile_service.dart';
 import 'package:sweettake_app/app/modules/login/controllers/auth_controller.dart';
 import 'package:sweettake_app/app/routes/app_pages.dart';
 
@@ -12,6 +13,7 @@ import '../../../data/models/profile_model.dart';
 
 class ProfileController extends GetxController {
   final _authC = Get.find<AuthController>();
+  final _service=ProfileService();
 
   final profile = Rxn<ProfileModel>();
   final isLoading = false.obs;
@@ -37,13 +39,7 @@ class ProfileController extends GetxController {
       // API fetch delay
       await Future.delayed(const Duration(seconds: 1));
 
-      final response = await http.get(
-        Uri.parse(ApiEndpoints.profile),
-        headers: {
-          'Authorization': "Bearer ${_authC.token.value}",
-          'Content-Type': 'application/json',
-        },
-      );
+      final response = await _service.fetchProfile();
       final Map<String, dynamic> body = jsonDecode(response.body);
       Map<String, dynamic> personalData = body['data'];
 
