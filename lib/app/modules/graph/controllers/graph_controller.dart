@@ -51,7 +51,7 @@ class GraphController extends GetxController {
     fetchData();
   }
 
-  // ================= RAW → DAILY AGGREGATION =================
+  // ================= RAW -> DAILY AGGREGATION =================
 
   /// Key = date (yyyy-mm-dd), Value = total sugar that day
   Map<DateTime, double> get dailyTotals {
@@ -188,14 +188,12 @@ class GraphController extends GetxController {
     //       node 14                         nod15
     if (todaySugar > upperLimit && periodAverage > recommended) {
       riskLevel.value = RiskLevel.high; //node 16
-      recommendationText.value =
-          "Your sugar intake is too high for your health plan. Reduce sugary foods and drinks."; //node 17
+      recommendationText.value = "Your sugar intake is too high for your health plan. Reduce sugary foods and drinks."; //node 17
 
       //                 node 18                        node 19
     } else if (todaySugar > recommended || periodAverage > recommended) {
       riskLevel.value = RiskLevel.moderate; //node 20
-      recommendationText.value =
-          "Your sugar intake is slightly above your target. Try balancing your meals."; //node 21
+      recommendationText.value = "Your sugar intake is slightly above your target. Try balancing your meals."; //node 21
     } else {
       riskLevel.value = RiskLevel.low; //node 22
       recommendationText.value =

@@ -27,6 +27,8 @@ class HomeView extends GetView<HomeController> {
           padding: EdgeInsets.only(top: 5),
           child: RefreshIndicator(
             onRefresh: controller.refreshHome,
+            color: AppColors.primary2,
+            backgroundColor:AppColors.softBg,
             child: SingleChildScrollView(
               padding: EdgeInsets.only(bottom: bottomNavHeight / 2),
               child: ConstrainedBox(

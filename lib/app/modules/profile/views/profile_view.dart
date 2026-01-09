@@ -33,6 +33,8 @@ class ProfileView extends GetView<ProfileController> {
 
         return RefreshIndicator(
           onRefresh: controller.refreshProfile,
+          color: AppColors.primary2,
+          backgroundColor:AppColors.softBg,
           child: SingleChildScrollView(
             child: Column(
               children: [
