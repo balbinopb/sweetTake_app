@@ -66,7 +66,7 @@ class OnboardingView extends GetView<OnboardingController> {
               Obx(
                 () => Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(3, (index) {
+                  children: List.generate(3, (index) {  
                     return Container(
                       margin: const EdgeInsets.symmetric(horizontal: 4),
                       height: 8,
@@ -74,7 +74,7 @@ class OnboardingView extends GetView<OnboardingController> {
                       decoration: BoxDecoration(
                         color: controller.currentPage.value == index
                             ? AppColors.primary
-                            : Colors.grey[400],
+                            : AppColors.background,
                         borderRadius: BorderRadius.circular(10),
                       ),
                     );
