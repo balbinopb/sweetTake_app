@@ -151,7 +151,7 @@ class HistoryController extends GetxController {
     try {
       final double parsedAmount = double.parse(amount);
       
-      await _service.updateSugar(item.consumptionId, {
+      await _service.updateSugarConsumption(item.consumptionId, {
         'sugar_data': parsedAmount,
         'type': type,
         'date_time': _formatDateTime(dateTime),

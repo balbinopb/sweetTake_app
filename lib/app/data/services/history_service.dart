@@ -59,8 +59,8 @@ class HistoryService {
   }
 
   // update sugar consumption
-  Future<void> updateSugar(int id, Map<String, dynamic> data) async {
-    final response = await http.put(
+  Future<void> updateSugarConsumption(int id, Map<String, dynamic> data) async {
+    final response = await http.patch(
       Uri.parse(ApiEndpoints.updateConsumption(id)),
       headers: {
         'Authorization': 'Bearer ${_authC.token.value}',
@@ -76,7 +76,7 @@ class HistoryService {
 
   // update blood sugar
   Future<void> updateBloodSugar(int id, Map<String, dynamic> data) async {
-    final response = await http.put(
+    final response = await http.patch(
       Uri.parse(ApiEndpoints.updateBloodSugar(id)),
       headers: {
         'Authorization': 'Bearer ${_authC.token.value}',
