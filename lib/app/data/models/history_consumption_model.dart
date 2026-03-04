@@ -26,6 +26,24 @@ class HistoryConsumptionModel {
     );
   }
 
+  HistoryConsumptionModel copyWith({
+    int? consumptionId,
+    String? type,
+    double? amount,
+    double? sugarData,
+    String? context,
+    DateTime? dateTime,
+  }) {
+    return HistoryConsumptionModel(
+      consumptionId: consumptionId ?? this.consumptionId,
+      type: type ?? this.type,
+      amount: amount ?? this.amount,
+      sugarData: sugarData ?? this.sugarData,
+      context: context ?? this.context,
+      dateTime: dateTime ?? this.dateTime,
+    );
+  }
+
   String get time => '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
 
   DateTime get date => DateTime(dateTime.year, dateTime.month, dateTime.day);

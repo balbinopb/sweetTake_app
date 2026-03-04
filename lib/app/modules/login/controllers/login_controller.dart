@@ -32,7 +32,6 @@ class LoginController extends GetxController {
 
       final data=LoginModel(email: email, password: password);
 
-
       final response = await AuthService.login(data);
 
       final decoded = jsonDecode(response.body);
