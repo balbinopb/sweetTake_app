@@ -27,6 +27,7 @@ class LoginController extends GetxController {
       return;
     }
 
+
     try {
       isLoading.value = true;
 
@@ -38,6 +39,7 @@ class LoginController extends GetxController {
 
       await Future.delayed(const Duration(seconds: 2));
 
+    print('test login: ${response.body}');
       if (response.statusCode == 200) {
         final token = decoded["token"];
 
@@ -49,7 +51,7 @@ class LoginController extends GetxController {
         final authC = Get.find<AuthController>();
         authC.setToken(token);
 
-        // print("TOKEN SAVED = ${authC.token.value}");
+        print("TOKEN SAVED = ${authC.token.value}");
 
         Get.offAllNamed(Routes.BOTTOM_NAV_BAR);
         return;

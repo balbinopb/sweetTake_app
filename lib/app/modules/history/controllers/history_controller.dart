@@ -87,14 +87,15 @@ class HistoryController extends GetxController {
 
   Future<void> loadConsumptions() async {
     isLoading.value = true;
-
-    final all = await fetchConsumptions();
-    sugarItems.value = filterConsumptions(
-      all: all,
-      selectedDate: selectedDate.value,
-    );
-
-    isLoading.value = false;
+    try {
+      final all = await fetchConsumptions();
+      sugarItems.value = filterConsumptions(
+        all: all,
+        selectedDate: selectedDate.value,
+      );
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   // ================= Blood Sugar =================
@@ -117,14 +118,16 @@ class HistoryController extends GetxController {
 
   Future<void> loadBloodSugar() async {
     isLoading.value = true;
-    final all = await fetchBloodSugar();
+    try {
+      final all = await fetchBloodSugar();
 
-    bloodItems.value = filterBloodSugar(
-      all: all,
-      selectedDate: selectedDate.value,
-    );
-
-    isLoading.value = false;
+      bloodItems.value = filterBloodSugar(
+        all: all,
+        selectedDate: selectedDate.value,
+      );
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   Future<void> deleteSugar(HistoryConsumptionModel item) async {
@@ -145,30 +148,19 @@ class HistoryController extends GetxController {
     String type,
     DateTime dateTime,
   ) async {
-    final backup = List.of(sugarItems);
-    final index = sugarItems.indexWhere((x) => x.consumptionId == item.consumptionId);
-
     try {
       final double parsedAmount = double.parse(amount);
-      
+
       await _service.updateSugarConsumption(item.consumptionId, {
         'sugar_data': parsedAmount,
         'type': type,
         'date_time': _formatDateTime(dateTime),
       });
 
-      if (index != -1) {
-        sugarItems[index] = item.copyWith(
-          sugarData: parsedAmount,
-          type: type,
-          dateTime: dateTime,
-        );
-        sugarItems.refresh();
-      }
+      await loadConsumptions();
 
       Get.snackbar("Success", "Sugar record updated");
     } catch (e) {
-      sugarItems.value = backup;
       Get.snackbar("Error", "Failed to update sugar record");
     }
   }
@@ -196,30 +188,19 @@ class HistoryController extends GetxController {
     String context,
     DateTime dateTime,
   ) async {
-    final backup = List.of(bloodItems);
-    final index = bloodItems.indexWhere((x) => x.metricId == item.metricId);
-
     try {
-      final int parsedSugar = int.parse(sugarValue);
-      
+      final double parsedSugar = double.parse(sugarValue);
+
       await _service.updateBloodSugar(item.metricId, {
         'blood_sugar': parsedSugar,
         'context': context,
         'date_time': _formatDateTime(dateTime),
       });
 
-      if (index != -1) {
-        bloodItems[index] = item.copyWith(
-          bloodSugarData: parsedSugar.toDouble(),
-          context: context,
-          dateTime: dateTime,
-        );
-        bloodItems.refresh();
-      }
+      await loadBloodSugar();
 
       Get.snackbar("Success", "Blood sugar record updated");
     } catch (e) {
-      bloodItems.value = backup;
       Get.snackbar("Error", "Failed to update blood sugar record");
     }
   }

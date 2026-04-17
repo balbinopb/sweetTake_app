@@ -18,7 +18,8 @@ class AuthService {
   
   // Send login request to the backend with user credentials
   static Future<http.Response> login(LoginModel data) {
-    // print("is got here?");
+    print("is got here?");
+    print("endpoint: ${ApiEndpoints.login}");
     return http.post(
       Uri.parse(ApiEndpoints.login),
       headers: {"Content-Type": "application/json"},
