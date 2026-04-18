@@ -20,4 +20,18 @@ class HistoryBloodsugarModel {
       context: json['context'] ?? '',
     );
   }
+
+  HistoryBloodsugarModel copyWith({
+    int? metricId,
+    DateTime? dateTime,
+    double? bloodSugarData,
+    String? context,
+  }) {
+    return HistoryBloodsugarModel(
+      metricId: metricId ?? this.metricId,
+      dateTime: dateTime ?? this.dateTime,
+      bloodSugarData: bloodSugarData ?? this.bloodSugarData,
+      context: context ?? this.context,
+    );
+  }
 }

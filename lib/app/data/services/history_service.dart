@@ -57,4 +57,36 @@ class HistoryService {
       throw Exception('Failed to delete blood sugar');
     }
   }
+
+  // update sugar consumption
+  Future<void> updateSugarConsumption(int id, Map<String, dynamic> data) async {
+    final response = await http.patch(
+      Uri.parse(ApiEndpoints.updateConsumption(id)),
+      headers: {
+        'Authorization': 'Bearer ${_authC.token.value}',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(data),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update sugar consumption');
+    }
+  }
+
+  // update blood sugar
+  Future<void> updateBloodSugar(int id, Map<String, dynamic> data) async {
+    final response = await http.patch(
+      Uri.parse(ApiEndpoints.updateBloodSugar(id)),
+      headers: {
+        'Authorization': 'Bearer ${_authC.token.value}',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(data),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update blood sugar');
+    }
+  }
 }

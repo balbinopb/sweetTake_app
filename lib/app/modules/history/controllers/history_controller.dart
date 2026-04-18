@@ -87,14 +87,15 @@ class HistoryController extends GetxController {
 
   Future<void> loadConsumptions() async {
     isLoading.value = true;
-
-    final all = await fetchConsumptions();
-    sugarItems.value = filterConsumptions(
-      all: all,
-      selectedDate: selectedDate.value,
-    );
-
-    isLoading.value = false;
+    try {
+      final all = await fetchConsumptions();
+      sugarItems.value = filterConsumptions(
+        all: all,
+        selectedDate: selectedDate.value,
+      );
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   // ================= Blood Sugar =================
@@ -117,14 +118,16 @@ class HistoryController extends GetxController {
 
   Future<void> loadBloodSugar() async {
     isLoading.value = true;
-    final all = await fetchBloodSugar();
+    try {
+      final all = await fetchBloodSugar();
 
-    bloodItems.value = filterBloodSugar(
-      all: all,
-      selectedDate: selectedDate.value,
-    );
-
-    isLoading.value = false;
+      bloodItems.value = filterBloodSugar(
+        all: all,
+        selectedDate: selectedDate.value,
+      );
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   Future<void> deleteSugar(HistoryConsumptionModel item) async {
@@ -136,6 +139,29 @@ class HistoryController extends GetxController {
     } catch (e) {
       sugarItems.value = backup;
       Get.snackbar("Error", "Failed to delete");
+    }
+  }
+
+  Future<void> updateConsumption(
+    HistoryConsumptionModel item,
+    String amount,
+    String type,
+    DateTime dateTime,
+  ) async {
+    try {
+      final double parsedAmount = double.parse(amount);
+
+      await _service.updateSugarConsumption(item.consumptionId, {
+        'sugar_data': parsedAmount,
+        'type': type,
+        'date_time': _formatDateTime(dateTime),
+      });
+
+      await loadConsumptions();
+
+      Get.snackbar("Success", "Sugar record updated");
+    } catch (e) {
+      Get.snackbar("Error", "Failed to update sugar record");
     }
   }
 
@@ -154,5 +180,47 @@ class HistoryController extends GetxController {
         colorText: Colors.white,
       );
     }
+  }
+
+  Future<void> updateBloodSugar(
+    HistoryBloodsugarModel item,
+    String sugarValue,
+    String context,
+    DateTime dateTime,
+  ) async {
+    try {
+      final double parsedSugar = double.parse(sugarValue);
+
+      await _service.updateBloodSugar(item.metricId, {
+        'blood_sugar': parsedSugar,
+        'context': context,
+        'date_time': _formatDateTime(dateTime),
+      });
+
+      await loadBloodSugar();
+
+      Get.snackbar("Success", "Blood sugar record updated");
+    } catch (e) {
+      Get.snackbar("Error", "Failed to update blood sugar record");
+    }
+  }
+
+  String _formatDateTime(DateTime dateTime) {
+    final local = dateTime.toLocal();
+    final offset = local.timeZoneOffset;
+    final sign = offset.isNegative ? '-' : '+';
+    final hours = offset.inHours.abs().toString().padLeft(2, '0');
+    final minutes =
+        (offset.inMinutes.abs() % 60).toString().padLeft(2, '0');
+    final datePart =
+        '${local.year.toString().padLeft(4, '0')}-'
+        '${local.month.toString().padLeft(2, '0')}-'
+        '${local.day.toString().padLeft(2, '0')}';
+    final timePart =
+        '${local.hour.toString().padLeft(2, '0')}:'
+        '${local.minute.toString().padLeft(2, '0')}:'
+        '${local.second.toString().padLeft(2, '0')}';
+
+    return '$datePart''T''$timePart$sign$hours:$minutes';
   }
 }

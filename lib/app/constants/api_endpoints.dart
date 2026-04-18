@@ -1,15 +1,17 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+// import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiEndpoints {
-  static String get baseUrl {
-    final host = dotenv.env["API_HOST"] ?? (throw Exception("API_HOST not defined"));
+  // static String get baseUrl {
+  //   final host = dotenv.env["API_HOST"] ?? (throw Exception("API_HOST not defined"));
 
-    final version = dotenv.env["API_VERSION"] ?? "/v1/api";
-    // final version = "/v1/api";
+  //   final version = dotenv.env["API_VERSION"] ?? "/v1/api";
+  //   // final version = "/v1/api";
 
-    // return "$host$version";
-    return "$host$version";
-  }
+  //   // return "$host$version";
+  //   return "$host$version";
+  // }
+
+  static String get baseUrl=>'http://10.0.2.2:8080/v1/api';
 
 
 
@@ -25,8 +27,10 @@ class ApiEndpoints {
   static String get submitConsumption => "$baseUrl$_auth/consumption";
   static String get getAllConsumptions => "$baseUrl$_auth/consumptions";
   static String deleteConsumption(int id) => "$baseUrl$_auth/consumptions/$id";
+  static String updateConsumption(int id) => "$baseUrl$_auth/consumptions/$id";
 
   static String get submitBloodSugar => "$baseUrl$_auth/bloodsugar";
   static String get getAllBloodSugars => "$baseUrl$_auth/bloodsugars";
   static String deleteBloodSugar(int id) => "$baseUrl$_auth/bloodsugars/$id";
+  static String updateBloodSugar(int id) => "$baseUrl$_auth/bloodsugars/$id";
 }
